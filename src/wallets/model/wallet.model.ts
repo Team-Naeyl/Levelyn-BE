@@ -6,6 +6,6 @@ export class Wallet extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: 'integer' })
     coins: number;
 }

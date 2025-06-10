@@ -1,17 +1,18 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import Redis, { RedisOptions } from "ioredis";
+import Redis from "ioredis";
+import { redisFactory } from "./redis.factory";
+import { ConfigService } from "@nestjs/config";
 
 @Module({})
 export class RedisModule {
-  static forRoot(
-    options: Partial<RedisOptions>
-  ): DynamicModule {
+  static forRootAsync(): DynamicModule {
     return {
       module: RedisModule,
       global: true,
       providers: [{
         provide: Redis,
-        useFactory: () => new Redis(options),
+        useFactory: redisFactory,
+        inject: [ConfigService],
       }],
       exports: [Redis]
     };

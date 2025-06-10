@@ -10,13 +10,13 @@ export class Dashboard extends ModelBase{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: "float" })
     exp: number;
 
-    @Column()
+    @Column({ type: "float" })
     attack: number;
 
-    @Column()
+    @Column({ type: "float" })
     will: number;
 
     @Exclude()

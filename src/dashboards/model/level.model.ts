@@ -6,12 +6,12 @@ export class Level extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: "max_exp" })
+    @Column({ name: "max_exp", type: "float" })
     maxExp: number;
 
-    @Column({ name: "delta_attack" })
+    @Column({ name: "delta_attack", type: "float" })
     deltaAttack: number;
 
-    @Column({ name: "delta_will" })
+    @Column({ name: "delta_will", type: "float" })
     deltaWill: number;
 }

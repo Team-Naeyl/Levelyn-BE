@@ -10,10 +10,10 @@ export class User extends ModelBase{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: "open_id",  unique: true })
+    @Column({ name: "open_id", type: "varchar", unique: true })
     openId: string;
 
-    @Column()
+    @Column({ type: "varchar" })
     name: string;
 
     @Exclude()
