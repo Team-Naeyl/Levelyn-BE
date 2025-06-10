@@ -1,4 +1,4 @@
-export interface AddUserSkillsDTO {
+export interface UpsertUserSkillsDTO {
     userId: number;
     skillIds: number[];
 }

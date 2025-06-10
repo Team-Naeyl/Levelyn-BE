@@ -1,11 +1,10 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserItem } from "../model";
-import { Repository } from "typeorm";
-import { AddUserItemsDTO, GetUserItemDTO, UserItemDTO } from "../dto";
-import { Transactional } from "typeorm-transactional";
-import { identity, throwError, throwIf } from "@fxts/core";
-
+import { FindOptionsWhere, In, Repository } from "typeorm";
+import { UpsertUserItemsDTO, UserItemDTO, GetUserItemsDTO } from "../dto";
+import { Transactional }                                                                          from "typeorm-transactional";
+import { concat, identity, pipe, throwError, throwIf, filter, map, toArray, compact, some, prop } from "@fxts/core";
 
 @Injectable()
 export class UserItemsService {
@@ -16,7 +15,7 @@ export class UserItemsService {
         private readonly _userItemsRepos: Repository<UserItem>,
     ) {}
 
-    async addUserItems(dto: AddUserItemsDTO): Promise<UserItemDTO[]> {
+    async addUserItems(dto: UpsertUserItemsDTO): Promise<UserItemDTO[]> {
        const { userId, itemIds } = dto;
 
        const userItems: UserItem[] = await this._userItemsRepos.save(
@@ -27,28 +26,28 @@ export class UserItemsService {
     }
 
     async getUserItems(userId: number): Promise<UserItemDTO[]> {
-       return await this._userItemsRepos.findBy({ userId })
-           .then(UserItem.toDTOArray)
-           .catch(throwError(identity));
+        const userItems = await this.getUserItemsBy({ userId });
+        return UserItem.toDTOArray(userItems);
     }
 
     @Transactional()
-    async updateEquipped(dto: GetUserItemDTO): Promise<void> {
-        const userItem = await this._userItemsRepos.findOneBy(dto);
-        if (!userItem) throw new NotFoundException();
+    async updateEquipped(dto: UpsertUserItemsDTO): Promise<void> {
+        const userItems = await this.getUserItemsBy(dto);
 
-        const ids = [userItem.id];
-
-        if (!userItem.equipped) {
-            const { userId, item: { typeId } } = userItem;
-
-            const old = await this._userItemsRepos.findOne({
-                relations: { item: true },
-                where: { userId, equipped: true, item: { typeId } }
-            });
-
-            old && ids.push(old.id);
-        }
+        const ids = pipe(
+            concat(
+                userItems,
+                await pipe(
+                    userItems,
+                    filter(ui => !ui.equipped),
+                    map(ui => ui.item.typeId),
+                    toArray,
+                    typeIds => this.getUserItemsBy({ userId: dto.userId, typeIds })
+                )
+            ),
+            map(prop("id")),
+            toArray
+        );
 
         await this._userItemsRepos.update(ids, { equipped: () => '!equipped' })
             .then(throwIf(
@@ -57,4 +56,26 @@ export class UserItemsService {
             )).catch(throwError(identity));
     }
 
+    private getUserItemsBy(dto: GetUserItemsDTO): Promise<UserItem[]> {
+        return pipe(
+            __makeWhereOptions(dto),
+            where => this._userItemsRepos.findBy(where),
+            throwIf(
+                userItems => some(
+                    len => userItems.length !== len,
+                    compact([dto.itemIds?.length, dto.typeIds?.length])
+                ),
+                () => new NotFoundException()
+            )
+        );
+    }
 }
+
+function __makeWhereOptions(dto: GetUserItemsDTO): FindOptionsWhere<UserItem> {
+    const { itemIds, typeIds, ...rest } = dto;
+    const options: FindOptionsWhere<UserItem> = { ...rest };
+    itemIds && (options.itemId = In(itemIds));
+    typeIds && (options.item = { typeId: In(typeIds) });
+    return options;
+}
+
