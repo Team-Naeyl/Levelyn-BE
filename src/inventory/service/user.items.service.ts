@@ -59,14 +59,7 @@ export class UserItemsService {
     private getUserItemsBy(dto: GetUserItemsDTO): Promise<UserItem[]> {
         return pipe(
             __makeWhereOptions(dto),
-            where => this._userItemsRepos.findBy(where),
-            throwIf(
-                userItems => some(
-                    len => userItems.length !== len,
-                    compact([dto.itemIds?.length, dto.typeIds?.length])
-                ),
-                () => new NotFoundException()
-            )
+            where => this._userItemsRepos.findBy(where)
         );
     }
 }

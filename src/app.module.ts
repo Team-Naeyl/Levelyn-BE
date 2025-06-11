@@ -1,22 +1,21 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { join } from "node:path";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { typeormOptionsFactory, typeormDataSourceFactory } from "./config/typeorm";
 import { RedisModule } from "./config/redis";
 import { HttpModule } from "@nestjs/axios";
+import { EventEmitterModule } from "@nestjs/event-emitter";
+import { UsersModule } from './users';
+import { AuthModule } from './auth';
 import { SkillsModule } from './skills';
 import { ItemsModule } from './items';
-import { BadgesModule } from './badges/badges.module';
 import { ToDoModule } from './to-do';
 import { WalletsModule } from './wallets';
 import { DashboardsModule } from './dashboards';
-import { typeormOptionsFactory, typeormDataSourceFactory } from "./config/typeorm";
 import { GoalsModule } from './goals/goals.module';
-import { InventoryModule } from './inventory/inventory.module';
-import { EventEmitterModule } from "@nestjs/event-emitter";
+import { InventoryModule } from './inventory';
 import { RewardsModule } from './rewards';
+import { join } from "node:path";
 
 @Module({
   imports: [
@@ -36,7 +35,6 @@ import { RewardsModule } from './rewards';
       AuthModule,
       SkillsModule,
       ItemsModule,
-      BadgesModule,
       ToDoModule,
       WalletsModule,
       DashboardsModule,

@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserItem, UserSkill } from "./model";
 import { Skill, SkillsModule, SkillsService } from "../skills";
-import { AuthModule } from "../auth/auth.module";
-import { JwtAuthGuard } from "../auth/jwt.auth.guard";
+import { AuthModule, JwtAuthGuard } from "../auth";
 import { UserItemsService, UserSkillsService } from "./service";
 import { UserItemsController, UserSkillsController } from "./controller";
 

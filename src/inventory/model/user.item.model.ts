@@ -1,10 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ModelBase } from "../../common";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Exclude } from "class-transformer";
 import { Item } from "../../items";
 import { UserItemDTO } from "../dto";
 import { UserOwning } from "./user.owning.model";
-import { ItemDTO } from "../../items/dto";
 
 @Entity("user_items")
 export class UserItem extends UserOwning<Item> {
