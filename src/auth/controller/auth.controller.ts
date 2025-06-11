@@ -1,8 +1,8 @@
 import { Controller, ForbiddenException, Get, Inject, Logger, Res, Headers, UseGuards } from '@nestjs/common';
-import { AuthService } from "./auth.service";
-import { JWT_REFRESH_EXPIRES } from "../config/jwt";
-import { Cookies, User } from "../common";
-import { SignInDTO } from "./dto";
+import { AuthService } from "../service/auth.service";
+import { JWT_REFRESH_EXPIRES } from "../../config/jwt";
+import { Cookies, User } from "../../common";
+import { SignInDTO } from "../dto";
 import { Response } from "express";
 import { AuthGuard } from "@nestjs/passport";
 

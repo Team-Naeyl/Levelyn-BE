@@ -1,3 +1,3 @@
 export * from "./skills.module";
-export * from "./skill.model";
+export * from "./model";
 export * from "./service";

@@ -6,6 +6,11 @@ import { UserOwning } from "./user.owning.model";
 
 @Entity("user_skills")
 export class UserSkill extends UserOwning<Skill> {
+
+    @Exclude()
+    @Column({ name: "effectId", type: "varchar", nullable: true })
+    effectId: string;
+
     @Exclude()
     @Column({ name: "skill_id", type: "integer" })
     skillId: number;

@@ -4,7 +4,7 @@ import { UserSkill } from "../model";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { Transactional } from "typeorm-transactional";
 import { GetUserSkillsDTO, UpsertUserSkillsDTO, UserSkillDTO } from "../dto";
-import { concat, difference, identity, isArray, map, pipe, prop, throwError, throwIf, toArray } from "@fxts/core";
+import { concat, difference, identity, isArray, map, pipe, prop, tap, throwError, throwIf, toArray } from "@fxts/core";
 
 @Injectable()
 export class UserSkillsService {
@@ -34,19 +34,24 @@ export class UserSkillsService {
     async updateEquipped(dto: UpsertUserSkillsDTO): Promise<void> {
         const { userId } = dto;
 
-        const oldIds = await this.getUserSkillsBy({ userId, equipped: true })
-            .then(map(prop("id")))
-            .catch(throwError(identity));
+        const oldIds = pipe(
+            await this.getUserSkillsBy({ userId, equipped: true }),
+            map(prop("id")),
+            toArray
+        );
 
-        const newIds = await this.getUserSkillsBy(dto)
-            .then(map(prop("id")))
-            .catch(throwError(identity));
+        const newIds =  pipe(
+            await this.getUserSkillsBy(dto),
+            map(prop("id")),
+            toArray
+        );
 
         const ids = pipe(
             difference(newIds, oldIds),
             concat(difference(oldIds, newIds)),
             toArray
         );
+
 
         await this._userSkillsRepos.update(ids, { equipped: () => '!equipped' })
             .then(throwIf(
@@ -58,14 +63,7 @@ export class UserSkillsService {
     private getUserSkillsBy(dto: GetUserSkillsDTO): Promise<UserSkill[]> {
         return pipe(
             __makeWhereOptions(dto),
-            where => this._userSkillsRepos.findBy(where),
-            throwIf(
-                userSkills => {
-                    return isArray(dto.skillIds)
-                        && userSkills.length !== dto.skillIds.length;
-                },
-                () => new NotFoundException()
-            )
+            where => this._userSkillsRepos.findBy(where)
         )
     }
 }

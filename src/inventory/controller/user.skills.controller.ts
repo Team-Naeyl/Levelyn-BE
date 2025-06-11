@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Inject, Put, UseGuards } from "@nestjs/common";
 import { UserSkillsService } from "../service";
 import { SkillsService } from "../../skills";
-import { JwtAuthGuard } from "../../auth/jwt.auth.guard";
+import { JwtAuthGuard } from "../../auth";
 import { User } from "../../common";
 import { GetUserSkillsResponse, UpdateSkillsSlotBody } from "../dto";
 

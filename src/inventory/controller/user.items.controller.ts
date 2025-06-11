@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, Inject, Patch, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "../../auth/jwt.auth.guard";
+import { JwtAuthGuard } from "../../auth";
 import { UserItemsService } from "../service";
 import { User } from "../../common";
 import { UpdateItemsSlotBody, GetUserItemsResponse } from "../dto";

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Skill } from "../skill.model";
+import { Skill } from "../model";
 import { Repository } from "typeorm";
 import { SkillDTO } from "../dto";
 

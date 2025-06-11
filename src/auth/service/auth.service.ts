@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { UsersService } from "../users";
-import { SignInDTO, SignInResult } from "./dto";
-import { JwtService } from "../config/jwt";
+import { UsersService } from "../../users";
+import { SignInDTO, SignInResult } from "../dto";
+import { JwtService } from "../../config/jwt";
 import { BlacklistService } from "./blacklist.service";
 
 @Injectable()
