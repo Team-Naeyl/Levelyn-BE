@@ -1,7 +1,4 @@
 import { SkillDTO } from "../../../skills/dto";
+import { UserOwningDTO } from "../user.owning.dto";
 
-export interface UserSkillDTO {
-    id: number;
-    equipped: boolean;
-    skill: SkillDTO;
-}
+export type UserSkillDTO = UserOwningDTO<SkillDTO>;

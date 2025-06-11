@@ -1,9 +1,9 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserSkill }                        from "../model";
+import { UserSkill } from "../model";
 import { FindOptionsWhere, In, Repository } from "typeorm";
-import { Transactional }                    from "typeorm-transactional";
-import { GetUserSkillsDTO, UpsertUserSkillsDTO, UserSkillDTO }                                  from "../dto";
+import { Transactional } from "typeorm-transactional";
+import { GetUserSkillsDTO, UpsertUserSkillsDTO, UserSkillDTO } from "../dto";
 import { concat, difference, identity, isArray, map, pipe, prop, throwError, throwIf, toArray } from "@fxts/core";
 
 @Injectable()
@@ -26,9 +26,8 @@ export class UserSkillsService {
     }
 
     async getUserSkills(userId: number): Promise<UserSkillDTO[]> {
-        return await this.getUserSkillsBy({ userId })
-            .then(UserSkill.toDTOArray)
-            .catch(throwError(identity));
+       const userSkills = await this.getUserSkillsBy({ userId });
+       return UserSkill.toDTOArray(userSkills);
     }
 
     @Transactional()

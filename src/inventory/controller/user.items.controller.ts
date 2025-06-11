@@ -2,8 +2,7 @@ import { Body, Controller, Get, HttpCode, Inject, Patch, UseGuards } from "@nest
 import { JwtAuthGuard } from "../../auth/jwt.auth.guard";
 import { UserItemsService } from "../service";
 import { User } from "../../common";
-import { UpdateItemsSlotBody, UserItemSchema, GetUserItemsResponse, UserItemDTO } from "../dto";
-import { map, pipe, toArray } from "@fxts/core";
+import { UpdateItemsSlotBody, GetUserItemsResponse } from "../dto";
 
 @Controller("/api/inventory/items")
 @UseGuards(JwtAuthGuard)
@@ -16,15 +15,7 @@ export class UserItemsController {
 
     @Get("/")
     async getUserItems(@User("id") userId: number): Promise<GetUserItemsResponse> {
-
-        const results = pipe(
-            await this._userItemsService.getUserItems(userId),
-            map(({ equipped, item }: UserItemDTO): UserItemSchema => {
-                return { equipped, ...item };
-            }),
-            toArray
-        );
-
+        const results = await this._userItemsService.getUserItems(userId);
         return { results };
     }
 

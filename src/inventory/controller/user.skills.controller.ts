@@ -1,10 +1,9 @@
-import { Body, Controller, Get, HttpCode, Inject, Patch, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Put, UseGuards } from "@nestjs/common";
 import { UserSkillsService } from "../service";
 import { SkillsService } from "../../skills";
 import { JwtAuthGuard } from "../../auth/jwt.auth.guard";
 import { User } from "../../common";
-import { map, pipe, toArray } from "@fxts/core";
-import { GetUserSkillsResponse, UpdateSkillsSlotBody, UserSkillDTO, UserSkillSchema } from "../dto";
+import { GetUserSkillsResponse, UpdateSkillsSlotBody } from "../dto";
 
 @Controller("/api/inventory/skills")
 @UseGuards(JwtAuthGuard)
@@ -20,19 +19,11 @@ export class UserSkillsController {
     @Get("/")
     async getUserSkills(@User("id") userId: number): Promise<GetUserSkillsResponse> {
         const skills = await this._skillsService.getAllSkills();
-
-        const userSkills = pipe(
-            await this._userSkillsService.getUserSkills(userId),
-            map(({ equipped, skill }: UserSkillDTO): UserSkillSchema => ({
-              equipped, ...skill
-            })),
-            toArray
-        );
-
+        const userSkills = await this._userSkillsService.getUserSkills(userId);
         return { skills, userSkills };
     }
 
-    @Patch("/slot")
+    @Put("/slot")
     @HttpCode(205)
     async updateSlot(
         @User("id") userId: number,

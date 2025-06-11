@@ -2,9 +2,6 @@ import "reflect-metadata";
 import { CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Exclude, instanceToPlain } from "class-transformer";
 
-type __DTOType<M extends ModelBase<any>>
-    = M extends ModelBase<infer DTO> ? DTO : never;
-
 export abstract class ModelBase<DTO = any> {
     @Exclude()
     @CreateDateColumn({ name: "created_at", type: "timestamp" })
@@ -19,8 +16,13 @@ export abstract class ModelBase<DTO = any> {
     }
 
     static toDTOArray<
-        M extends ModelBase<__DTOType<M>>
-    >(models: M[]): __DTOType<M>[] {
+        M extends ModelBase<ModelBase.DTOType<M>>
+    >(models: M[]): ModelBase.DTOType<M>[] {
         return models.map(model => model.toDTO());
     }
+}
+
+export namespace ModelBase {
+    export type DTOType<M extends ModelBase<any>>
+        = M extends ModelBase<infer DTO> ? DTO : never;
 }

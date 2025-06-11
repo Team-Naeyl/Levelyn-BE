@@ -1,7 +1,4 @@
 import { ItemDTO } from "../../../items/dto";
+import { UserOwningDTO } from "../user.owning.dto";
 
-export interface UserItemDTO {
-    id: number;
-    equipped: boolean;
-    item: ItemDTO;
-}
+export type UserItemDTO = UserOwningDTO<ItemDTO>;

@@ -1,24 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ModelBase } from "../../common";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Skill } from "../../skills";
 import { Exclude } from "class-transformer";
 import { UserSkillDTO } from "../dto";
+import { UserOwning } from "./user.owning.model";
 
 @Entity("user_skills")
-export class UserSkill extends ModelBase<UserSkillDTO> {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Exclude()
-    @Column({ name: "user_id", type: "integer" })
-    userId: number;
-
+export class UserSkill extends UserOwning<Skill> {
     @Exclude()
     @Column({ name: "skill_id", type: "integer" })
     skillId: number;
-
-    @Column({ type: "boolean", default: false })
-    equipped: boolean;
 
     @Exclude()
     @ManyToOne(() => Skill)
@@ -26,9 +16,10 @@ export class UserSkill extends ModelBase<UserSkillDTO> {
     skill: Skill;
 
     toDTO(): UserSkillDTO {
-        return {
-            ...super.toDTO(),
-            skill: this.skill.toDTO()
-        };
+        return super.toDTO();
+    }
+
+    protected owned(): Skill {
+        return this.skill;
     }
 }
