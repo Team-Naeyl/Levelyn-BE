@@ -1,0 +1,4 @@
+level:
+  max_exp: 50
+  delta_attack: 2
+  delta_will: 3

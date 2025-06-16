@@ -1,10 +1,10 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserItem } from "../model";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { UpsertUserItemsDTO, UserItemDTO, GetUserItemsDTO } from "../dto";
 import { Transactional }                                                                          from "typeorm-transactional";
-import { concat, identity, pipe, throwError, throwIf, filter, map, toArray, compact, some, prop } from "@fxts/core";
+import { concat, identity, pipe, throwError, throwIf, filter, map, toArray, prop } from "@fxts/core";
 
 @Injectable()
 export class UserItemsService {
@@ -15,14 +15,16 @@ export class UserItemsService {
         private readonly _userItemsRepos: Repository<UserItem>,
     ) {}
 
-    async addUserItems(dto: UpsertUserItemsDTO): Promise<UserItemDTO[]> {
+    @Transactional()
+    addUserItems(dto: UpsertUserItemsDTO): Promise<UserItemDTO[]> {
        const { userId, itemIds } = dto;
 
-       const userItems: UserItem[] = await this._userItemsRepos.save(
-           itemIds.map(itemId => ({ userId, itemId }))
+       return pipe(
+           itemIds.map(itemId => ({ userId, itemId })),
+           vals => this._userItemsRepos.save(vals),
+           map(userItem => userItem.toDTO()),
+           toArray
        );
-
-       return UserItem.toDTOArray(userItems);
     }
 
     async getUserItems(userId: number): Promise<UserItemDTO[]> {
@@ -59,14 +61,7 @@ export class UserItemsService {
     private getUserItemsBy(dto: GetUserItemsDTO): Promise<UserItem[]> {
         return pipe(
             __makeWhereOptions(dto),
-            where => this._userItemsRepos.findBy(where),
-            throwIf(
-                userItems => some(
-                    len => userItems.length !== len,
-                    compact([dto.itemIds?.length, dto.typeIds?.length])
-                ),
-                () => new NotFoundException()
-            )
+            where => this._userItemsRepos.findBy(where)
         );
     }
 }

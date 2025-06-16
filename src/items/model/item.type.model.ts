@@ -1,7 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ModelBase } from "../../common";
 
 @Entity("item_types")
-export class ItemType {
+export class ItemType extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 
