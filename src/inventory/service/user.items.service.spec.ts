@@ -97,9 +97,11 @@ describe('UserItemsService', () => {
 
         it('should throw error if update affects wrong number of rows', async () => {
             const dto: UpsertUserItemsDTO = { userId: 1, itemIds: [1, 2] };
+
             const userItems = [
                 userItemModel({ equipped: false, item: { typeId: 1 } }),
             ];
+
             (repo.findBy as jest.Mock).mockResolvedValue(userItems);
             (repo.update as jest.Mock).mockResolvedValue({ affected: 0 });
 

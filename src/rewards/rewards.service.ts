@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ItemsService, UserItemsService } from "../items";
+import { ItemsService } from "../items";
 import { ItemDTO } from "../items/dto";
 import random from "random";
+import { UserItemsService } from "../inventory";
 
 @Injectable()
 export class RewardsService {
@@ -19,7 +20,7 @@ export class RewardsService {
         let reward: ItemDTO | undefined;
         while (!reward) reward = random.choice(items);
 
-        await this._inventoryService.addUserItems({ itemId: reward.id, userId });
+        await this._inventoryService.addUserItems({ itemIds: [reward.id], userId });
     }
 
 }

@@ -5,6 +5,7 @@ import { Skill, SkillsModule, SkillsService } from "../skills";
 import { AuthModule, JwtAuthGuard } from "../auth";
 import { UserItemsService, UserSkillsService } from "./service";
 import { UserItemsController, UserSkillsController } from "./controller";
+import { InventoryListener } from "./inventory.listener";
 
 const EXTERNAL_PROVIDERS = [SkillsService, JwtAuthGuard];
 
@@ -17,7 +18,8 @@ const EXTERNAL_PROVIDERS = [SkillsService, JwtAuthGuard];
   providers: [
       ...EXTERNAL_PROVIDERS,
       UserItemsService,
-      UserSkillsService
+      UserSkillsService,
+      InventoryListener
   ],
   controllers: [UserItemsController, UserSkillsController],
   exports: [UserItemsService, UserSkillsService]

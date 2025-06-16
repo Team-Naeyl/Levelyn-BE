@@ -12,16 +12,18 @@ import { ItemsModule } from './items';
 import { ToDoModule } from './to-do';
 import { WalletsModule } from './wallets';
 import { DashboardsModule } from './dashboards';
-import { GoalsModule } from './goals/goals.module';
 import { InventoryModule } from './inventory';
 import { RewardsModule } from './rewards';
+import { StatsModule } from './stats/stats.module';
+import yamlConfig from "./config/yaml";
 import { join } from "node:path";
 
 @Module({
   imports: [
       ConfigModule.forRoot({
         isGlobal: true,
-        envFilePath: join(__dirname, "..", ".env")
+        envFilePath: join(__dirname, "..", ".env"),
+        load: [yamlConfig]
       }),
       TypeOrmModule.forRootAsync({
           useFactory: typeormOptionsFactory,
@@ -38,9 +40,9 @@ import { join } from "node:path";
       ToDoModule,
       WalletsModule,
       DashboardsModule,
-      GoalsModule,
       InventoryModule,
-      RewardsModule
+      RewardsModule,
+      StatsModule
   ]
 })
 export class AppModule {}

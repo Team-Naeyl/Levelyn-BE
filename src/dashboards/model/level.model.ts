@@ -14,4 +14,6 @@ export class Level extends ModelBase {
 
     @Column({ name: "delta_will", type: "float" })
     deltaWill: number;
+
+
 }

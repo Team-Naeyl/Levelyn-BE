@@ -4,7 +4,7 @@ import { UserSkill } from "../model";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { Transactional } from "typeorm-transactional";
 import { GetUserSkillsDTO, UpsertUserSkillsDTO, UserSkillDTO } from "../dto";
-import { concat, difference, identity, isArray, map, pipe, prop, tap, throwError, throwIf, toArray } from "@fxts/core";
+import { concat, difference, identity, map, pipe, prop, throwError, throwIf, toArray } from "@fxts/core";
 
 @Injectable()
 export class UserSkillsService {
@@ -15,6 +15,7 @@ export class UserSkillsService {
         private readonly _userSkillsRepos: Repository<UserSkill>
     ) {}
 
+    @Transactional()
     async addUserSkills(dto: UpsertUserSkillsDTO): Promise<UserSkillDTO[]> {
         const { userId, skillIds } = dto;
 

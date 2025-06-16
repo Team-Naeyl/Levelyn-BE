@@ -41,6 +41,11 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+.env.release
+
+# connect to ec2
+levelyn-ec2.pem
+levelyn-ec2.sh
 
 # temp directory
 .temp
