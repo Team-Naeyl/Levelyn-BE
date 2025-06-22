@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import Redis from "ioredis";
-import { JWT_ACCESS_EXPIRES } from "../../config/jwt";
+import { JWT_ACCESS_EXPIRES } from "../token";
 
 @Injectable()
 export class BlacklistService {

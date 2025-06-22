@@ -1,7 +1,8 @@
-import { DynamicModule, Module } from "@nestjs/common";
+import { DynamicModule, Module, Provider } from "@nestjs/common";
 import Redis from "ioredis";
 import { redisFactory } from "./redis.factory";
 import { ConfigService } from "@nestjs/config";
+import { RedisObjectStorage, getStorageToken, SchemaConstructor } from "./object-storage";
 
 @Module({})
 export class RedisModule {
@@ -15,6 +16,23 @@ export class RedisModule {
         inject: [ConfigService],
       }],
       exports: [Redis]
+    };
+  }
+
+  static forFeature(
+      Schemas: SchemaConstructor<any>[]
+  ): DynamicModule {
+
+    const providers: Provider[] = Schemas.map(Schema => ({
+      provide: getStorageToken(Schema),
+      useFactory: (redis: Redis) => RedisObjectStorage.create(redis, Schema),
+      inject: [Redis],
+    }));
+
+    return {
+      module: RedisModule,
+      providers: providers,
+      exports: providers,
     };
   }
 }

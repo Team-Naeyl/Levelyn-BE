@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { Skill } from "../../skills";
+import { Skill } from "../../game/skills";
 import { Exclude } from "class-transformer";
 import { UserSkillDTO } from "../dto";
 import { UserOwning } from "./user.owning.model";

@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Exclude } from "class-transformer";
-import { Item } from "../../items";
+import { Item } from "../../game";
 import { UserItemDTO } from "../dto";
 import { UserOwning } from "./user.owning.model";
 

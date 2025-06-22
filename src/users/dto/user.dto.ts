@@ -1,10 +1,12 @@
-import { DashboardDTO } from "../../dashboards/dto";
 import { WalletDTO } from "../../wallets/dto";
+import { UserStateDTO } from "../../states/dto";
 
 export interface UserDTO {
     id: number;
     openId: string;
+    stateId: number;
+    walletId: number;
     name: string;
-    dashboard: DashboardDTO,
+    state: UserStateDTO
     wallet: WalletDTO
 }

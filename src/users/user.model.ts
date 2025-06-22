@@ -2,24 +2,30 @@ import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne } from "ty
 import { ModelBase } from "../common";
 import { Wallet } from "../wallets";
 import { Exclude } from "class-transformer";
-import { Dashboard } from "../dashboards";
 import { UserDTO } from "./dto";
+import { UserState } from "../states";
 
 @Entity("users")
-export class User extends ModelBase{
+export class User extends ModelBase<UserDTO> {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ name: "open_id", type: "varchar", unique: true })
     openId: string;
 
+    @Column({ name: "state_id", type: "integer", unique: true })
+    stateId: number;
+
+    @Column({ name: "wallet_id", type: "integer", unique: true })
+    walletId: number;
+
     @Column({ type: "varchar" })
     name: string;
 
     @Exclude()
-    @OneToOne(() => Dashboard)
-    @JoinColumn({ name: "dashboard_id" })
-    dashboard: Dashboard;
+    @OneToOne(() => UserState)
+    @JoinColumn({ name: "status_id" })
+    state: UserState;
 
     @Exclude()
     @OneToOne(() => Wallet)
@@ -29,7 +35,7 @@ export class User extends ModelBase{
     toDTO(): UserDTO {
         return {
             ...super.toDTO(),
-            dashboard: this.dashboard.toDTO(),
+            state: this.state.toDTO(),
             wallet: this.wallet.toDTO()
         };
     }

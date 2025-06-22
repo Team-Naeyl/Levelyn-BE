@@ -3,8 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserItem } from "../model";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { UpsertUserItemsDTO, UserItemDTO, GetUserItemsDTO } from "../dto";
-import { Transactional }                                                                          from "typeorm-transactional";
-import { concat, identity, pipe, throwError, throwIf, filter, map, toArray, prop } from "@fxts/core";
+import { Transactional } from "typeorm-transactional";
+import {concat, identity, pipe, throwError, throwIf, filter, map, toArray, prop, toAsync, reduceLazy} from "@fxts/core";
+import { ItemEffectDTO } from "../../game/items/dto";
 
 @Injectable()
 export class UserItemsService {
@@ -29,7 +30,22 @@ export class UserItemsService {
 
     async getUserItems(userId: number): Promise<UserItemDTO[]> {
         const userItems = await this.getUserItemsBy({ userId });
-        return UserItem.toDTOArray(userItems);
+        return userItems.map(ui => ui.toDTO());
+    }
+
+    async getNetEquippedItemEffect(userId: number): Promise<ItemEffectDTO> {
+        return pipe(
+            this.getUserItemsBy({ userId, equipped: true }),
+            map(({ item }) => item.effect),
+            toAsync,
+            reduceLazy(
+                (acc, curr) => {
+                    Object.keys(acc).forEach(k => acc[k] += curr[k]);
+                    return acc;
+                },
+                { attack: 0, will: 0, exp: 0, pItem: 0, pCoin: 0 } as ItemEffectDTO
+            )
+        )
     }
 
     @Transactional()

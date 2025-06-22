@@ -12,10 +12,11 @@ import {
     Query,
     UseGuards
 } from "@nestjs/common";
-import { ToDoService } from "../service";
+import { FulfillToDoHandler, ToDoService } from "../service";
 import { JwtAuthGuard } from "../../auth";
 import { User } from "../../common";
 import { CreateToDoBody, GetDailyToDoListQuery, UpdateToDoBody } from "../dto";
+import { UserInfo } from "../../auth/dto";
 
 @Controller("/api/to-do")
 @UseGuards(JwtAuthGuard)
@@ -24,7 +25,9 @@ export class ToDoController {
 
     constructor(
         @Inject(ToDoService)
-        private readonly _toDoService: ToDoService
+        private readonly _toDoService: ToDoService,
+        @Inject(FulfillToDoHandler)
+        private readonly _fulfilToDoHandler: FulfillToDoHandler
     ) {}
 
     @Post("/")
@@ -67,6 +70,9 @@ export class ToDoController {
     @HttpCode(205)
     async fulfillToDo(
         @Param("id") id: number,
-        @User("id") userId: number
-    ) {}
+        @User() user: UserInfo
+    ) {
+        await this._toDoService.fulfilToDo({ id, userId: user.id });
+        return await this._fulfilToDoHandler.handle(user);
+    }
 }

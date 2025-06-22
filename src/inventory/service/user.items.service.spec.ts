@@ -5,6 +5,8 @@ import { UserItem } from '../model';
 import { Repository } from 'typeorm';
 import { UpsertUserItemsDTO, UserItemDTO } from '../dto';
 import random from "random";
+import { ItemEffect } from "../../game/items/model/item.effect.model";
+import { Item } from "../../game";
 
 jest.mock('typeorm-transactional', () => ({
     Transactional: () => () => ({}),
@@ -106,6 +108,26 @@ describe('UserItemsService', () => {
             (repo.update as jest.Mock).mockResolvedValue({ affected: 0 });
 
             await expect(service.updateEquipped(dto)).rejects.toThrow('Query failed');
+        });
+    });
+
+    describe('getNetEquippedItemEffect', () => {
+        it('should sum equipped item effects', async () => {
+
+            const effects: ItemEffect[] = [
+                { attack: 1, will: 2, exp: 10, coin: 20 },
+                { attack: 3, will: 4, exp: 30, coin: 40 }
+            ] as ItemEffect[];
+
+            const userItems: UserItem[] = effects.map(effect => ({
+                item: { effect: Promise.resolve(effect) } as Item
+            })) as UserItem[];
+
+            (repo.findBy as jest.Mock).mockResolvedValue(userItems);
+
+            await expect(service.getNetEquippedItemEffect(1))
+                .resolves
+                .toEqual({ attack: 4, will: 6, exp: 40, coin: 60 });
         });
     });
 });
