@@ -1,9 +1,9 @@
-import { DashboardDTO } from "../../dashboards/dto";
 import { WalletDTO } from "../../wallets/dto";
+import { UserStateDTO } from "../../states/dto";
 
 export interface SignInResult {
     accessToken: string;
     refreshToken: string;
-    dashboard: DashboardDTO,
+    status: UserStateDTO;
     wallet: WalletDTO
 }

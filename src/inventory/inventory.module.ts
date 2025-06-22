@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserItem, UserSkill } from "./model";
-import { Skill, SkillsModule, SkillsService } from "../skills";
 import { AuthModule, JwtAuthGuard } from "../auth";
 import { UserItemsService, UserSkillsService } from "./service";
 import { UserItemsController, UserSkillsController } from "./controller";
 import { InventoryListener } from "./inventory.listener";
 
-const EXTERNAL_PROVIDERS = [SkillsService, JwtAuthGuard];
+const EXTERNAL_PROVIDERS = [JwtAuthGuard];
 
 @Module({
   imports: [
-      TypeOrmModule.forFeature([UserItem, UserSkill, Skill]),
-      SkillsModule,
+      TypeOrmModule.forFeature([UserItem, UserSkill]),
       AuthModule
   ],
   providers: [

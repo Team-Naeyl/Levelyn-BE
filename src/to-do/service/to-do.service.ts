@@ -6,7 +6,7 @@ import { CreateToDoDTO, FulfillToDoDTO, GetDailyToDoListDTO, UpdateToDoDTO, Dele
 import { filter, isNull, map, omit, pipe, throwIf, toArray } from "@fxts/core";
 import { add } from "date-fns";
 import { Transactional } from "typeorm-transactional";
-import { FulfilledToDoService } from "./fulfilled.to-do.service";
+import { FulfillToDoHandler } from "./fulfill.to-do.handler";
 import { isDayToDo } from "./service.internal";
 import { GoalsService } from "./goals.service";
 
@@ -18,9 +18,7 @@ export class ToDoService {
        @InjectRepository(ToDo)
        private readonly _toDoRepos: Repository<ToDo>,
        @Inject(forwardRef(() => GoalsService))
-       private readonly _goalsService: GoalsService,
-       @Inject(FulfilledToDoService)
-       private readonly _fulfilledService: FulfilledToDoService
+       private readonly _goalsService: GoalsService
     ) {}
 
     @Transactional()
@@ -58,7 +56,7 @@ export class ToDoService {
     }
 
     @Transactional()
-    async fulfilToDo(dto: FulfillToDoDTO) {
+    async fulfilToDo(dto: FulfillToDoDTO): Promise<void> {
         const { id, userId } = dto;
         const today = new Date();
 
@@ -78,7 +76,6 @@ export class ToDoService {
         });
 
         await this._toDoRepos.update(id, { completed: true });
-        await this._fulfilledService.handleFulfilled(toDo);
     }
 
     @Transactional()

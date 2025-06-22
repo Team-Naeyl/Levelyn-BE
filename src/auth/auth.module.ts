@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PassportModule } from "@nestjs/passport";
-import { JwtModule, JwtService, JwtStrategy } from "../config/jwt";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 import { OidcModule, OidcStrategy } from "../config/oidc";
 import { User, UsersModule, UsersService } from "../users";
 import { AuthController } from './controller';
-import { AuthService, BlacklistService } from './service';
+import { AuthService, BlacklistService, JwtAuthService } from './service';
 import { JwtAuthGuard } from "./jwt.auth.guard";
+import { JwtStrategy } from "./jwt.strategy";
+import { OptionsProvider } from "../common";
+import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "./token";
 
 const EXTERNAL_PROVIDERS = [
     UsersService,
     JwtService,
-    JwtStrategy,
     OidcStrategy
 ];
 
@@ -19,20 +21,22 @@ const EXTERNAL_PROVIDERS = [
   imports: [
       TypeOrmModule.forFeature([User]),
       PassportModule.register({}),
-      UsersModule,
-      JwtModule,
-      OidcModule
+      JwtModule.register({}),
+      OidcModule,
+      UsersModule
   ],
   controllers: [AuthController],
   providers: [
       ...EXTERNAL_PROVIDERS,
       AuthService,
+      JwtAuthService,
+      BlacklistService,
+      JwtStrategy,
       JwtAuthGuard,
-      BlacklistService
+      OptionsProvider<string>(JWT_SECRET),
+      OptionsProvider<number>(JWT_ACCESS_EXPIRES),
+      OptionsProvider<number>(JWT_REFRESH_EXPIRES)
   ],
-  exports: [
-      JwtAuthGuard,
-      BlacklistService
-  ]
+  exports: [JwtAuthGuard, BlacklistService]
 })
 export class AuthModule {}
