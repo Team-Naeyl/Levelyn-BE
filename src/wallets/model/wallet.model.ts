@@ -7,6 +7,6 @@ export class Wallet extends ModelBase<WalletDTO> {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'integer' })
+    @Column({ type: 'integer', default: 0 })
     coin: number;
 }

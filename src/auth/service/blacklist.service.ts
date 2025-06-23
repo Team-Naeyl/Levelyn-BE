@@ -1,28 +1,26 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import Redis from "ioredis";
 import { JWT_ACCESS_EXPIRES } from "../token";
+import * as NodeCache from "node-cache";
 
 @Injectable()
 export class BlacklistService {
     private readonly _logger: Logger = new Logger(BlacklistService.name);
+    private readonly _list: NodeCache = new NodeCache();
 
     constructor(
-        @Inject(Redis)
-        private readonly _redis: Redis,
         @Inject(JWT_ACCESS_EXPIRES)
         private readonly _expires: number
     ) {}
 
     async add(authorization: string): Promise<void> {
-        await this._redis.set(
+        this._list.set(
             authorization,
             new Date().toLocaleDateString(),
-            "PX",
             this._expires
         );
     }
 
     async exists(authorization: string): Promise<boolean> {
-        return !!await this._redis.get(authorization);
+        return this._list.has(authorization);
     }
 }

@@ -4,8 +4,8 @@ import { UserStatesService } from "./service";
 import { FulfillToDoEvent } from "../to-do/dto";
 
 @Injectable()
-export class UserStatesListener {
-    private readonly _logger: Logger = new Logger(UserStatesListener.name);
+export class StatesListener {
+    private readonly _logger: Logger = new Logger(StatesListener.name);
 
     constructor(
         @Inject(UserStatesService)
