@@ -25,7 +25,7 @@ export class FulfillToDoHandler {
         const reward = await this._rewardsService.getReward(isBattle ? "battle" : "tile");
         const sessionId = isBattle ? "session" : null;
 
-        this._eventEmitter.emit("fulfill.to-do.event", {
+        this._eventEmitter.emit("fulfill.to-do", {
             userId, stateId, walletId,
             ...reward, sessionId
         });

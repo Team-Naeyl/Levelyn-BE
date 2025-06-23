@@ -7,14 +7,15 @@ import { GoalsController, ToDoController } from "./controller";
 import { OptionsProvider } from "../common";
 import { IS_BATTLE_EVENT } from "./token";
 import { Random } from "random";
-import { BATTLE_EVENT_PROBABILITY } from "../game";
+import { BATTLE_EVENT_PROBABILITY, GameModule, RewardsService } from "../game";
 
-const EXTERNAL_PROVIDERS = [JwtAuthGuard];
+const EXTERNAL_PROVIDERS = [JwtAuthGuard, RewardsService];
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ToDo, ToDoPeriod, Goal]),
-        AuthModule
+        AuthModule,
+        GameModule
     ],
     providers: [
         ...EXTERNAL_PROVIDERS,

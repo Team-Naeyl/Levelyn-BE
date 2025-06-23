@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import Redis from "ioredis";
 import { Battle, BattleRewardSchema, MonsterSchema, Player, SkillSchema, StatSchema } from "./schema";
-import { InjectStorage, RedisObjectStorage } from "../config/redis";
+import { InjectStorage, RedisCircularQueue, RedisObjectStorage } from "../config/redis";
 
 @Injectable()
 export class BattlesStorage {
@@ -18,22 +18,19 @@ export class BattlesStorage {
         private readonly _rewardsStorage: RedisObjectStorage<BattleRewardSchema>,
         @InjectStorage(MonsterSchema)
         private readonly _monstersStorage: RedisObjectStorage<MonsterSchema>,
+        @Inject(RedisCircularQueue)
+        private readonly _skillsQueue: RedisCircularQueue
     ) {}
 
     async addBattle(battle: Battle) {
 
         const {
             id, regionId,
-            player: { stat, skills },
-            reward, monsters
+            player, reward, monsters
         } = battle;
 
         await this._redis.set(__regionIdKey(id), regionId);
-        await this._statsStorage.upsert(__statKey(id), stat);
-
-        for (const skill of skills)
-            await this._skillsStorage.upsert(__skillKey(id, skill.id), skill);
-
+        await this.setPlayer(id, player);
         await this._rewardsStorage.upsert(__rewardKey(id), reward);
 
         for (const monster of monsters)
@@ -58,6 +55,24 @@ export class BattlesStorage {
         return { id, regionId, player, reward, monsters };
     }
 
+    private async setPlayer(id: string, player: Player): Promise<void> {
+        const { stat, skills } = player;
+        await this._statsStorage.upsert(__statKey(id), stat);
+        await this.setSkills(id, skills);
+    }
+
+    private async setSkills(id: string, skills: SkillSchema[]): Promise<void> {
+        const skillIds: number[] = [];
+
+
+        for (const skill of skills) {
+            await this._skillsStorage.upsert(__skillKey(id, skill.id), skill);
+            skillIds.push(skill.id);
+        }
+
+        await this._skillsQueue.createQueue(__skillsQueueKey(id), skillIds);
+    }
+
 }
 
 function __regionIdKey(battleId: string): string {
@@ -74,6 +89,10 @@ function __skillKey(battleId: string, skillId: number): string {
 
 function __skillKeyPattern(battleId: string): string {
     return `${battleId}-p-sk-*`
+}
+
+function __skillsQueueKey(battleId: string): string {
+    return `${battleId}-p-sk-q`;
 }
 
 function __rewardKey(battleId: string): string {

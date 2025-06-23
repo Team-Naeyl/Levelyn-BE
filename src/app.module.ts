@@ -38,7 +38,7 @@ import { BattlesModule } from './battles';
       WalletsModule,
       InventoryModule,
       StatesModule,
-      BattlesModule,
+      //BattlesModule,
   ]
 })
 export class AppModule {}

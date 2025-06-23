@@ -3,6 +3,7 @@ import Redis from "ioredis";
 import { redisFactory } from "./redis.factory";
 import { ConfigService } from "@nestjs/config";
 import { RedisObjectStorage, getStorageToken, SchemaConstructor } from "./object-storage";
+import { RedisCircularQueue } from "./redis.circular.queue";
 
 @Module({})
 export class RedisModule {
@@ -10,12 +11,15 @@ export class RedisModule {
     return {
       module: RedisModule,
       global: true,
-      providers: [{
-        provide: Redis,
-        useFactory: redisFactory,
-        inject: [ConfigService],
-      }],
-      exports: [Redis]
+      providers: [
+          {
+            provide: Redis,
+            useFactory: redisFactory,
+            inject: [ConfigService],
+          },
+          RedisCircularQueue
+      ],
+      exports: [Redis, RedisCircularQueue],
     };
   }
 
