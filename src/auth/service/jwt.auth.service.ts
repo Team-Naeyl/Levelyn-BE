@@ -27,10 +27,10 @@ export class JwtAuthService {
 
     async verify(token: string): Promise<UserInfo> {
 
-        const { id, stateId, walletId } = await this._jwtService
+        const { id, playerId, walletId } = await this._jwtService
             .verifyAsync<TokenPayload>(token, { secret: this._secret });
 
-        return { id, stateId, walletId };
+        return { id, playerId, walletId };
     }
 
     private async sign(user: UserInfo, ex: number): Promise<string> {

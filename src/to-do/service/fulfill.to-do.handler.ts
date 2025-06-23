@@ -19,14 +19,14 @@ export class FulfillToDoHandler {
     ) {}
 
     async handle(userInfo: UserInfo): Promise<FulfillToDoResult> {
-        const { id: userId, stateId, walletId } = userInfo;
+        const { id: userId, playerId, walletId } = userInfo;
 
         const isBattle = this._isBattle();
         const reward = await this._rewardsService.getReward(isBattle ? "battle" : "tile");
         const sessionId = isBattle ? "session" : null;
 
         this._eventEmitter.emit("fulfill.to-do", {
-            userId, stateId, walletId,
+            userId, stateId: playerId, walletId,
             ...reward, sessionId
         });
 

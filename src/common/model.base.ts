@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Exclude, instanceToPlain } from "class-transformer";
 
@@ -25,4 +24,10 @@ export abstract class ModelBase<DTO = any> {
 export namespace ModelBase {
     export type DTOType<M extends ModelBase<any>>
         = M extends ModelBase<infer DTO> ? DTO : never;
+}
+
+export function modelToDTO<
+    M extends ModelBase<ModelBase.DTOType<M>>
+>(model: M): ModelBase.DTOType<M> {
+    return model.toDTO();
 }

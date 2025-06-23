@@ -1,9 +1,10 @@
+import { PlayerDTO } from "../../players/dto";
 import { WalletDTO } from "../../wallets/dto";
-import { UserStateDTO } from "../../states/dto";
+
 
 export interface SignInResult {
     accessToken: string;
     refreshToken: string;
-    status: UserStateDTO;
-    wallet: WalletDTO
+    player: Omit<PlayerDTO, "id">;
+    wallet: Omit<WalletDTO, "id">;
 }
