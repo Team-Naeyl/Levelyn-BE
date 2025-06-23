@@ -1,16 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ModelBase } from "../../common";
-import { UserStateDTO } from "../dto";
-import { Exclude } from "class-transformer";
+import { PlayerDTO } from "../dto";
 
-@Entity("user_stats")
-export class UserState extends ModelBase<UserStateDTO> {
-    @Exclude()
+@Entity("players")
+export class Player extends ModelBase<PlayerDTO> {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @Column({ name: "region_id", type: "integer", default: 1 })
-    regionId: number;
 
     @Column({ name: "position", type: "integer", default: 0 })
     position: number;

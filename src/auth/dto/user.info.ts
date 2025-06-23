@@ -1,5 +1,5 @@
 export interface UserInfo {
     id: number;
-    stateId: number;
+    playerId: number;
     walletId: number;
 }

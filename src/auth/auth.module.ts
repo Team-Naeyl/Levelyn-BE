@@ -3,13 +3,15 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { OidcModule, OidcStrategy } from "../config/oidc";
-import { User, UsersModule, UsersService } from "../users";
+import { UsersModule, UsersService } from "../users";
+import { User } from "../users/model";
 import { AuthController } from './controller';
 import { AuthService, BlacklistService, JwtAuthService } from './service';
 import { JwtAuthGuard } from "./jwt.auth.guard";
 import { JwtStrategy } from "./jwt.strategy";
 import { OptionsProvider } from "../common";
 import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "./token";
+
 
 const EXTERNAL_PROVIDERS = [
     UsersService,

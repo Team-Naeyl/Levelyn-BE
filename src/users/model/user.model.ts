@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne } from "typeorm";
-import { ModelBase } from "../common";
-import { Wallet } from "../wallets";
+import { ModelBase } from "../../common";
+import { Player } from "../../players/model";
+import { Wallet } from "../../wallets/model";
 import { Exclude } from "class-transformer";
-import { UserDTO } from "./dto";
-import { UserState } from "../states";
+import { UserDTO } from "../dto";
 
 @Entity("users")
 export class User extends ModelBase<UserDTO> {
@@ -13,9 +13,11 @@ export class User extends ModelBase<UserDTO> {
     @Column({ name: "open_id", type: "varchar", unique: true })
     openId: string;
 
-    @Column({ name: "state_id", type: "integer", unique: true })
-    stateId: number;
+    @Exclude()
+    @Column({ name: "player_id", type: "integer", unique: true })
+    playerId: number;
 
+    @Exclude()
     @Column({ name: "wallet_id", type: "integer", unique: true })
     walletId: number;
 
@@ -23,19 +25,19 @@ export class User extends ModelBase<UserDTO> {
     name: string;
 
     @Exclude()
-    @OneToOne(() => UserState)
-    @JoinColumn({ name: "status_id" })
-    state: UserState;
+    @OneToOne(() => Player, { cascade: ["insert"], onDelete: "CASCADE" })
+    @JoinColumn({ name: "player_id" })
+    player: Player;
 
     @Exclude()
-    @OneToOne(() => Wallet)
-    @JoinColumn({ name: "wallets_id" })
+    @OneToOne(() => Wallet, { cascade: ["insert"], onDelete: "CASCADE" })
+    @JoinColumn({ name: "wallet_id" })
     wallet: Wallet;
 
     toDTO(): UserDTO {
         return {
             ...super.toDTO(),
-            state: this.state.toDTO(),
+            player: this.player.toDTO(),
             wallet: this.wallet.toDTO()
         };
     }

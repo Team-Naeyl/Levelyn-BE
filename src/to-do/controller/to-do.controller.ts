@@ -1,18 +1,5 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    Inject,
-    Logger,
-    Param,
-    Patch,
-    Post, Put,
-    Query,
-    UseGuards
-} from "@nestjs/common";
-import { FulfillToDoHandler, ToDoService } from "../service";
+import {Body, Controller, Delete, Get, HttpCode, Inject, Logger, Param, Patch, Post, Put, Query, UseGuards} from "@nestjs/common";
+import { ToDoService } from "../service";
 import { JwtAuthGuard } from "../../auth";
 import { User } from "../../common";
 import { CreateToDoBody, GetDailyToDoListQuery, UpdateToDoBody } from "../dto";
@@ -26,8 +13,6 @@ export class ToDoController {
     constructor(
         @Inject(ToDoService)
         private readonly _toDoService: ToDoService,
-        @Inject(FulfillToDoHandler)
-        private readonly _fulfilToDoHandler: FulfillToDoHandler
     ) {}
 
     @Post("/")
@@ -73,6 +58,5 @@ export class ToDoController {
         @User() user: UserInfo
     ) {
         await this._toDoService.fulfilToDo({ id, userId: user.id });
-        return await this._fulfilToDoHandler.handle(user);
     }
 }
