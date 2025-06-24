@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import { IdTokenParser, IdTokenPayloadVerifier, IdTokenSignatureVerifier } from "./id-token";
+import { IdTokenParser, IdTokenPayloadVerifier } from "./id-token";
 import { IdTokenPayload } from "./dto";
-import { JwksStorage } from "./jwks";
+//import { JwksStorage } from "./jwks";
 
 @Injectable()
 export class OidcService {
@@ -10,20 +10,20 @@ export class OidcService {
     constructor(
         @Inject(IdTokenParser)
         private readonly _idTokenParser: IdTokenParser,
-        @Inject(JwksStorage)
-        private readonly _jwksStorage: JwksStorage,
+        //@Inject(JwksStorage)
+        //private readonly _jwksStorage: JwksStorage,
         @Inject(IdTokenPayloadVerifier)
         private readonly _payloadVerifier: IdTokenPayloadVerifier,
-        @Inject(IdTokenSignatureVerifier)
-        private readonly _signatureVerifier: IdTokenSignatureVerifier
+        //@Inject(IdTokenSignatureVerifier)
+        //private readonly _signatureVerifier: IdTokenSignatureVerifier
     ) {}
 
     async verifyIdToken(idToken: string): Promise<IdTokenPayload> {
         const [{ kid }, payload, signature] = this._idTokenParser.parseIdToken(idToken);
-        const jwk = this._jwksStorage.getJwk(kid);
+        //const jwk = this._jwksStorage.getJwk(kid);
 
         this._payloadVerifier.verifyPayload(payload);
-        await this._signatureVerifier.verifySignature(signature, jwk);
+        //await this._signatureVerifier.verifySignature(signature, jwk);
 
         return payload;
     }
