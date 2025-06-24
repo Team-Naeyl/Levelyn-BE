@@ -1,5 +1,5 @@
 export * from "./game.module";
-export * from "./system";
+export * from "./config";
 export * from "./items";
 export * from "./skills";
 export * from "./regions";

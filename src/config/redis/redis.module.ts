@@ -1,28 +1,23 @@
-import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { DynamicModule, Global, Module, Provider } from "@nestjs/common";
 import Redis from "ioredis";
 import { redisFactory } from "./redis.factory";
 import { ConfigService } from "@nestjs/config";
 import { RedisObjectStorage, getStorageToken, SchemaConstructor } from "./object-storage";
 import { RedisCircularQueue } from "./redis.circular.queue";
 
-@Module({})
+@Global()
+@Module({
+  providers: [
+    {
+      provide: Redis,
+      useFactory: redisFactory,
+      inject: [ConfigService],
+    },
+    RedisCircularQueue
+  ],
+  exports: [Redis, RedisCircularQueue],
+})
 export class RedisModule {
-  static forRootAsync(): DynamicModule {
-    return {
-      module: RedisModule,
-      global: true,
-      providers: [
-          {
-            provide: Redis,
-            useFactory: redisFactory,
-            inject: [ConfigService],
-          },
-          RedisCircularQueue
-      ],
-      exports: [Redis, RedisCircularQueue],
-    };
-  }
-
   static forFeature(
       Schemas: SchemaConstructor<any>[]
   ): DynamicModule {

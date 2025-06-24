@@ -1,7 +1,7 @@
 import { ApiProperty, ApiSchema, OmitType } from "@nestjs/swagger";
 
 @ApiSchema()
-export class UserItemSchema {
+export class PlayerItemSchema {
     @ApiProperty({ name: "id", type: "integer" })
     id: number;
 
@@ -19,7 +19,7 @@ export class UserItemSchema {
 }
 
 @ApiSchema()
-export class UserSkillSchema {
+export class PlayerSkillSchema {
     @ApiProperty({ name: "id", type: "integer" })
     id: number;
 
@@ -34,4 +34,4 @@ export class UserSkillSchema {
 }
 
 @ApiSchema()
-export class SkillSchema extends OmitType(UserSkillSchema, ["equipped"]) {}
+export class SkillSchema extends OmitType(PlayerSkillSchema, ["equipped"]) {}

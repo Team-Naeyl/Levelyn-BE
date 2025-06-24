@@ -23,12 +23,6 @@ export class Monster extends ModelBase<MonsterDTO> {
     @Column({ type: "float" })
     hp: number;
 
-    @Column({ name: "physical_resistance", type: "float" })
-    physicalResistance: number;
-
-    @Column({ name: "magical_resistance", type: "float" })
-    magicalResistance: number;
-
     @Exclude()
     @ManyToOne(() => MonsterType)
     @JoinColumn({ name: "type_id" })

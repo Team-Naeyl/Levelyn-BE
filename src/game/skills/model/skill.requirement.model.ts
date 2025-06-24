@@ -1,8 +1,11 @@
 import { ModelBase } from "../../../common";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { SkillRequirementDTO } from "../dto";
+import { Exclude } from "class-transformer";
 
 @Entity("skill_requirements")
-export class SkillRequirement extends ModelBase {
+export class SkillRequirement extends ModelBase<SkillRequirementDTO> {
+    @Exclude()
     @PrimaryGeneratedColumn()
     id: number;
 
