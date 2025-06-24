@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { OidcStrategy } from "./oidc.strategy";
 import { OidcService } from "./oidc.service";
-import { IdTokenParser, IdTokenPayloadVerifier, IdTokenSignatureVerifier } from "./id-token";
+import { IdTokenParser, IdTokenPayloadVerifier } from "./id-token";
 import { JwksLoader, JwksStorage } from "./jwks";
 import { OPEN_KEY_URL, OpenKeyURLProvider, PAYLOAD_OPTIONS, PayloadOptionsProvider, STRATEGY_OPTIONS, StrategyOptionsProvider } from "./options";
 
@@ -11,7 +11,7 @@ import { OPEN_KEY_URL, OpenKeyURLProvider, PAYLOAD_OPTIONS, PayloadOptionsProvid
        OidcService,
        IdTokenParser,
        IdTokenPayloadVerifier,
-       IdTokenSignatureVerifier,
+       //IdTokenSignatureVerifier,
        JwksStorage,
        JwksLoader,
        StrategyOptionsProvider,
@@ -23,7 +23,7 @@ import { OPEN_KEY_URL, OpenKeyURLProvider, PAYLOAD_OPTIONS, PayloadOptionsProvid
         OidcService,
         IdTokenParser,
         IdTokenPayloadVerifier,
-        IdTokenSignatureVerifier,
+        //IdTokenSignatureVerifier,
         JwksStorage,
         JwksLoader,
         STRATEGY_OPTIONS,
