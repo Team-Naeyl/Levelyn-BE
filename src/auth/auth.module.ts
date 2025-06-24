@@ -12,7 +12,6 @@ import { JwtStrategy } from "./jwt.strategy";
 import { OptionsProvider } from "../common";
 import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "./token";
 
-
 const EXTERNAL_PROVIDERS = [
     UsersService,
     JwtService,
@@ -39,6 +38,13 @@ const EXTERNAL_PROVIDERS = [
       OptionsProvider<number>(JWT_ACCESS_EXPIRES),
       OptionsProvider<number>(JWT_REFRESH_EXPIRES)
   ],
-  exports: [JwtAuthGuard, BlacklistService]
+  exports: [
+      JwtAuthGuard,
+      JwtAuthService,
+      BlacklistService,
+      JWT_SECRET,
+      JWT_ACCESS_EXPIRES,
+      JWT_REFRESH_EXPIRES,
+  ]
 })
 export class AuthModule {}

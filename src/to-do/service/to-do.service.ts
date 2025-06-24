@@ -6,7 +6,6 @@ import { CreateToDoDTO, FulfillToDoDTO, GetDailyToDoListDTO, UpdateToDoDTO, Dele
 import { filter, isNull, map, omit, pipe, throwIf, toArray } from "@fxts/core";
 import { add } from "date-fns";
 import { Transactional } from "typeorm-transactional";
-import { FulfillToDoHandler } from "./fulfill.to-do.handler";
 import { isDayToDo } from "./service.internal";
 import { GoalsService } from "./goals.service";
 

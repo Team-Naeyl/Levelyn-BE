@@ -16,12 +16,12 @@ export class Skill extends OwnableBase<SkillDTO> {
     requirementId: number;
 
     @Exclude()
-    @OneToOne(() => SkillRequirement, { onDelete: "CASCADE", cascade: ["insert"] })
+    @OneToOne(() => SkillRequirement)
     @JoinColumn({ name: "requirement_id" })
     requirement: SkillRequirement;
 
     @Exclude()
-    @OneToOne(() => SkillEffect, { lazy: true, onDelete: "CASCADE", cascade: ["insert"] })
+    @OneToOne(() => SkillEffect, { lazy: true })
     @JoinColumn({ name: "effect_id" })
     effect: Promise<SkillEffect>;
 }
