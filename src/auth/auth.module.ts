@@ -21,7 +21,7 @@ const EXTERNAL_PROVIDERS = [
 @Module({
   imports: [
       TypeOrmModule.forFeature([User]),
-      PassportModule.register({}),
+      PassportModule.register({ session: true }),
       JwtModule.register({}),
       OidcModule,
       UsersModule
