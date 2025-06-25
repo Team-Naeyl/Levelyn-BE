@@ -11,11 +11,13 @@ import { JwtAuthGuard } from "./jwt.auth.guard";
 import { JwtStrategy } from "./jwt.strategy";
 import { OptionsProvider } from "../common";
 import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "./token";
+import { KakaoStrategy, OAuth2Module } from "../config/oauth2";
 
 const EXTERNAL_PROVIDERS = [
     UsersService,
     JwtService,
-    OidcStrategy
+    OidcStrategy,
+    KakaoStrategy
 ];
 
 @Module({
@@ -24,6 +26,7 @@ const EXTERNAL_PROVIDERS = [
       PassportModule.register({ session: true }),
       JwtModule.register({}),
       OidcModule,
+      OAuth2Module,
       UsersModule
   ],
   controllers: [AuthController],

@@ -1,9 +1,19 @@
-import { Controller, ForbiddenException, Get, Inject, Logger, Res, Headers, UseGuards } from '@nestjs/common';
+import {
+    Controller,
+    ForbiddenException,
+    Get,
+    Inject,
+    Logger,
+    Res,
+    Headers,
+    UseGuards,
+    Req, Redirect
+} from '@nestjs/common';
 import { AuthService } from "../service";
 import { JWT_REFRESH_EXPIRES } from "../token"
 import { Cookies, User } from "../../common";
 import { SignInDTO } from "../dto";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { AuthGuard } from "@nestjs/passport";
 
 @Controller('/api/auth')
@@ -18,20 +28,22 @@ export class AuthController {
     ) {}
 
     @Get("/sign-in")
-    @UseGuards(AuthGuard("oidc"))
+    @Redirect()
+    @UseGuards(AuthGuard("kakao"))
     async signIn(
         @User() dto: SignInDTO,
+        @Req() req: Request,
         @Res({ passthrough: true }) res: Response
     ) {
-        const { refreshToken, ...rest } = await this._authService.signIn(dto);
+        const { accessToken, refreshToken } = await this._authService.signIn(dto);
+        const remoteIp = req.header["x-forwarded-for"] || req.socket.remoteAddress;
 
         res.cookie(
-            "REFRESH_TOKEN",
-            refreshToken,
+            "REFRESH_TOKEN", refreshToken,
             { httpOnly: true, maxAge: this._refreshExpires }
         );
 
-        return rest;
+        return { url: `http://${remoteIp}:5173?token=${accessToken}`, status: 200 };
     }
 
     @Get("/sign-out")
