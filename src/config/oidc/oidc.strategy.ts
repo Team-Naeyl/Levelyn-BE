@@ -13,25 +13,16 @@ export class OidcStrategy extends PassportStrategy(Strategy, "oidc") {
         private readonly _oidcService: OidcService,
         @Inject(STRATEGY_OPTIONS)
         options: StrategyOptions
-    ) { super(options); }
+    ) { super({ ...options, scope: ["account_email", "profile_nickname"] }); }
 
     async validate(
         issuer: string,
         profile: any,
-        context: any,
-        idToken: string,
         done: Function
     ): Promise<void> {
-        this._logger.debug(JSON.stringify({ issuer, profile, context }));
-
-        await this._oidcService.verifyIdToken(idToken)
-            .then(payload => {
-                this._logger.debug(payload);
-                done(null, { openId: payload.sub, name: payload.nickname });
-            }).catch(err => {
-                this._logger.error(err);
-                done(err, false);
-            });
+        this._logger.debug(profile);
+        const { id: openId } = profile;
+        done(null, { openId });
     }
 
 }
