@@ -20,6 +20,7 @@ export class AuthService {
 
     async signIn(dto: SignInDTO): Promise<SignInResult> {
         const { id, player, wallet } = await this._usersService.upsertUser(dto);
+        this._logger.debug({ player, wallet });
         const userInfo: UserInfo = { id, playerId: player.id, walletId: wallet.id };
 
         const accessToken = await this._jwtAuthService.signAccess(userInfo);

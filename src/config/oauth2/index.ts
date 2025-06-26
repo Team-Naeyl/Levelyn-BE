@@ -1,2 +1,2 @@
 export * from "./oauth2.module";
-export * from "./kakao.strategy";
+export * from "./kakao.oauth2.guard";

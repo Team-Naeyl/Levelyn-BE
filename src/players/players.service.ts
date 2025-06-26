@@ -5,21 +5,21 @@ import { Repository } from "typeorm";
 import { Transactional } from "typeorm-transactional";
 import { PlayerDTO, UpdatePlayerDTO } from "./dto";
 import { isNull, pipe, throwIf } from "@fxts/core";
-import { modelToDTO } from "../common";
+import { ModelHandler } from "../common";
 
 @Injectable()
-export class PlayersService {
+export class PlayersService extends ModelHandler(Player) {
 
     constructor(
         @InjectRepository(Player)
         private readonly _playersRepos: Repository<Player>
-    ) {}
+    ) { super(); }
 
     async getPlayer(id: number): Promise<PlayerDTO> {
         return pipe(
             await this._playersRepos.findOneBy({ id }),
             throwIf(isNull, () => new ForbiddenException()),
-            modelToDTO
+            p => this.modelToDTO(p)
         );
     }
 

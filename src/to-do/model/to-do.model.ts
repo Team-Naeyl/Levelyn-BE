@@ -30,7 +30,7 @@ export class ToDo extends ModelBase<ToDoDTO> {
     @Column({ type: "boolean", default: false })
     completed: boolean;
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @OneToOne(() => ToDoPeriod, { onDelete: "CASCADE", onUpdate: "CASCADE" })
     @JoinColumn({ name: "period_id" })
     period: ToDoPeriod | null;
