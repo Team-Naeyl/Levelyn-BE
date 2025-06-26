@@ -5,15 +5,16 @@ import { FindOptionsWhere, In, Repository } from "typeorm";
 import { Transactional } from "typeorm-transactional";
 import { EquippedSkillDTO, GetPlayerSkillsDTO, UpsertPlayerSkillsDTO, PlayerSkillDTO } from "../dto";
 import { concat, difference, identity, map, pipe, prop, throwError, throwIf, toArray, toAsync } from "@fxts/core";
+import { ModelHandler } from "../../common";
 
 @Injectable()
-export class PlayerSkillsService {
+export class PlayerSkillsService extends ModelHandler(PlayerSkill) {
     private readonly _logger: Logger = new Logger(PlayerSkillsService.name);
 
     constructor(
         @InjectRepository(PlayerSkill)
         private readonly _playerSkillsRepos: Repository<PlayerSkill>
-    ) {}
+    ) { super(); }
 
     @Transactional()
     async addPlayerSkills(dto: UpsertPlayerSkillsDTO): Promise<PlayerSkillDTO[]> {
@@ -23,12 +24,12 @@ export class PlayerSkillsService {
             skillIds.map(skillId => ({ playerId: playerId, skillId }))
         );
 
-        return playerSkills.map(ps => ps.toDTO());
+        return playerSkills.map(ps => this.modelToDTO(ps));
     }
 
     async getPlayerSkills(playerId: number): Promise<PlayerSkillDTO[]> {
        const playerSkills = await this.getPlayerSkillsBy({ playerId });
-       return playerSkills.map(ps => ps.toDTO());
+       return playerSkills.map(ps => this.modelToDTO(ps));
     }
 
     async getEquippedSkills(userId: number): Promise<EquippedSkillDTO[]> {

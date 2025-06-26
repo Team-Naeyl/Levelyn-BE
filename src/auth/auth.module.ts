@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule, JwtService } from "@nestjs/jwt";
-import { OidcModule, OidcStrategy } from "../config/oidc";
 import { UsersModule, UsersService } from "../users";
 import { User } from "../users/model";
 import { AuthController } from './controller';
@@ -11,21 +10,19 @@ import { JwtAuthGuard } from "./jwt.auth.guard";
 import { JwtStrategy } from "./jwt.strategy";
 import { OptionsProvider } from "../common";
 import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "./token";
-import { KakaoStrategy, OAuth2Module } from "../config/oauth2";
+import { KakaoOAuth2Guard, OAuth2Module } from "../config/oauth2";
 
 const EXTERNAL_PROVIDERS = [
     UsersService,
     JwtService,
-    OidcStrategy,
-    KakaoStrategy
+    KakaoOAuth2Guard
 ];
 
 @Module({
   imports: [
       TypeOrmModule.forFeature([User]),
-      PassportModule.register({ session: true }),
+      PassportModule.register({ session: false }),
       JwtModule.register({}),
-      OidcModule,
       OAuth2Module,
       UsersModule
   ],

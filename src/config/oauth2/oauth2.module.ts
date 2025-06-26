@@ -1,8 +1,12 @@
 import { Module } from "@nestjs/common";
-import { KakaoStrategy } from "./kakao.strategy";
+import { KakaoOAuth2Service } from "./kakao.oauth2.service";
+import { KakaoOAuth2Guard } from "./kakao.oauth2.guard";
 
 @Module({
-    providers: [KakaoStrategy],
-    exports: [KakaoStrategy]
+    providers: [
+        KakaoOAuth2Service,
+        KakaoOAuth2Guard
+    ],
+    exports: [KakaoOAuth2Guard]
 })
 export class OAuth2Module {}

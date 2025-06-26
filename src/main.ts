@@ -27,11 +27,8 @@ async function bootstrap() {
         cookie: { secure: BUILD !== "dev" },
       }),
   );
-
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    await app.listen(process.env.PORT ?? 3000);
+  app.use(passport.initialize());
+  await app.listen(process.env.PORT ?? 3000);
 }
 
 bootstrap();

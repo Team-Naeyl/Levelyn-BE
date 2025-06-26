@@ -1,4 +1,4 @@
-export interface DeleteToDoDTO {
+export interface GetToDoDTO {
     id: number;
     userId: number;
 }

@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne } from "ty
 import { ModelBase } from "../../common";
 import { Player } from "../../players/model";
 import { Wallet } from "../../wallets/model";
-import { Exclude } from "class-transformer";
+import { Exclude, Type } from "class-transformer";
 import { UserDTO } from "../dto";
 
 @Entity("users")
@@ -24,12 +24,12 @@ export class User extends ModelBase<UserDTO> {
     @Column({ type: "varchar" })
     name: string;
 
-    @Exclude()
+    @Type(() => Player)
     @OneToOne(() => Player, { cascade: ["insert"], onDelete: "CASCADE" })
     @JoinColumn({ name: "player_id" })
     player: Player;
 
-    @Exclude()
+    @Type(() => Wallet)
     @OneToOne(() => Wallet, { cascade: ["insert"], onDelete: "CASCADE" })
     @JoinColumn({ name: "wallet_id" })
     wallet: Wallet;
