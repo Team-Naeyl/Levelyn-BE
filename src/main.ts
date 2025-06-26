@@ -5,11 +5,7 @@ import { initializeTransactionalContext } from "typeorm-transactional";
 import session = require("express-session");
 import * as crypto from "node:crypto";
 import * as passport from 'passport';
-import dotenv from "dotenv";
 import * as process from "node:process";
-
-dotenv.config({ path: "../.env" });
-const { BUILD } = process.env;
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -24,9 +20,11 @@ async function bootstrap() {
         secret: crypto.randomBytes(32).toString("base64"),
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: BUILD !== "dev" },
+        cookie: { secure: true },
       }),
   );
+
+  app.enableCors({ origin: '*', methods: '*', allowedHeaders: '*' });
   app.use(passport.initialize());
   await app.listen(process.env.PORT ?? 3000);
 }

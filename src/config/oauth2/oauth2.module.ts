@@ -7,6 +7,6 @@ import { KakaoOAuth2Guard } from "./kakao.oauth2.guard";
         KakaoOAuth2Service,
         KakaoOAuth2Guard
     ],
-    exports: [KakaoOAuth2Guard]
+    exports: [KakaoOAuth2Guard, KakaoOAuth2Service]
 })
 export class OAuth2Module {}
