@@ -6,15 +6,16 @@ import { UpsertPlayerItemsDTO, PlayerItemDTO, GetPlayerItemsDTO } from "../dto";
 import { Transactional } from "typeorm-transactional";
 import {concat, identity, pipe, throwError, throwIf, filter, map, toArray, prop, toAsync, reduceLazy} from "@fxts/core";
 import { ItemEffectDTO } from "../../game/items/dto";
+import { ModelHandler } from "../../common";
 
 @Injectable()
-export class PlayerItemsService {
+export class PlayerItemsService extends ModelHandler(PlayerItem) {
     private readonly _logger: Logger = new Logger(PlayerItemsService.name);
 
     constructor(
         @InjectRepository(PlayerItem)
         private readonly _playerItemsRepos: Repository<PlayerItem>,
-    ) {}
+    ) { super(); }
 
     @Transactional()
     addPlayerItems(dto: UpsertPlayerItemsDTO): Promise<PlayerItemDTO[]> {
@@ -23,14 +24,14 @@ export class PlayerItemsService {
        return pipe(
            itemIds.map(itemId => ({ playerId, itemId })),
            vals => this._playerItemsRepos.save(vals),
-           map(pi => pi.toDTO()),
+           map(pi => this.modelToDTO(pi)),
            toArray
        );
     }
 
     async getPlayerItems(playerId: number): Promise<PlayerItemDTO[]> {
         const playerItems = await this.getPlayerItemsBy({ playerId });
-        return playerItems.map(pi => pi.toDTO());
+        return playerItems.map(pi => this.modelToDTO(pi));
     }
 
     async getNetEquippedItemEffect(playerId: number): Promise<ItemEffectDTO> {

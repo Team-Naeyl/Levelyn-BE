@@ -3,14 +3,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Monster } from "./model";
 import { Repository } from "typeorm";
 import { MonsterDTO } from "./dto";
+import { ModelHandler } from "../../common";
 
 @Injectable()
-export class MonstersService {
+export class MonstersService extends ModelHandler(Monster) {
 
     constructor(
         @InjectRepository(Monster)
         private readonly _monstersRepos: Repository<Monster>,
-    ) {}
+    ) { super(); }
 
     async getLocalMonsters(regionId: number): Promise<MonsterDTO[]> {
 
@@ -18,6 +19,6 @@ export class MonstersService {
             cache: true, where: { regionId }
         });
 
-        return monsters.map(m => m.toDTO());
+        return monsters.map(m => this.modelToDTO(m));
     }
 }

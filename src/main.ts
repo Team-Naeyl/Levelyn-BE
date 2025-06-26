@@ -2,14 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpStatus, ValidationPipe } from "@nestjs/common";
 import { initializeTransactionalContext } from "typeorm-transactional";
-import session = require("express-session");
-import * as crypto from "node:crypto";
 import * as passport from 'passport';
-import dotenv from "dotenv";
 import * as process from "node:process";
-
-dotenv.config({ path: "../.env" });
-const { BUILD } = process.env;
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -19,14 +13,7 @@ async function bootstrap() {
     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
   }));
 
-  app.use(
-      session({
-        secret: crypto.randomBytes(32).toString("base64"),
-        resave: false,
-        saveUninitialized: false,
-        cookie: { secure: BUILD !== "dev" },
-      }),
-  );
+  app.enableCors({ origin: '*', methods: '*', allowedHeaders: '*' });
   app.use(passport.initialize());
   await app.listen(process.env.PORT ?? 3000);
 }
