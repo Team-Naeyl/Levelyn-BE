@@ -1,33 +1,36 @@
 import { Module } from "@nestjs/common";
-import { SkillsModule, SkillsService } from "./skills";
-import { ItemRangesService, ItemsModule, ItemsService, RandomItemService } from "./items";
-import { MonstersModule, MonstersService } from "./monsters";
-import { RandomBoxesService, RewardsModule, RewardsService } from "./rewards";
+import { Skill, SkillsModule, SkillsService } from "./skills";
+import { Item, ItemRange, ItemRangesService, ItemsModule, ItemsService, RandomItemService } from "./items";
+import { Monster, MonstersModule, MonstersService } from "./monsters";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Region } from "./regions";
 
 @Module({
     imports: [
+        TypeOrmModule.forFeature([
+            Item,
+            ItemRange,
+            Skill,
+            Monster,
+            Region
+        ]),
         SkillsModule,
         ItemsModule,
-        MonstersModule,
-        RewardsModule
+        MonstersModule
     ],
     providers: [
         SkillsService,
         ItemsService,
         ItemRangesService,
         RandomItemService,
-        MonstersService,
-        RewardsService,
-        RandomBoxesService
+        MonstersService
     ],
     exports: [
         SkillsService,
         ItemsService,
         ItemRangesService,
         RandomItemService,
-        MonstersService,
-        RewardsService,
-        RandomBoxesService
+        MonstersService
     ]
 })
 export class GameModule {}

@@ -1,8 +1,8 @@
+import { TypeDTO } from "../../common";
+
 export interface MonsterDTO {
     id: number;
-    type: string;
+    type: TypeDTO;
     name: string;
     hp: number;
-    physicalResistance: number;
-    magicalResistance: number;
 }

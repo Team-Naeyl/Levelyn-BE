@@ -1,6 +1,8 @@
+import { TypeDTO } from "../../common";
+
 export interface ItemDTO {
     id: number;
-    type: string;
+    type: TypeDTO;
     name: string;
     description: string;
 }

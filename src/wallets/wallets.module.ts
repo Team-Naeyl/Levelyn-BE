@@ -6,6 +6,7 @@ import { WalletsService } from "./service/wallets.service";
 
 @Module({
     imports: [TypeOrmModule.forFeature([Wallet])],
-    providers: [WalletsListener, WalletsService]
+    providers: [WalletsListener, WalletsService],
+    exports: [WalletsService]
 })
 export class WalletsModule {}

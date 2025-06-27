@@ -7,14 +7,13 @@ import { HttpModule } from "@nestjs/axios";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { RandomModule } from "./config/random";
 import { UsersModule } from './users';
-import { AuthModule } from './auth';
-import { ToDoModule } from './to-do';
+import { PlayersModule } from './players';
 import { WalletsModule } from './wallets';
-import { InventoryModule } from './inventory';
+import { AuthModule } from './auth';
+import { ToDoModule } from "./to-do";
+import { InventoryModule } from "./inventory";
 import yamlConfig from "./config/yaml";
 import { join } from "node:path";
-import { StatesModule } from './states';
-import { BattlesModule } from './battles';
 
 @Module({
   imports: [
@@ -30,15 +29,14 @@ import { BattlesModule } from './battles';
       }),
       HttpModule.register({ global: true }),
       EventEmitterModule.forRoot({ global: true }),
-      RedisModule.forRootAsync(),
-      RandomModule.forRootAsync(),
+      RedisModule,
+      RandomModule,
       UsersModule,
+      PlayersModule,
+      WalletsModule,
       AuthModule,
       ToDoModule,
-      WalletsModule,
-      InventoryModule,
-      StatesModule,
-      //BattlesModule,
+      InventoryModule
   ]
 })
 export class AppModule {}

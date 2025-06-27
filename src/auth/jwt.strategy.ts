@@ -19,6 +19,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
     }
 
     async validate(payload: TokenPayload, done: Function): Promise<void> {
-        done(null, pick(["id", "stateId", "walletId"], payload));
+        done(null, pick(["id"], payload));
     }
 }
