@@ -16,7 +16,6 @@ export class UsersService extends ModelHandler(User) {
 
     async upsertUser(dto: UpsertUserDTO): Promise<UserDTO> {
         return await this.getOrCreateUser(dto)
-            .then(user => this.modelToDTO(user))
             .catch(err => {
                 this._logger.error(err);
                 throw err;
