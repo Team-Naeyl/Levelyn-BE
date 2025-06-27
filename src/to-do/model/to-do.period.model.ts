@@ -5,7 +5,7 @@ import { Exclude } from "class-transformer";
 
 @Entity("to_do_periods")
 export class ToDoPeriod extends ModelBase<ToDoPeriodDTO> {
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @PrimaryGeneratedColumn()
     id: number;
 

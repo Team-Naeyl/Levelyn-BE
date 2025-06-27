@@ -6,6 +6,6 @@ export class GetPlayerSkillsResponse {
     @ApiProperty({ name: 'skills', type: [SkillSchema] })
     skills: SkillSchema[];
 
-    @ApiProperty({ name: 'userSkills', type: [PlayerSkillSchema] })
+    @ApiProperty({ name: 'playerSkills', type: [PlayerSkillSchema] })
     playerSkills: PlayerSkillSchema[];
 }

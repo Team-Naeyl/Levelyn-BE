@@ -1,11 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ModelBase } from "../../../common";
 import { ItemEffectDTO } from "../dto";
-import { Exclude } from "class-transformer";
 
 @Entity("item_effects")
 export class ItemEffect extends ModelBase<ItemEffectDTO> {
-    @Exclude()
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,4 +21,7 @@ export class ItemEffect extends ModelBase<ItemEffectDTO> {
 
     @Column({ name: "p_coin", type: "float", default: 0 })
     pCoin: number;
+
+    @Column({ name: "penalty_duration", type: "integer", default: 0 })
+    penaltyDuration: number;
 }

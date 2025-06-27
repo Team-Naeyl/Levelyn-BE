@@ -14,15 +14,15 @@ export class PlayerItemsController {
     ) {}
 
     @Get("/")
-    async getUserItems(@User("id") userId: number): Promise<GetPlayerItemsResponse> {
-        const results = await this._playerItemsService.getPlayerItems(userId);
+    async getPlayerItems(@User("id") playerId: number): Promise<GetPlayerItemsResponse> {
+        const results = await this._playerItemsService.getPlayerItems(playerId);
         return { results };
     }
 
     @Patch("/slot")
     @HttpCode(205)
     async updateSlot(
-        @User("playerId") playerId: number,
+        @User("id") playerId: number,
         @Body() { itemIds }: UpdateItemsSlotBody
     ): Promise<void> {
         await this._playerItemsService.updateEquipped({ playerId, itemIds });

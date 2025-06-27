@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { Exclude } from "class-transformer";
+import { Exclude, Type } from "class-transformer";
 import { Item } from "../../game";
 import { PlayerItemDTO } from "../dto";
 import { PlayerOwning } from "./player.owning.model";
@@ -7,11 +7,12 @@ import { PlayerOwning } from "./player.owning.model";
 @Entity("player_items")
 export class PlayerItem extends PlayerOwning<Item> {
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @Column({ name: "item_id", type: "integer" })
     itemId: number;
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
+    @Type(() => Item)
     @ManyToOne(() => Item)
     @JoinColumn({ name: "item_id" })
     item: Item;

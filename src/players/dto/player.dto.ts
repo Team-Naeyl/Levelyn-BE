@@ -1,5 +1,4 @@
 export interface PlayerDTO {
-    id: number;
     position: number;
     level: number;
     exp: number;
