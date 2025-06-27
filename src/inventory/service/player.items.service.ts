@@ -44,7 +44,7 @@ export class PlayerItemsService extends ModelHandler(PlayerItem) {
                     Object.keys(acc).forEach(k => acc[k] += curr[k]);
                     return acc;
                 },
-                { attack: 0, will: 0, exp: 0, pItem: 0, pCoin: 0 } as ItemEffectDTO
+                { attack: 0, will: 0, exp: 0, pItem: 0, pCoin: 0, penaltyDuration: 0 } as ItemEffectDTO
             )
         )
     }

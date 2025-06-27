@@ -17,7 +17,7 @@ export class PlayerSkillsController {
     ) {}
 
     @Get("/")
-    async getUserSkills(@User("playerId") playerId: number): Promise<GetPlayerSkillsResponse> {
+    async getPlayerSkills(@User("id") playerId: number): Promise<GetPlayerSkillsResponse> {
         const skills = await this._skillsService.getAllSkills();
         const playerSkills = await this._playerSkillsService.getPlayerSkills(playerId);
         return { skills, playerSkills };
@@ -26,7 +26,7 @@ export class PlayerSkillsController {
     @Put("/slot")
     @HttpCode(205)
     async updateSlot(
-        @User("playerId") playerId: number,
+        @User("id") playerId: number,
         @Body() { skillIds }: UpdateSkillsSlotBody
     ): Promise<void> {
         await this._playerSkillsService.updateEquipped({ playerId, skillIds });

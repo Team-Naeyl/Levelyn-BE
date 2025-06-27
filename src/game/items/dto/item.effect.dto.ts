@@ -4,4 +4,5 @@ export interface ItemEffectDTO {
     exp: number;
     pItem: number;
     pCoin: number;
+    penaltyDuration: number;
 }

@@ -8,11 +8,11 @@ export abstract class PlayerOwning<
 > extends ModelBase<
     PlayerOwningDTO<ModelBase.DTOType<OwnedT>>
 > {
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @Column({ name: "player_id", type: "integer" })
     playerId: number;
 

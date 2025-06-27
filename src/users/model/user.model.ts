@@ -13,22 +13,24 @@ export class User extends ModelBase<UserDTO> {
     @Column({ name: "open_id", type: "varchar", unique: true })
     openId: string;
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @Column({ name: "player_id", type: "integer", unique: true })
     playerId: number;
 
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @Column({ name: "wallet_id", type: "integer", unique: true })
     walletId: number;
 
     @Column({ type: "varchar" })
     name: string;
 
+    @Exclude({ toPlainOnly: true })
     @Type(() => Player)
     @OneToOne(() => Player, { cascade: ["insert"], onDelete: "CASCADE" })
     @JoinColumn({ name: "player_id" })
     player: Player;
 
+    @Exclude({ toPlainOnly: true })
     @Type(() => Wallet)
     @OneToOne(() => Wallet, { cascade: ["insert"], onDelete: "CASCADE" })
     @JoinColumn({ name: "wallet_id" })

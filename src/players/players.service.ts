@@ -17,7 +17,7 @@ export class PlayersService extends ModelHandler(Player) {
 
     async getPlayer(id: number): Promise<PlayerDTO> {
         return pipe(
-            await this._playersRepos.findOneBy({ id }),
+            await this._playersRepos.findOneBy({ id: id }),
             throwIf(isNull, () => new ForbiddenException()),
             p => this.modelToDTO(p)
         );

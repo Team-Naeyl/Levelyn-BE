@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "../token";
 import { TokenPayload, UserInfo } from "../dto";
+import * as crypto from "node:crypto";
 
 @Injectable()
 export class JwtAuthService {
@@ -27,15 +28,16 @@ export class JwtAuthService {
 
     async verify(token: string): Promise<UserInfo> {
 
-        const { id, playerId, walletId } = await this._jwtService
+        const { id } = await this._jwtService
             .verifyAsync<TokenPayload>(token, { secret: this._secret });
 
-        return { id, playerId, walletId };
+        return { id };
     }
 
     private async sign(user: UserInfo, ex: number): Promise<string> {
         return await this._jwtService.signAsync(
-            user, { secret: this._secret, expiresIn: ex }
+            { ...user, salt: crypto.randomBytes(32).toString("base64") },
+            { secret: this._secret, expiresIn: ex }
         );
     }
 }
