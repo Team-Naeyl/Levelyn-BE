@@ -3,22 +3,27 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Monster } from "./model";
 import { Repository } from "typeorm";
 import { MonsterDTO } from "./dto";
-import { ModelHandler } from "../../common";
+import { excludeTimestampOnly } from "../../common";
+import { map, pipe, toArray } from "@fxts/core";
 
 @Injectable()
-export class MonstersService extends ModelHandler(Monster) {
+export class MonstersService {
 
     constructor(
         @InjectRepository(Monster)
         private readonly _monstersRepos: Repository<Monster>,
-    ) { super(); }
+    ) {  }
 
     async getLocalMonsters(regionId: number): Promise<MonsterDTO[]> {
-
-        const monsters = await this._monstersRepos.find({
-            cache: true, where: { regionId }
-        });
-
-        return monsters.map(m => this.modelToDTO(m));
+        return pipe(
+            await this._monstersRepos.find({ where: { regionId }, cache: true }),
+            map(__toDTO),
+            toArray
+        );
     }
+}
+
+function __toDTO(monster: Monster): MonsterDTO {
+    const { type, ...rest } = excludeTimestampOnly(monster);
+    return { ...rest, type: excludeTimestampOnly(type) };
 }

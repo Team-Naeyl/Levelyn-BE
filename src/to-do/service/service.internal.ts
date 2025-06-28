@@ -1,5 +1,6 @@
-import { ToDoPeriodUnit, ToDoDTO } from "../dto";
+import { ToDoDTO } from "../dto";
 import { add, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarWeeks, differenceInCalendarYears, isSameDay} from "date-fns";
+import { ToDoPeriodUnit } from "../model";
 
 export function isDayToDo(day: Date, toDo: ToDoDTO) {
     if (isSameDay(day, toDo.date)) return true;

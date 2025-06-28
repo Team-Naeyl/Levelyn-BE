@@ -1,9 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ModelBase } from "../../../common";
-import { ItemEffectDTO } from "../dto";
 
 @Entity("item_effects")
-export class ItemEffect extends ModelBase<ItemEffectDTO> {
+export class ItemEffect extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 

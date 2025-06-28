@@ -1,6 +1,7 @@
 import { isDayToDo } from "./service.internal";
-import { ToDoDTO, ToDoPeriodUnit } from "../dto";
+import { ToDoDTO } from "../dto";
 import { add, sub } from "date-fns";
+import { ToDoPeriodUnit } from "../model";
 
 describe("isDayToDo", () => {
     const day = new Date(2025, 6, 13); // Jan 1, 2024

@@ -1,13 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ItemType } from "./item.type.model";
-import { Type } from "class-transformer";
-import { ItemDTO } from "../dto";
 import { ItemSubType } from "./item.sub-type.model";
 import { ItemEffect } from "./item.effect.model";
-import { OwnableBase } from "../../common";
+import { ModelBase } from "../../../common";
 
 @Entity("items")
-export class Item extends OwnableBase<ItemDTO> {
+export class Item extends ModelBase {
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column({ name: "type_id", type: "integer" })
     typeId: number;
 
@@ -17,15 +18,19 @@ export class Item extends OwnableBase<ItemDTO> {
     @Column({ name: "effect_id", type: "integer" })
     effectId: number;
 
+    @Column({ type: "varchar" })
+    name: string;
+
+    @Column({ type: "varchar" })
+    description: string;
+
     @Column({ type: "float" })
     weight: number;
 
-    @Type(() => ItemType)
     @ManyToOne(() => ItemType)
     @JoinColumn({ name: "type_id" })
     type: ItemType;
 
-    @Type(() => ItemSubType)
     @ManyToOne(() => ItemSubType)
     @JoinColumn({ name: "sub_type_id" })
     subType: ItemSubType | null;
@@ -33,13 +38,4 @@ export class Item extends OwnableBase<ItemDTO> {
     @OneToOne(() => ItemEffect, { lazy: true, cascade: ["insert"], onDelete: "CASCADE" })
     @JoinColumn({ name: "effect_id" })
     effect: Promise<ItemEffect>;
-
-    toDTO(): ItemDTO {
-        const { id, name, description } = this;
-
-        return {
-            id, name, description,
-            type: this.subType ? this.subType.toDTO() : this.type.toDTO()
-        };
-    }
 }

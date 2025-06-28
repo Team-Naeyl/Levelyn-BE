@@ -8,17 +8,17 @@ import { Transactional } from "typeorm-transactional";
 import { ToDoService } from "./to-do.service";
 import { isAfter } from "date-fns";
 import { normalizedDifference } from "./service.internal";
-import { ModelHandler } from "../../common";
+import { excludeTimestamp } from "../../common";
 
 @Injectable()
-export class GoalsService extends ModelHandler(Goal) {
+export class GoalsService {
 
     constructor(
         @InjectRepository(Goal)
         private readonly _goalsRepos: Repository<Goal>,
         @Inject(forwardRef(() => ToDoService))
         private readonly _toDoService: ToDoService
-    ) { super(); }
+    ) {  }
 
     async createGoal(dto: CreateGoalDTO) {
         await this._goalsRepos.save(dto);
@@ -27,7 +27,7 @@ export class GoalsService extends ModelHandler(Goal) {
     async getCurrentGaol(userId: number): Promise<GoalDTO | null> {
         return pipe(
             await this._goalsRepos.findOneBy({ userId }),
-            goal => goal && this.modelToDTO(goal)
+            g => g && excludeTimestamp(g, "userId")
         );
     }
 
@@ -63,3 +63,4 @@ export class GoalsService extends ModelHandler(Goal) {
         }
     }
 }
+

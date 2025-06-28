@@ -3,30 +3,33 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Skill } from "../model";
 import { Between, FindOperator, FindOptionsWhere, LessThanOrEqual, Repository } from "typeorm";
 import { GetSKillsDTO, SkillDTO } from "../dto";
-import { compactObject, entries, fromEntries, isNumber, map, pipe, toArray } from "@fxts/core";
-import { ModelHandler } from "../../../common";
+import { compactObject, entries, fromEntries, isNumber, map, pick, pipe, toArray } from "@fxts/core";
 
 @Injectable()
-export class SkillsService extends ModelHandler(Skill) {
+export class SkillsService {
     private readonly _logger: Logger = new Logger(SkillsService.name);
 
     constructor(
        @InjectRepository(Skill)
        private readonly _skillsRepository: Repository<Skill>,
-    ) { super(); }
+    ) { }
 
     async getAllSkills(): Promise<SkillDTO[]> {
         const skills = await this._skillsRepository.find({ cache: true });
-        return skills.map(skill => this.modelToDTO(skill));
+        return skills.map(SkillsService.toSkillDTO);
     }
 
     getSkillsBy(dto: GetSKillsDTO): Promise<SkillDTO[]> {
         return pipe(
             __makeWhereOptions(dto),
             where => this._skillsRepository.findBy(where),
-            map(skill => this.modelToDTO(skill)),
+            map(SkillsService.toSkillDTO),
             toArray
         );
+    }
+
+    static toSkillDTO(skill: Skill): SkillDTO {
+        return pick(["id", "name", "description"], skill);
     }
 }
 

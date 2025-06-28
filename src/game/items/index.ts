@@ -1,3 +1,3 @@
 export * from "./items.module";
 export * from "./model";
-export * from "./service";
+export * from "./items.service";

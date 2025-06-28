@@ -1,11 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ModelBase } from "../../../common";
-import { Exclude } from "class-transformer";
-import { SkillEffectDTO } from "../dto";
+
 
 @Entity("skill_effects")
-export class SkillEffect extends ModelBase<SkillEffectDTO> {
-    @Exclude()
+export class SkillEffect extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 

@@ -1,8 +1,7 @@
 import { ModelBase } from "../../common";
-import { TypeDTO } from "./type.dto";
 import { Column, PrimaryGeneratedColumn } from "typeorm";
 
-export abstract class TypeBase extends ModelBase<TypeDTO> {
+export abstract class TypeBase extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 

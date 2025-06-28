@@ -4,34 +4,33 @@ import { PlayerItem } from "../model";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { UpsertPlayerItemsDTO, PlayerItemDTO, GetPlayerItemsDTO } from "../dto";
 import { Transactional } from "typeorm-transactional";
-import {concat, identity, pipe, throwError, throwIf, filter, map, toArray, prop, toAsync, reduceLazy} from "@fxts/core";
+import {concat, identity, pipe, throwError, throwIf, filter, map, toArray, prop, toAsync, reduceLazy, omit} from "@fxts/core";
 import { ItemEffectDTO } from "../../game/items/dto";
-import { ModelHandler } from "../../common";
+import { ItemsService } from "../../game";
 
 @Injectable()
-export class PlayerItemsService extends ModelHandler(PlayerItem) {
+export class PlayerItemsService {
     private readonly _logger: Logger = new Logger(PlayerItemsService.name);
 
     constructor(
         @InjectRepository(PlayerItem)
         private readonly _playerItemsRepos: Repository<PlayerItem>,
-    ) { super(); }
+    ) {  }
 
     @Transactional()
-    addPlayerItems(dto: UpsertPlayerItemsDTO): Promise<PlayerItemDTO[]> {
+    async addPlayerItems(dto: UpsertPlayerItemsDTO): Promise<PlayerItemDTO[]> {
        const { playerId, itemIds } = dto;
 
-       return pipe(
-           itemIds.map(itemId => ({ playerId, itemId })),
-           vals => this._playerItemsRepos.save(vals),
-           map(pi => this.modelToDTO(pi)),
-           toArray
+       const playerItems: PlayerItem[] = await this._playerItemsRepos.save(
+           itemIds.map(itemId => ({ playerId, itemId }))
        );
+
+       return playerItems.map(__toDTO);
     }
 
     async getPlayerItems(playerId: number): Promise<PlayerItemDTO[]> {
         const playerItems = await this.getPlayerItemsBy({ playerId });
-        return playerItems.map(pi => this.modelToDTO(pi));
+        return playerItems.map(__toDTO);
     }
 
     async getNetEquippedItemEffect(playerId: number): Promise<ItemEffectDTO> {
@@ -91,3 +90,7 @@ function __makeWhereOptions(dto: GetPlayerItemsDTO): FindOptionsWhere<PlayerItem
     return options;
 }
 
+function __toDTO(pi: PlayerItem): PlayerItemDTO {
+    const { equipped, item } = pi;
+    return { equipped, ...omit(["weight"], ItemsService.toItemDTO(item)) };
+}
