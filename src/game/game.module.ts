@@ -1,10 +1,12 @@
 import { Module } from "@nestjs/common";
-import { SkillsModule, SkillsService } from "./skills";
-import { ItemsModule, ItemsService } from "./items";
-import { MonstersModule, MonstersService } from "./monsters";
+import { Skill, SkillsModule, SkillsService } from "./skills";
+import { Item, ItemsModule, ItemsService } from "./items";
+import { Monster, MonstersModule, MonstersService } from "./monsters";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
     imports: [
+        TypeOrmModule.forFeature([Skill, Item, Monster]),
         SkillsModule,
         ItemsModule,
         MonstersModule

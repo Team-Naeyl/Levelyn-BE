@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ModelBase } from "../../common";
-import { Exclude } from 'class-transformer';
 import { ToDoPeriod } from "./to-do.period.model";
 
 @Entity("to-do-list")
