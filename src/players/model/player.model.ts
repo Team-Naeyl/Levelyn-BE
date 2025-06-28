@@ -1,11 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ModelBase } from "../../common";
-import { PlayerDTO } from "../dto";
-import { Exclude } from "class-transformer";
 
 @Entity("players")
-export class Player extends ModelBase<PlayerDTO> {
-    @Exclude({ toPlainOnly: true })
+export class Player extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 

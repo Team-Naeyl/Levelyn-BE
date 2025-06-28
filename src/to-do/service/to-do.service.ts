@@ -8,10 +8,10 @@ import { add } from "date-fns";
 import { Transactional } from "typeorm-transactional";
 import { isDayToDo } from "./service.internal";
 import { GoalsService } from "./goals.service";
-import { ModelHandler } from "../../common";
+import { excludeTimestamp, excludeTimestampOnly } from "../../common";
 
 @Injectable()
-export class ToDoService extends ModelHandler(ToDo) {
+export class ToDoService {
     private readonly _logger: Logger = new Logger(ToDoService.name);
 
     constructor(
@@ -19,12 +19,12 @@ export class ToDoService extends ModelHandler(ToDo) {
        private readonly _toDoRepos: Repository<ToDo>,
        @Inject(forwardRef(() => GoalsService))
        private readonly _goalsService: GoalsService
-    ) { super(); }
+    ) { }
 
     @Transactional()
     async createToDo(dto: CreateToDoDTO): Promise<void> {
         const toDo = await this._toDoRepos.save(dto);
-        toDo.isSub && await this._goalsService.onUpsertSubToDo(toDo.userId, toDo.toDTO());
+        toDo.isSub && await this._goalsService.onUpsertSubToDo(toDo.userId, toDo);
     }
 
     async getDailyToDoList(dto: GetDailyToDoListDTO): Promise<ToDoDTO[]> {
@@ -32,7 +32,7 @@ export class ToDoService extends ModelHandler(ToDo) {
 
         return pipe(
             await this._toDoRepos.findBy({ userId, date: LessThanOrEqual(date) }),
-            map(toDo => this.modelToDTO(toDo)),
+            map(__toDTO),
             filter(toDo => isDayToDo(date, toDo)),
             toArray
         );
@@ -45,7 +45,7 @@ export class ToDoService extends ModelHandler(ToDo) {
         values.isSub && await pipe(
             await this._toDoRepos.findOneBy({ id, userId }),
             throwIf(isNull, () => new NotFoundException()),
-            async toDo => toDo.isSub || await this._goalsService.onUpsertSubToDo(toDo.userId, toDo.toDTO())
+            async toDo => toDo.isSub || await this._goalsService.onUpsertSubToDo(toDo.userId, toDo)
         );
 
         await this._toDoRepos.update({ id, userId }, values);
@@ -63,7 +63,6 @@ export class ToDoService extends ModelHandler(ToDo) {
         const toDo = pipe(
             await this._toDoRepos.findOneBy({ id, userId }),
             throwIf(isNull, () => new NotFoundException()),
-            toDo => this.modelToDTO(toDo),
             throwIf(
                 toDo => !isDayToDo(today, toDo) || toDo.completed,
                 () => new ConflictException()
@@ -72,7 +71,7 @@ export class ToDoService extends ModelHandler(ToDo) {
 
         toDo.period && await this._toDoRepos.save({
             date: add(today, { [toDo.period.unit]: toDo.period.amount }),
-            ...omit(["id", "date"], toDo)
+            ...excludeTimestamp(toDo, "id", "date")
         });
 
         await this._toDoRepos.update(id, { completed: true });
@@ -82,5 +81,14 @@ export class ToDoService extends ModelHandler(ToDo) {
     async onGoalDeleted(userId: number): Promise<void> {
         await this._toDoRepos.update(userId, { isSub: false });
     }
+}
+
+function __toDTO(toDo: ToDo): ToDoDTO {
+    const { period, ...rest } = excludeTimestamp(toDo, "userId", "periodId");
+
+    return {
+        ...rest,
+        period: period && excludeTimestampOnly(period)
+    };
 }
 

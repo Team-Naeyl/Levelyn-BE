@@ -1,15 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Item, ItemType, ItemRange } from "./model";
-import { ItemRangesService, ItemsService, RandomItemService } from './service';
+import { Item } from "./model";
+import { ItemsService } from "./items.service";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Item, ItemType, ItemRange])],
-    providers: [
-        ItemsService,
-        ItemRangesService,
-        RandomItemService
-    ],
-    exports: [ItemsService, ItemRangesService, RandomItemService],
+    imports: [TypeOrmModule.forFeature([Item])],
+    providers: [ItemsService],
+    exports: [ItemsService],
 })
 export class ItemsModule {}

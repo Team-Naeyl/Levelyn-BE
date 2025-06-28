@@ -5,4 +5,5 @@ export interface ItemDTO {
     type: TypeDTO;
     name: string;
     description: string;
+    weight: number;
 }

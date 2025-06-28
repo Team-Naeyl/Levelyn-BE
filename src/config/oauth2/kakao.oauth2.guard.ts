@@ -14,6 +14,7 @@ export class KakaoOAuth2Guard implements CanActivate {
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
         const req = ctx.switchToHttp().getRequest<Request>();
 
+
         const { id, kakaoAccount: { email, profile: { nickname: name } } }
             = await this._kakaoOAuth2Service.loadUserInfo(req.body.token)
             .catch(err => {

@@ -5,31 +5,32 @@ import { FindOptionsWhere, In, Repository } from "typeorm";
 import { Transactional } from "typeorm-transactional";
 import { EquippedSkillDTO, GetPlayerSkillsDTO, UpsertPlayerSkillsDTO, PlayerSkillDTO } from "../dto";
 import { concat, difference, identity, map, pipe, prop, throwError, throwIf, toArray, toAsync } from "@fxts/core";
-import { ModelHandler } from "../../common";
+import { SkillsService } from "../../game";
+import { excludeTimestamp } from "../../common";
 
 @Injectable()
-export class PlayerSkillsService extends ModelHandler(PlayerSkill) {
+export class PlayerSkillsService {
     private readonly _logger: Logger = new Logger(PlayerSkillsService.name);
 
     constructor(
         @InjectRepository(PlayerSkill)
         private readonly _playerSkillsRepos: Repository<PlayerSkill>
-    ) { super(); }
+    ) {  }
 
     @Transactional()
     async addPlayerSkills(dto: UpsertPlayerSkillsDTO): Promise<PlayerSkillDTO[]> {
         const { playerId, skillIds } = dto;
 
         const playerSkills: PlayerSkill[] = await this._playerSkillsRepos.save(
-            skillIds.map(skillId => ({ playerId: playerId, skillId }))
+            skillIds.map(skillId => ({ playerId, skillId }))
         );
 
-        return playerSkills.map(ps => this.modelToDTO(ps));
+        return playerSkills.map(__toDTO);
     }
 
     async getPlayerSkills(playerId: number): Promise<PlayerSkillDTO[]> {
        const playerSkills = await this.getPlayerSkillsBy({ playerId });
-       return playerSkills.map(ps => this.modelToDTO(ps));
+       return playerSkills.map(__toDTO);
     }
 
     async getEquippedSkills(userId: number): Promise<EquippedSkillDTO[]> {
@@ -37,7 +38,11 @@ export class PlayerSkillsService extends ModelHandler(PlayerSkill) {
             await this.getPlayerSkillsBy({ playerId: userId, equipped: true }),
             map(async ({ skill }) => {
                 const effect = await skill.effect;
-                return { ...skill.toDTO(), ...effect.toDTO() } as EquippedSkillDTO;
+
+                return {
+                    ...SkillsService.toSkillDTO(skill),
+                    ...excludeTimestamp(effect, "id")
+                } as EquippedSkillDTO;
             }),
             toAsync,
             toArray
@@ -66,7 +71,6 @@ export class PlayerSkillsService extends ModelHandler(PlayerSkill) {
             toArray
         );
 
-
         await this._playerSkillsRepos.update(ids, { equipped: () => '!equipped' })
             .then(throwIf(
                 ({ affected }) => affected! !== ids.length,
@@ -85,6 +89,11 @@ export class PlayerSkillsService extends ModelHandler(PlayerSkill) {
 function __makeWhereOptions(dto: GetPlayerSkillsDTO): FindOptionsWhere<PlayerSkill> {
     const { skillIds, ...rest } = dto;
     return skillIds ? { ...rest, skillId: In(skillIds) } : rest;
+}
+
+function __toDTO(ps: PlayerSkill): PlayerSkillDTO {
+    const { equipped, skill } = ps;
+    return { equipped, ...SkillsService.toSkillDTO(skill) };
 }
 
 

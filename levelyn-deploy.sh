@@ -1,5 +1,3 @@
-rm -rf levelyn
-git clone https://github.com/HoseokWon99/Levelyn-BE.git levelyn
-cd levelyn
-npm install
-npm run start
+USER="hoseok"
+./levelyn-ec2.sh $USER
+./levelyn-deploy.sh

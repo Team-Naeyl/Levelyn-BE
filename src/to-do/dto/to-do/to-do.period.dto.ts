@@ -1,4 +1,4 @@
-export type ToDoPeriodUnit = "years" | "months" | "weeks" | "days";
+import { ToDoPeriodUnit } from "../../model";
 
 export interface ToDoPeriodDTO {
     amount: number;

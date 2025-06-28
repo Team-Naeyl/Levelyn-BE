@@ -1,11 +1,8 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { ModelBase } from "../../common";
-import { Exclude } from "class-transformer";
-import { GoalDTO } from "../dto";
 
 @Entity("goals")
-export class Goal extends ModelBase<GoalDTO> {
-    @Exclude({ toPlainOnly: true })
+export class Goal extends ModelBase {
     @PrimaryColumn({ name: "user_id", type: "integer" })
     userId: number;
 

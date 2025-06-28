@@ -1,27 +1,22 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { Exclude, Type } from "class-transformer";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ModelBase } from "../../common";
 import { Item } from "../../game";
-import { PlayerItemDTO } from "../dto";
-import { PlayerOwning } from "./player.owning.model";
 
 @Entity("player_items")
-export class PlayerItem extends PlayerOwning<Item> {
+export class PlayerItem extends ModelBase {
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Exclude({ toPlainOnly: true })
+    @Column({ name: "player_id", type: "integer" })
+    playerId: number;
+
+    @Column({ type: "boolean", default: false })
+    equipped: boolean;
+
     @Column({ name: "item_id", type: "integer" })
     itemId: number;
 
-    @Exclude({ toPlainOnly: true })
-    @Type(() => Item)
     @ManyToOne(() => Item)
     @JoinColumn({ name: "item_id" })
     item: Item;
-
-    toDTO(): PlayerItemDTO {
-        return super.toDTO();
-    }
-
-    protected owned(): Item {
-        return this.item;
-    }
 }

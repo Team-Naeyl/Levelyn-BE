@@ -1,16 +1,24 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ModelBase } from "../../../common";
 import { SkillRequirement } from "./skill.requirement.model";
-import { OwnableBase } from "../../common";
-import { SkillDTO } from "../dto";
 import { SkillEffect } from "./skill.effect.model";
 
 @Entity("skills")
-export class Skill extends OwnableBase<SkillDTO> {
+export class Skill extends ModelBase {
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column({ name: "effect_id", type: "integer" })
     effectId: number;
 
     @Column({ name: "requirement_id", type: "integer" })
     requirementId: number;
+
+    @Column({ type: "varchar" })
+    name: string;
+
+    @Column({ type: "varchar" })
+    description: string;
 
     @OneToOne(() => SkillRequirement)
     @JoinColumn({ name: "requirement_id" })
@@ -19,12 +27,4 @@ export class Skill extends OwnableBase<SkillDTO> {
     @OneToOne(() => SkillEffect, { lazy: true })
     @JoinColumn({ name: "effect_id" })
     effect: Promise<SkillEffect>;
-
-    toDTO(): SkillDTO {
-        return {
-            id: this.id,
-            name: this.name,
-            description: this.description
-        };
-    }
 }

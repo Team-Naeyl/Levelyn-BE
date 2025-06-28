@@ -3,23 +3,25 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../model";
 import { UpsertUserDTO, UserDTO } from "../dto";
-import { ModelHandler } from "../../common";
+import { excludeTimestamp, excludeTimestampOnly } from "../../common";
 
 @Injectable()
-export class UsersService extends ModelHandler(User) {
+export class UsersService {
     private readonly _logger: Logger = new Logger(UsersService.name);
 
     constructor(
         @InjectRepository(User)
         private readonly _usersRepos: Repository<User>
-    ) { super(); }
+    ) {  }
 
     async upsertUser(dto: UpsertUserDTO): Promise<UserDTO> {
-        return await this.getOrCreateUser(dto)
-            .catch(err => {
-                this._logger.error(err);
-                throw err;
-            });
+        const { player, wallet, ...rest } = await this.getOrCreateUser(dto);
+
+        return {
+            ...excludeTimestampOnly(rest),
+            player: excludeTimestamp(player, "id"),
+            wallet: excludeTimestamp(wallet, "id")
+        };
     }
 
     private async getOrCreateUser(dto: UpsertUserDTO): Promise<User> {
