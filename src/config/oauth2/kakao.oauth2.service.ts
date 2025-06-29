@@ -40,9 +40,7 @@ export class KakaoOAuth2Service {
                 redirect_uri: this._options.callbackURL,
                 code: code
             },
-            {
-                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" },
-            }
+            { headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" }, }
         );
 
         return accessToken;
