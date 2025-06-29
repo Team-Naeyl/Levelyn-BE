@@ -27,7 +27,7 @@ export class AuthController {
 
         res.cookie(
             "REFRESH_TOKEN", refreshToken,
-            { httpOnly: true, maxAge: this._refreshExpires }
+            { httpOnly: true, maxAge: this._refreshExpires, secure: true, sameSite: true }
         );
 
         return { accessToken, player, wallet };

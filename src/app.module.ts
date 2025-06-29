@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { typeormOptionsFactory, typeormDataSourceFactory } from "./config/typeorm";
-import { RedisModule } from "./config/redis";
 import { HttpModule } from "@nestjs/axios";
 import { EventEmitterModule } from "@nestjs/event-emitter";
+import { YamlConfigModule } from "./config/yaml-config";
+import { RedisModule } from "./config/redis";
 import { RandomModule } from "./config/random";
 import { UsersModule } from './users';
 import { PlayersModule } from './players';
@@ -12,8 +13,11 @@ import { WalletsModule } from './wallets';
 import { AuthModule } from './auth';
 import { ToDoModule } from "./to-do";
 import { InventoryModule } from "./inventory";
+import { TilesModule } from './tiles';
+import { BattlesModule } from './battles';
 import yamlConfig from "./config/yaml";
 import { join } from "node:path";
+import { AppController } from "./app.controller";
 
 @Module({
   imports: [
@@ -29,6 +33,7 @@ import { join } from "node:path";
       }),
       HttpModule.register({ global: true }),
       EventEmitterModule.forRoot({ global: true }),
+      YamlConfigModule,
       RedisModule,
       RandomModule,
       UsersModule,
@@ -36,7 +41,10 @@ import { join } from "node:path";
       WalletsModule,
       AuthModule,
       ToDoModule,
-      InventoryModule
-  ]
+      InventoryModule,
+      TilesModule,
+      BattlesModule
+  ],
+  controllers: [AppController],
 })
 export class AppModule {}

@@ -1,4 +1,18 @@
-import {Body, Controller, Delete, Get, HttpCode, Inject, Logger, Param, Patch, Post, Put, Query, UseGuards} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Inject,
+    Logger,
+    Param,
+    Patch,
+    Post,
+    Put,
+    Query, Redirect,
+    UseGuards
+} from "@nestjs/common";
 import { ToDoService } from "../service";
 import { JwtAuthGuard } from "../../auth";
 import { User } from "../../common";
@@ -52,7 +66,7 @@ export class ToDoController {
     }
 
     @Put("/:id")
-    @HttpCode(205)
+    @Redirect("/api/tiles/reward")
     async fulfillToDo(
         @Param("id") id: number,
         @User() user: UserInfo

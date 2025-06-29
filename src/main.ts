@@ -13,6 +13,7 @@ async function bootstrap() {
   }));
 
   app.use(passport.initialize());
+
   await app.listen(process.env.PORT ?? 3000);
 }
 

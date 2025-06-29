@@ -9,4 +9,7 @@ export class RewardConfig {
 
    @ConfigField({ path: "COIN_REWARD_PROBABILITY" })
    pCoin: number;
+
+   @ConfigField({ path: "MIN_COIN_REWARD" })
+   minCoin: number;
 }
