@@ -35,13 +35,13 @@ export class KakaoOAuth2Service {
         const { data: { access_token: accessToken } } = await this._httpService.axiosRef.post(
             this._options.tokenURL,
             {
+                grant_type: "authorization_code",
+                client_id: this._options.clientId,
+                redirect_uri: this._options.callbackURL,
+                code: code
+            },
+            {
                 headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" },
-                data: {
-                    grant_type: "authorization_code",
-                    client_id: this._options.clientId,
-                    redirect_uri: this._options.callbackURL,
-                    code: code
-                }
             }
         );
 
