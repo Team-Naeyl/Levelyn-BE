@@ -14,10 +14,10 @@ export class KakaoOAuth2Guard implements CanActivate {
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
         const req = ctx.switchToHttp().getRequest<Request>();
 
-        const token = req.query.token as string;
-        this._logger.debug(token);
+        const code = req.query.code as string;
+        this._logger.debug(code);
 
-        req.user = await this._kakaoOAuth2Service.loadUserInfo(token)
+        req.user = await this._kakaoOAuth2Service.loadUserInfo(code)
             .catch(err => {
                 this._logger.error(err);
                 throw new UnauthorizedException();

@@ -4,6 +4,8 @@ import { plainToInstance } from "class-transformer";
 import { KakaoUserInfo, OAuth2UserInfo } from "./data";
 import { pipe, tap } from "@fxts/core";
 import { validateOrReject } from "class-validator";
+import { KakaoOAuth2Options } from "./kakao.oauth2.options";
+import { OAuth2Options } from "./data/oauth2.options";
 
 @Injectable()
 export class KakaoOAuth2Service {
@@ -11,28 +13,48 @@ export class KakaoOAuth2Service {
 
     constructor(
         @Inject(HttpService)
-        private readonly _httpService: HttpService
+        private readonly _httpService: HttpService,
+        @Inject(KakaoOAuth2Options)
+        private readonly _options: OAuth2Options
     ) {}
 
-    async loadUserInfo(token: string): Promise<OAuth2UserInfo> {
+    async loadUserInfo(code: string): Promise<OAuth2UserInfo> {
 
-        const { id, kakaoAccount: { email, profile: { nickname: name } } } = pipe(
-            await this.sendRequest(token),
-            data => plainToInstance(KakaoUserInfo, data),
-            tap(async userInfo => await validateOrReject(userInfo)),
-        );
+        const { id, kakaoAccount } = await this.getAccessToken(code)
+            .then(token => this.getKakaoUserInfo(token))
+            .catch(err => { throw err; });
 
         const openId = `kakao-${id}`;
+        const { email, profile: { nickname: name } } = kakaoAccount;
+
         return { openId, name, email };
     }
 
-    private async sendRequest(token: string): Promise<any> {
+    private async getAccessToken(code: string): Promise<string> {
+
+        const { data: { access_token: accessToken } } = await this._httpService.axiosRef.post(
+            this._options.tokenURL,
+            {
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" },
+                data: {
+                    grant_type: "authorization_code",
+                    client_id: this._options.clientId,
+                    redirect_uri: this._options.callbackURL,
+                    code: code
+                }
+            }
+        );
+
+        return accessToken;
+    }
+
+    private async getKakaoUserInfo(accessToken: string): Promise<KakaoUserInfo> {
 
         const { data } = await this._httpService.axiosRef.get(
-            "https://kapi.kakao.com/v2/user/me",
+            this._options.userInfoURL,
             {
                 headers: {
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${accessToken}`,
                     "Content-Type":  "application/x-www-form-urlencoded;charset=UTF-8"
                 },
                 params: {
@@ -41,6 +63,9 @@ export class KakaoOAuth2Service {
             }
         );
 
-        return data;
+        return pipe(
+            plainToInstance(KakaoUserInfo, data),
+            tap(async userInfo => await validateOrReject(userInfo)),
+        );
     }
 }
