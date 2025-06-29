@@ -2,10 +2,9 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
 import { plainToInstance } from "class-transformer";
-import { KakaoUserInfo } from "./data";
+import { KakaoUserInfo, OAuth2UserInfo } from "./data";
 import { pipe, tap } from "@fxts/core";
 import { validateOrReject } from "class-validator";
-
 
 @Injectable()
 export class KakaoOAuth2Service {
@@ -23,12 +22,16 @@ export class KakaoOAuth2Service {
         )!;
     }
 
-    async loadUserInfo(token: string): Promise<KakaoUserInfo> {
-        return pipe(
+    async loadUserInfo(token: string): Promise<OAuth2UserInfo> {
+
+        const { id, kakaoAccount: { email, profile: { nickname: name } } } = pipe(
             await this.sendRequest(token),
             data => plainToInstance(KakaoUserInfo, data),
             tap(async userInfo => await validateOrReject(userInfo)),
         )
+
+        const openId = `kakao-${id}`;
+        return { openId, name, email }
     }
 
     private async sendRequest(token: string): Promise<any> {

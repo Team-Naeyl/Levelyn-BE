@@ -1,12 +1,14 @@
-import {Controller, ForbiddenException, Get, Inject, Logger, Res, Headers, UseGuards } from '@nestjs/common';
+import { Controller, ForbiddenException, Get, Inject, Logger, Res, Headers, UseGuards } from '@nestjs/common';
 import { AuthService } from "../service";
 import { JWT_REFRESH_EXPIRES } from "../token"
 import { Cookies, User } from "../../common";
-import { SignInDTO } from "../dto";
+import { SignInDTO, SignInQuery, SignInResponse } from "../dto";
 import { Response } from "express";
 import { KakaoOAuth2Guard } from "../../config/oauth2";
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOAuth2, ApiOperation, ApiOkResponse, ApiTags, ApiQuery } from "@nestjs/swagger";
 
 @Controller('/api/auth')
+@ApiTags("Auth")
 export class AuthController {
     private readonly _logger: Logger = new Logger(AuthController.name);
 
@@ -18,11 +20,16 @@ export class AuthController {
     ) {}
 
     @Get("/sign-in")
+    @ApiOperation({ summary: "로그인/회원가입" })
+    @ApiOAuth2(["email", "nickname"])
+    @ApiQuery({ type: SignInQuery, required: true })
+    @ApiOkResponse({ type: SignInResponse })
+    @ApiForbiddenResponse({ description: "카카오 인증 실패"})
     @UseGuards(KakaoOAuth2Guard)
     async signIn(
         @User() dto: SignInDTO,
         @Res({ passthrough: true }) res: Response
-    ) {
+    ): Promise<SignInResponse> {
         const { accessToken, refreshToken, player, wallet } = await this._authService.signIn(dto);
 
         res.cookie(
@@ -34,6 +41,8 @@ export class AuthController {
     }
 
     @Get("/sign-out")
+    @ApiOperation({ summary: "로그아웃" })
+    @ApiBearerAuth()
     async signOut(
         @Headers("authorization")
         authorization: string,
@@ -45,6 +54,8 @@ export class AuthController {
     }
 
     @Get("/renew")
+    @ApiOperation({ summary: "액세스 토큰 재발급" })
+    @ApiForbiddenResponse({ description: "리프래시 토큰 만료, 로그인 필요" })
     async renew(
         @Cookies("REFRESH_TOKEN")
         refreshToken: string | undefined

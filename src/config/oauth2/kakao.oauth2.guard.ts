@@ -14,17 +14,14 @@ export class KakaoOAuth2Guard implements CanActivate {
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
         const req = ctx.switchToHttp().getRequest<Request>();
 
+        const token = req.query.token as string;
+        this._logger.debug(token);
 
-        const { id, kakaoAccount: { email, profile: { nickname: name } } }
-            = await this._kakaoOAuth2Service.loadUserInfo(req.body.token)
+        req.user = await this._kakaoOAuth2Service.loadUserInfo(token)
             .catch(err => {
-                this._logger.debug(req.body.token);
                 this._logger.error(err);
-                throw new UnauthorizedException()
-            })
-
-        const openId = `kakao-${id}`;
-        req.user = { openId, email, name };
+                throw new UnauthorizedException();
+            });
 
         return true;
     }
