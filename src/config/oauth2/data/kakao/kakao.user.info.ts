@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsNumberString, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsNumber, ValidateNested } from "class-validator";
 import { Expose, Type } from "class-transformer";
 import { KakaoAccount } from "./kakao.account";
 
 export class KakaoUserInfo {
-    @IsNumberString()
+    @IsNumber()
     @IsNotEmpty()
     id: string;
 
