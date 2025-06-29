@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { HttpStatus, ValidationPipe } from "@nestjs/common";
 import { initializeTransactionalContext } from "typeorm-transactional";
 import * as passport from 'passport';
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -14,7 +15,19 @@ async function bootstrap() {
 
   app.use(passport.initialize());
 
-  await app.listen(process.env.PORT ?? 3000);
+  SwaggerModule.setup(
+      "api-docs", app,
+      SwaggerModule.createDocument(
+          app,
+          new DocumentBuilder()
+              .setTitle('Levelyn API Docs')
+              .setVersion('1.0.0')
+              .build()
+      )
+  );
+
+  await app.listen(3000, "0.0.0.0");
 }
+
 
 bootstrap();

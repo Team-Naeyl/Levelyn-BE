@@ -6,21 +6,21 @@ import { Type } from "class-transformer";
 
 @ApiExtraModels(ToDoPeriodSchema)
 export class CreateToDoBody {
-    @ApiProperty()
+    @ApiProperty({ type: "string", description: "할 일 내용", required: true })
     @IsString()
     @IsNotEmpty()
     description: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: Date, description: "실행일", required: true })
     @IsNotPast()
     date: Date;
 
-    @ApiProperty()
+    @ApiProperty({ type: "boolean", description: "하위 할 일 여부", required: false })
     @IsOptional()
     @IsBoolean()
-    isSub: boolean;
+    isSub?: boolean;
 
-    @ApiProperty()
+    @ApiProperty({ type: ToDoPeriodSchema, description: "반복 주기", required: false })
     @IsOptional()
     @ValidateNested()
     @Type(() => ToDoPeriodSchema)
