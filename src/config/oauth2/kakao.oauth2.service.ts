@@ -1,6 +1,5 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
 import { plainToInstance } from "class-transformer";
 import { KakaoUserInfo, OAuth2UserInfo } from "./data";
 import { pipe, tap } from "@fxts/core";
@@ -9,18 +8,11 @@ import { validateOrReject } from "class-validator";
 @Injectable()
 export class KakaoOAuth2Service {
     private readonly _logger: Logger = new Logger(KakaoOAuth2Service.name);
-    private readonly _userInfoURL: string;
 
     constructor(
         @Inject(HttpService)
-        private readonly _httpService: HttpService,
-        @Inject(ConfigService)
-        config: ConfigService
-    ) {
-        this._userInfoURL = config.get<string>(
-            "OAUTH2_KAKAO_USER_INFO_URL"
-        )!;
-    }
+        private readonly _httpService: HttpService
+    ) {}
 
     async loadUserInfo(token: string): Promise<OAuth2UserInfo> {
 
@@ -28,21 +20,24 @@ export class KakaoOAuth2Service {
             await this.sendRequest(token),
             data => plainToInstance(KakaoUserInfo, data),
             tap(async userInfo => await validateOrReject(userInfo)),
-        )
+        );
 
         const openId = `kakao-${id}`;
-        return { openId, name, email }
+        return { openId, name, email };
     }
 
     private async sendRequest(token: string): Promise<any> {
 
         const { data } = await this._httpService.axiosRef.get(
-            this._userInfoURL,
+            "https://kapi.kakao.com/v2/user/me",
             {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type":  "application/x-www-form-urlencoded;charset=UTF-8"
                 },
+                params: {
+                   property_keys: JSON.stringify(["kakao_account.email","kakao_account.profile"])
+                }
             }
         );
 
