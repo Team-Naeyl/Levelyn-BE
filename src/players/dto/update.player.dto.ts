@@ -1,4 +1,5 @@
-import { PlayerDTO } from "./player.dto";
-
-export type UpdatePlayerDTO
-    = { id: number; } & Partial<Omit<PlayerDTO, "id">>;
+export interface UpdatePlayerDTO {
+    id: number;
+    deltaExp: number;
+    deltaPosition: number;
+}

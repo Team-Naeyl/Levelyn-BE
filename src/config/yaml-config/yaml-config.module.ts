@@ -12,7 +12,7 @@ export class YamlConfigModule {
     ): DynamicModule {
 
         const providers = Schemas.map(Schema => ({
-            provide: Schema.name,
+            provide: Schema,
             useFactory: (yamlConfig: YamlConfigService) => {
                 return yamlConfig.loadYamlConfig(Schema);
             },

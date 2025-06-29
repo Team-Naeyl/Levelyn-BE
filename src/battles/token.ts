@@ -1,0 +1,1 @@
+export const BATTLE_EXP_REWARD = Symbol("EXP_REWARD");
