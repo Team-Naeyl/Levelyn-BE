@@ -4,10 +4,13 @@ import { HttpStatus, ValidationPipe } from "@nestjs/common";
 import { initializeTransactionalContext } from "typeorm-transactional";
 import * as passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
   initializeTransactionalContext();
-  const app = await NestFactory.create(AppModule);
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set("trust_proxy", true);
 
   app.useGlobalPipes(new ValidationPipe({
     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY

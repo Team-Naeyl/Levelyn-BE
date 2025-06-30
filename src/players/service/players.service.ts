@@ -3,8 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Player } from "../model";
 import { FindOptionsWhere, Repository } from "typeorm";
 import { Transactional } from "typeorm-transactional";
-import { PlayerDTO, UpdatePlayerDTO } from "../dto";
-import { isNull, pipe, throwIf } from "@fxts/core";
+import { PlayerDTO, UpdatePlayerDTO, UpdatePlayerResult } from "../dto";
+import { isNull, pick, pipe, throwIf } from "@fxts/core";
 import { excludeTimestamp } from "../../common";
 import { LevelConfig } from "../../game";
 import { LevelUpService } from "./level.up.service";
@@ -28,7 +28,7 @@ export class PlayersService {
     }
 
     @Transactional()
-    async updatePlayer(dto: UpdatePlayerDTO): Promise<void> {
+    async updatePlayer(dto: UpdatePlayerDTO): Promise<UpdatePlayerResult> {
        const { id, deltaExp, deltaPosition } = dto;
 
        const values = await this.getPlayer(id)
@@ -41,5 +41,6 @@ export class PlayersService {
            .catch(err => { throw err; });
 
        await this._playersRepos.update(id, values);
+       return { id, ...pick(["level", "attack", "will"], values) };
     }
 }

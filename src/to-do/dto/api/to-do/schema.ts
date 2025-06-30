@@ -1,13 +1,13 @@
-import { ApiExtraModels, ApiProperty, ApiSchema } from "@nestjs/swagger";
+import { ApiExtraModels, ApiProperty, ApiSchema, refs } from "@nestjs/swagger";
 import { IsIn, IsInt, Min } from "class-validator";
 
 @ApiSchema()
 export class ToDoPeriodSchema {
-    @ApiProperty()
+    @ApiProperty({ type: "string", description: "반복 주기의 단위/days, weeks, months, years 중 1개의 값" })
     @IsIn(["days", "weeks", "months", "years"])
     unit: "days" | "weeks" | "months" | "years";
 
-    @ApiProperty()
+    @ApiProperty({ type: "integer", description: "반복 주기의 크기" })
     @Min(1)
     @IsInt()
     amount: number;

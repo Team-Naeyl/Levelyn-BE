@@ -1,4 +1,4 @@
-import { ConflictException, forwardRef, Inject, Injectable } from "@nestjs/common";
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Goal } from "../model";
 import { Repository } from "typeorm";
@@ -47,7 +47,7 @@ export class GoalsService {
 
         const { since, until } = pipe(
             await this._goalsRepos.findOneBy({ userId }),
-            throwIf(isNull, () => new ConflictException())
+            throwIf(isNull, () => new NotFoundException())
         );
 
         if (isAfter(date, until)) throw new ConflictException();
