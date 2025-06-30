@@ -16,7 +16,7 @@ export class PlayerItem extends ModelBase {
     @Column({ name: "item_id", type: "integer" })
     itemId: number;
 
-    @ManyToOne(() => Item)
+    @ManyToOne(() => Item, { eager: true })
     @JoinColumn({ name: "item_id" })
     item: Item;
 }

@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Item, ItemsModule, ItemsService } from "../game/items";
+import { Item, ItemsModule, ItemsService } from "../game";
 import { GACHA_OPTIONS, MIN_COIN, P_COIN, P_ITEM } from "./token";
 import { GachaResultConfigService, GachaService, ItemTargetsService, RandomCoinService, RandomItemService } from "./service";
 import { GachaOptions, RegisterAsyncOptions } from "./options";

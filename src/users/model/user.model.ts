@@ -21,11 +21,11 @@ export class User extends ModelBase {
     @Column({ type: "varchar" })
     name: string;
 
-    @OneToOne(() => Player, { cascade: ["insert"], onDelete: "CASCADE" })
+    @OneToOne(() => Player, { cascade: ["insert"], onDelete: "CASCADE", eager: true })
     @JoinColumn({ name: "player_id" })
     player: Player;
 
-    @OneToOne(() => Wallet, { cascade: ["insert"], onDelete: "CASCADE" })
+    @OneToOne(() => Wallet, { cascade: ["insert"], onDelete: "CASCADE", eager: true })
     @JoinColumn({ name: "wallet_id" })
     wallet: Wallet;
 }

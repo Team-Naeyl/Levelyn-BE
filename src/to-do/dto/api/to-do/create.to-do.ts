@@ -2,7 +2,7 @@ import { IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from "cla
 import { IsNotPast } from "../../../../common";
 import { ApiExtraModels, ApiProperty } from "@nestjs/swagger";
 import { ToDoPeriodSchema } from "./schema";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 @ApiExtraModels(ToDoPeriodSchema)
 export class CreateToDoBody {
@@ -13,6 +13,7 @@ export class CreateToDoBody {
 
     @ApiProperty({ type: Date, description: "실행일", required: true })
     @IsNotPast()
+    @Transform(({ value }) => new Date(value))
     date: Date;
 
     @ApiProperty({ type: "boolean", description: "하위 할 일 여부", required: false })

@@ -13,8 +13,6 @@ import { WalletsModule } from './wallets';
 import { AuthModule } from './auth';
 import { ToDoModule } from "./to-do";
 import { InventoryModule } from "./inventory";
-import { TilesModule } from './tiles';
-import { BattlesModule } from './battles';
 import yamlConfig from "./config/yaml";
 import { join } from "node:path";
 import { AppController } from "./app.controller";
@@ -42,8 +40,6 @@ import { AppController } from "./app.controller";
       AuthModule,
       ToDoModule,
       InventoryModule,
-      TilesModule,
-      BattlesModule
   ],
   controllers: [AppController],
 })

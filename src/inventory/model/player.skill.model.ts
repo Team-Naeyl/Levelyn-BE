@@ -16,7 +16,7 @@ export class PlayerSkill extends ModelBase {
     @Column({ name: "skill_id", type: "integer" })
     skillId: number;
 
-    @ManyToOne(() => Skill)
+    @ManyToOne(() => Skill, { eager: true })
     @JoinColumn({ name: "skill_id" })
     skill: Skill;
 }
