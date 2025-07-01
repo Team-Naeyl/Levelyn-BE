@@ -19,12 +19,12 @@ export class AuthService {
     ) {}
 
     async signIn(dto: SignInDTO): Promise<SignInResult> {
-        const { id, player, wallet } = await this._usersService.upsertUser(dto);
+        const { id, state, wallet } = await this._usersService.upsertUser(dto);
 
         const accessToken = await this._jwtAuthService.signAccess({ id });
         const refreshToken = await this._jwtAuthService.signRefresh({ id });
 
-        return { accessToken, refreshToken, player, wallet };
+        return { accessToken, refreshToken, state, wallet };
     }
 
     async signOut(authorization: string): Promise<void> {

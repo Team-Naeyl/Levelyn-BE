@@ -1,5 +1,5 @@
 import { ApiExtraModels, ApiProperty } from "@nestjs/swagger";
-import { PlayerSchema } from "../../../players/dto";
+import { StateSchema } from "../../../states/dto";
 import { WalletSchema } from "../../../wallets/dto";
 
 export class SignInQuery {
@@ -7,13 +7,13 @@ export class SignInQuery {
     token: string;
 }
 
-@ApiExtraModels(PlayerSchema, WalletSchema)
+@ApiExtraModels(StateSchema, WalletSchema)
 export class SignInResponse {
     @ApiProperty({ type: "string", description: "액세스 토큰" })
     accessToken: string;
 
-    @ApiProperty({ type: PlayerSchema })
-    player: PlayerSchema;
+    @ApiProperty({ type: StateSchema })
+    player: StateSchema;
 
     @ApiProperty({ type: WalletSchema })
     wallet: WalletSchema;

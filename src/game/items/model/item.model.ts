@@ -27,11 +27,11 @@ export class Item extends ModelBase {
     @Column({ type: "float" })
     weight: number;
 
-    @ManyToOne(() => ItemType)
+    @ManyToOne(() => ItemType, { eager: true })
     @JoinColumn({ name: "type_id" })
     type: ItemType;
 
-    @ManyToOne(() => ItemSubType)
+    @ManyToOne(() => ItemSubType, { eager: true })
     @JoinColumn({ name: "sub_type_id" })
     subType: ItemSubType | null;
 

@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, Inject, Logger, Param, Patch, Post, Put, Query, Redirect, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Inject, Logger, Param, Patch, Post, Put, Query,  UseGuards } from "@nestjs/common";
 import { ToDoService } from "../service";
 import { JwtAuthGuard } from "../../auth";
 import { User } from "../../common";
-import { CreateToDoBody, FulfillToDoResponse, GetDailyToDoListQuery, UpdateToDoBody } from "../dto";
+import { CreateToDoBody, GetDailyToDoListQuery, UpdateToDoBody } from "../dto";
 import { UserInfo } from "../../auth/dto";
 import {
     ApiBearerAuth,
@@ -13,10 +13,13 @@ import {
     ApiOkResponse,
     ApiOperation,
     ApiParam,
-    ApiQuery,
-    ApiResponse, ApiUnprocessableEntityResponse
+    ApiQuery, ApiResetContentResponse,
+    ApiResponse,
+    ApiTags,
+    ApiUnprocessableEntityResponse
 } from "@nestjs/swagger";
 
+@ApiTags("ToDo")
 @Controller("/api/to-do")
 @UseGuards(JwtAuthGuard)
 export class ToDoController {
@@ -96,11 +99,10 @@ export class ToDoController {
     @ApiOperation({ summary: "할 일 완료" })
     @ApiBearerAuth()
     @ApiParam({ name: "id", type: "integer", required: true , description: "완료한 할 일의 id"})
-    @ApiResponse({ status: 301, type: FulfillToDoResponse, description: "성공" })
+    @ApiResetContentResponse()
     @ApiForbiddenResponse({ description: "토큰 인증 실패" })
     @ApiNotFoundResponse({ description: "존재하지 않는 할 일" })
     @ApiConflictResponse({ description: "기한이 지난 할 일" })
-    @Redirect("/api/tiles/reward")
     async fulfillToDo(
         @Param("id") id: number,
         @User() user: UserInfo
