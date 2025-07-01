@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Monster } from "./model";
 import { Repository } from "typeorm";
 import { MonsterDTO } from "./dto";
 import { excludeTimestampOnly } from "../../common";
-import { map, pipe, toArray } from "@fxts/core";
+import { Random } from "random";
+import { isUndefined, pipe, throwIf } from "@fxts/core";
 
 @Injectable()
 export class MonstersService {
@@ -12,15 +13,20 @@ export class MonstersService {
     constructor(
         @InjectRepository(Monster)
         private readonly _monstersRepos: Repository<Monster>,
+        @Inject(Random)
+        private readonly _random: Random
     ) {  }
 
-    async getLocalMonsters(regionId: number): Promise<MonsterDTO[]> {
+    async getLocalMonster(regionId: number): Promise<MonsterDTO> {
         return pipe(
             await this._monstersRepos.find({ where: { regionId }, cache: true }),
-            map(__toDTO),
-            toArray
+            monsters => this._random.choice(monsters),
+            throwIf(isUndefined, () => Error("No monster found")),
+            __toDTO
         );
     }
+
+
 }
 
 function __toDTO(monster: Monster): MonsterDTO {

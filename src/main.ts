@@ -5,6 +5,7 @@ import { initializeTransactionalContext } from "typeorm-transactional";
 import * as passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import * as process from "node:process";
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -29,7 +30,7 @@ async function bootstrap() {
       )
   );
 
-  await app.listen(3000, "0.0.0.0");
+  await app.listen(process.env.PORT ?? 3000, process.env.HOST ?? "127.0.0.1");
 }
 
 

@@ -19,7 +19,7 @@ export class Monster extends ModelBase {
     @Column({ type: "float" })
     hp: number;
 
-    @ManyToOne(() => MonsterType)
+    @ManyToOne(() => MonsterType, { eager: true })
     @JoinColumn({ name: "type_id" })
     type: MonsterType;
 

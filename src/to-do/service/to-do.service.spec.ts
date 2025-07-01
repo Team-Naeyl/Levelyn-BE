@@ -4,6 +4,7 @@ import { GoalsService } from './goals.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ToDo } from '../model';
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 jest.mock('typeorm-transactional', () => ({
     Transactional: () => () => ({}),
@@ -25,6 +26,10 @@ describe('ToDoService', () => {
                 {
                     provide: GoalsService,
                     useValue: { onUpsertSubToDo: jest.fn() },
+                },
+                {
+                    provide: EventEmitter2,
+                    useValue: { emit: jest.fn() }
                 }
             ],
         }).compile();

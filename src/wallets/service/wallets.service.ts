@@ -26,6 +26,6 @@ export class WalletsService {
     @Transactional()
     async updateCoin(dto: UpdateWalletDTO): Promise<void> {
         const { id, deltaCoin } = dto;
-        await this._walletsRepos.increment({ id }, "coin", deltaCoin);
+        deltaCoin && await this._walletsRepos.increment({ id }, "coin", deltaCoin);
     }
 }
