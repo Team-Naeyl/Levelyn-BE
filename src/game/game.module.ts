@@ -4,13 +4,13 @@ import { Item, ItemsModule, ItemsService } from "./items";
 import { Monster, MonstersModule, MonstersService } from "./monsters";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { YamlConfigModule } from "../config/yaml-config";
-import { RegionConfig } from "./config";
+import { RegionConfig, RewardConfig } from "./config";
 import { Region, RegionsModule, RegionsService } from "./regions";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Skill, Item, Monster, Region]),
-        YamlConfigModule.forFeature([RegionConfig]),
+        YamlConfigModule.forFeature([RegionConfig, RewardConfig]),
         SkillsModule,
         ItemsModule,
         MonstersModule,

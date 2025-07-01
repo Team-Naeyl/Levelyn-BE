@@ -1,5 +1,6 @@
-import { ConfigField } from "../../config/yaml-config";
+import { ConfigField, ConfigSchema } from "../../config/yaml-config";
 
+@ConfigSchema("REWARD")
 export class RewardConfig {
    @ConfigField({ path: "EXP_REWARD" })
    exp: number;
@@ -10,6 +11,6 @@ export class RewardConfig {
    @ConfigField({ path: "COIN_REWARD_PROBABILITY" })
    pCoin: number;
 
-   @ConfigField({ path: "MIN_COIN_REWARD" })
-   minCoin: number;
+   @ConfigField({ path: "COIN_DISTRIBUTION_LAMBDA" })
+   lambdaCoin: number;
 }

@@ -8,12 +8,14 @@ import {
     ApiBody,
     ApiCreatedResponse,
     ApiForbiddenResponse,
-    ApiNoContentResponse, ApiOkResponse,
+    ApiNoContentResponse,
+    ApiOkResponse,
     ApiOperation,
-    ApiResetContentResponse,
+    ApiResetContentResponse, ApiTags,
     ApiUnprocessableEntityResponse
 } from "@nestjs/swagger";
 
+@ApiTags("Goals")
 @Controller("/api/goals")
 @UseGuards(JwtAuthGuard)
 export class GoalsController {

@@ -15,18 +15,18 @@ export class UsersService {
     ) {  }
 
     async upsertUser(dto: UpsertUserDTO): Promise<UserDTO> {
-        const { player, wallet, ...rest } = await this.getOrCreateUser(dto);
+        const { state, wallet, ...rest } = await this.getOrCreateUser(dto);
 
         return {
             ...excludeTimestampOnly(rest),
-            player: excludeTimestamp(player, "id"),
+            state: excludeTimestamp(state, "id"),
             wallet: excludeTimestamp(wallet, "id")
         };
     }
 
     private async getOrCreateUser(dto: UpsertUserDTO): Promise<User> {
         const user = await this._usersRepos.findOneBy({ openId: dto.openId });
-        return user ?? await this._usersRepos.save({ ...dto, player: {}, wallet: {} });
+        return user ?? await this._usersRepos.save({ ...dto, state: {}, wallet: {} });
     }
 }
 

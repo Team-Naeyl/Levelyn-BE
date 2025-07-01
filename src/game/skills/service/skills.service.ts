@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Skill } from "../model";
+import { Skill, SkillRequirement } from "../model";
 import { Between, FindOperator, FindOptionsWhere, LessThanOrEqual, Repository } from "typeorm";
-import { GetSKillsDTO, SkillDTO } from "../dto";
+import { GetSkillsByRequirementDTO, SkillDTO } from "../dto";
 import { compactObject, entries, fromEntries, isNumber, map, pick, pipe, toArray } from "@fxts/core";
 
 @Injectable()
@@ -15,17 +15,23 @@ export class SkillsService {
     ) { }
 
     async getAllSkills(): Promise<SkillDTO[]> {
-        const skills = await this._skillsRepository.find({ cache: true });
-        return skills.map(SkillsService.toSkillDTO);
+        return await this.getSkillsBy({});
     }
 
-    getSkillsBy(dto: GetSKillsDTO): Promise<SkillDTO[]> {
-        return pipe(
-            __makeWhereOptions(dto),
-            where => this._skillsRepository.findBy(where),
-            map(SkillsService.toSkillDTO),
-            toArray
-        );
+    async getSkillsByRequirement(dto: GetSkillsByRequirementDTO): Promise<SkillDTO[]> {
+        const requirement = __makeWhereOptionsForSkillRequirement(dto);
+        return await this.getSkillsBy({ requirement });
+    }
+
+    private async getSkillsBy(where: FindOptionsWhere<Skill>): Promise<SkillDTO[]> {
+
+        const skills = await this._skillsRepository.find({
+            relations: { requirement: !!where.requirement },
+            cache: true,
+            where
+        });
+
+        return skills.map(SkillsService.toSkillDTO);
     }
 
     static toSkillDTO(skill: Skill): SkillDTO {
@@ -33,14 +39,15 @@ export class SkillsService {
     }
 }
 
-function __makeWhereOptions(dto: GetSKillsDTO): FindOptionsWhere<Skill> {
+function __makeWhereOptionsForSkillRequirement(
+    dto: GetSkillsByRequirementDTO
+): FindOptionsWhere<SkillRequirement> {
     return pipe(
         compactObject(dto),
         entries,
-        map(([k, v]): [keyof GetSKillsDTO, FindOperator<number>] =>{
-            return [k, isNumber(v) ? LessThanOrEqual(v!) : Between(...v!)];
-        }),
-        fromEntries,
-        requirement => ({ requirement })
+        map(([k, v]): [keyof GetSkillsByRequirementDTO, FindOperator<number>] =>
+            [k, isNumber(v) ? LessThanOrEqual(v!) : Between(...v!)]
+        ),
+        fromEntries
     );
 }

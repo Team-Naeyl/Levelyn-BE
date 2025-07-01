@@ -2,10 +2,10 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { plainToInstance } from "class-transformer";
 import { KakaoUserInfo, OAuth2UserInfo } from "./data";
-import { pipe, tap } from "@fxts/core";
 import { validateOrReject } from "class-validator";
 import { KakaoOAuth2Options } from "./kakao.oauth2.options";
 import { OAuth2Options } from "./data/oauth2.options";
+import { pipe, tap } from "@fxts/core";
 
 @Injectable()
 export class KakaoOAuth2Service {
@@ -63,7 +63,7 @@ export class KakaoOAuth2Service {
 
         return pipe(
             plainToInstance(KakaoUserInfo, data),
-            tap(async userInfo => await validateOrReject(userInfo)),
+            tap(ui => validateOrReject(ui))
         );
     }
 }

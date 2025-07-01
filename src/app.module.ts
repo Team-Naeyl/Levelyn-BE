@@ -8,7 +8,7 @@ import { YamlConfigModule } from "./config/yaml-config";
 import { RedisModule } from "./config/redis";
 import { RandomModule } from "./config/random";
 import { UsersModule } from './users';
-import { PlayersModule } from './players';
+import { StatesModule } from './states';
 import { WalletsModule } from './wallets';
 import { AuthModule } from './auth';
 import { ToDoModule } from "./to-do";
@@ -35,7 +35,7 @@ import { AppController } from "./app.controller";
       RedisModule,
       RandomModule,
       UsersModule,
-      PlayersModule,
+      StatesModule,
       WalletsModule,
       AuthModule,
       ToDoModule,

@@ -3,7 +3,12 @@ import { IsNumber } from "class-validator";
 
 
 export class UpdateSkillsSlotBody {
-    @ApiProperty({ name: "skillIds", type: "array", items: { type: "integer" }, required: true })
+    @ApiProperty({
+        type: "array",
+        items: { type: "integer" },
+        required: true,
+        description: "장착할 스킬들의 id 값들"
+    })
     @IsNumber({}, { each: true })
     skillIds: number[];
 }
