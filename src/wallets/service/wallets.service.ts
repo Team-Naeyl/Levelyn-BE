@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Wallet } from "../model";
 import { Repository } from "typeorm";
-import { UpdateWalletDTO, WalletDTO } from "../dto";
+import { UpdateWalletDTO, UpdateWalletResult, WalletDTO } from "../dto";
 import { Transactional } from "typeorm-transactional"
 import { isNull, pipe, throwIf } from "@fxts/core";
 import { excludeTimestamp } from "../../common";
@@ -24,8 +24,9 @@ export class WalletsService {
     }
 
     @Transactional()
-    async updateCoin(dto: UpdateWalletDTO): Promise<void> {
+    async updateCoin(dto: UpdateWalletDTO): Promise<UpdateWalletResult> {
         const { id, deltaCoin } = dto;
         deltaCoin && await this._walletsRepos.increment({ id }, "coin", deltaCoin);
+        return { deltaCoin };
     }
 }
