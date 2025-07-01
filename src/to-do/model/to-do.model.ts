@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "ty
 import { ModelBase } from "../../common";
 import { ToDoPeriod } from "./to-do.period.model";
 
-@Entity("to-do-list")
+@Entity("to_do_list")
 export class ToDo extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Inject, Put, Sse, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Logger, Put, Sse, UseGuards } from "@nestjs/common";
 import { UserSkillsService } from "../service";
 import { SkillsService } from "../../game";
 import { JwtAuthGuard } from "../../auth";
@@ -15,13 +15,14 @@ import {
     ApiUnprocessableEntityResponse
 } from "@nestjs/swagger";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { from, fromEvent, map, mergeMap, Observable } from "rxjs";
+import { from, fromEvent, map, mergeMap, Observable, filter, tap } from "rxjs";
 import { UserSkillsUnlockedEvent } from "../../states/event";
 
 @ApiTags("Inventory", "Skills")
 @Controller("/api/inventory/skills")
 @UseGuards(JwtAuthGuard)
 export class UserSkillsController {
+    private readonly _logger: Logger = new Logger(UserSkillsController.name);
 
     constructor(
        @Inject(SkillsService)
@@ -65,11 +66,14 @@ export class UserSkillsController {
     notifySkillsAdded(@User("id" ) userId: number): Observable<SkillsAddedNotification> {
         return fromEvent(this._eventEmitter, `user.${userId}.skills.unlocked`)
             .pipe(
+                tap(msg => this._logger.log(msg)),
                 map(msg => msg as UserSkillsUnlockedEvent),
+                filter(({ skillIds }) => !!skillIds.length),
                 mergeMap(({ skillIds }) =>
                     from(this._userSkillsService.addUserSkills({ userId, skillIds }))
                 ),
-                map(newSkills => ({ newSkills }))
+                map(newSkills => ({ newSkills })),
+                tap(result => this._logger.log(result))
             );
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Inject, Patch, Sse, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Logger, Patch, Sse, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../../auth";
 import { UserItemsService } from "../service";
 import { SseQuerySchema, User } from "../../common";
@@ -14,13 +14,14 @@ import {
     ApiUnprocessableEntityResponse
 } from "@nestjs/swagger";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { fromEvent, map, Observable, mergeMap, from } from "rxjs";
+import { fromEvent, map, Observable, mergeMap, from, filter, tap } from "rxjs";
 import { UserRewardedEvent } from "../../rewards/event";
 
 @ApiTags("Inventory", "Items")
 @Controller("/api/inventory/items")
 @UseGuards(JwtAuthGuard)
 export class UserItemsController {
+    private readonly _logger: Logger = new Logger(UserItemsController.name);
 
     constructor(
        @Inject(UserItemsService)
@@ -63,11 +64,14 @@ export class UserItemsController {
     notifyItemsAdded(@User("id" ) userId: number): Observable<ItemsAddedNotification> {
         return fromEvent(this._eventEmitter, `user.${userId}.rewarded`)
             .pipe(
+                tap(msg => this._logger.log(msg)),
                 map(msg => msg as UserRewardedEvent),
+                filter(({ itemIds }) => !!itemIds.length),
                 mergeMap(({ itemIds }) =>
                     from(this._userItemsService.addUserItems({ userId, itemIds }))
                 ),
-                map(newItems => ({ newItems }))
+                map(newItems => ({ newItems })),
+                tap(result => this._logger.log(result))
             );
     }
 }
