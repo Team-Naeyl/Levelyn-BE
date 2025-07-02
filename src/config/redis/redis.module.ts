@@ -2,7 +2,7 @@ import { DynamicModule, Global, Module, Provider } from "@nestjs/common";
 import Redis from "ioredis";
 import { redisFactory } from "./redis.factory";
 import { ConfigService } from "@nestjs/config";
-import { RedisObjectStorage, getStorageToken, SchemaConstructor } from "./object-storage";
+import { ObjectStorage, getStorageToken, SchemaConstructor } from "../object-storage";
 import { RedisCircularQueue } from "./redis.circular.queue";
 
 @Global()
@@ -24,7 +24,7 @@ export class RedisModule {
 
     const providers: Provider[] = Schemas.map(Schema => ({
       provide: getStorageToken(Schema),
-      useFactory: (redis: Redis) => RedisObjectStorage.create(redis, Schema),
+      useFactory: (redis: Redis) => ObjectStorage.create(redis, Schema),
       inject: [Redis],
     }));
 

@@ -67,28 +67,28 @@ export class UserItemsService {
         const userItems = await this.getUserItemsBy(dto);
 
         const ids = pipe(
-            concat(
+            await pipe(
                 userItems,
-                await pipe(
-                    userItems,
-                    filter(ui => !ui.equipped),
-                    map(ui => ui.item.typeId),
-                    typeIds => this.getUserItemsBy({
-                        userId: dto.userId,
-                        typeIds: [...typeIds],
-                        equipped: true
-                    })
-                )
+                filter(ui => !ui.equipped),
+                map(ui => ui.item.typeId),
+                typeIds => this.getUserItemsBy({
+                    userId: dto.userId,
+                    typeIds: [...typeIds],
+                    equipped: true
+                })
             ),
+            concat(userItems),
             map(prop("id")),
             toArray
         );
 
-        await this._userItemsRepos.update(ids, { equipped: () => '!equipped' })
-            .then(throwIf(
-                ({ affected }) => affected! !== ids.length,
-                () => Error("Query failed")
-            )).catch(throwError(identity));
+        if (ids.length) {
+            await this._userItemsRepos.update(ids, { equipped: () => '!equipped' })
+                .then(throwIf(
+                    ({ affected }) => affected! !== ids.length,
+                    () => Error("Query failed")
+                )).catch(throwError(identity));
+        }
     }
 
     private getUserItemsBy(dto: GetUserItemsDTO): Promise<UserItem[]> {

@@ -1,4 +1,4 @@
-import { RedisValueType, SchemaConfig, SchemaConstructor } from "./types";
+import { RedisValueType, SchemaConfig, SchemaConstructor } from "../types";
 import { keys } from "@fxts/core";
 
 

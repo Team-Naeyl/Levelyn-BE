@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { User } from "../model";
 import { UpsertUserDTO, UserDTO } from "../dto";
 import { excludeTimestamp, excludeTimestampOnly } from "../../common";
+import { pipe, tap } from "@fxts/core";
 
 @Injectable()
 export class UsersService {
@@ -15,19 +16,27 @@ export class UsersService {
     ) {  }
 
     async upsertUser(dto: UpsertUserDTO): Promise<UserDTO> {
-        const { state, wallet, ...rest } = await this.getOrCreateUser(dto);
-
-        return {
-            ...excludeTimestampOnly(rest),
-            state: excludeTimestamp(state, "id"),
-            wallet: excludeTimestamp(wallet, "id")
-        };
+        return pipe(
+            await this.getOrCreateUser(dto),
+            tap(user => this._logger.log(user)),
+            __toDTO
+        );
     }
 
     private async getOrCreateUser(dto: UpsertUserDTO): Promise<User> {
-        const user = await this._usersRepos.findOneBy({ openId: dto.openId });
+        const user = await this._usersRepos.findOneBy({ email: dto.email });
         return user ?? await this._usersRepos.save({ ...dto, state: {}, wallet: {} });
     }
+}
+
+function __toDTO(user: User): UserDTO {
+    const { state, wallet, ...rest } = user;
+
+    return {
+        ...excludeTimestampOnly(rest),
+        state: excludeTimestamp(state, "id"),
+        wallet: excludeTimestamp(wallet, "id")
+    };
 }
 
 

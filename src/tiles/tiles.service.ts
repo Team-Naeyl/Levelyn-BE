@@ -6,6 +6,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ClearTileResult } from "./dto";
 import { UserRewardedEvent } from "../rewards/event";
 import { RewardsService } from "../rewards";
+import { TileBattleEvent } from "./event";
 
 @Injectable()
 export class TilesService {
@@ -31,7 +32,10 @@ export class TilesService {
         const isBattle = this.isBattleEvent();
 
         if (isBattle) {
-            this._eventEmitter.emit("tile.battle", )
+            this._eventEmitter.emit(
+                "tile.battle",
+                new TileBattleEvent(userId)
+            );
         }
         else {
             const reward = await this._rewardsService.makeReward({ exp: 0, coin: 0 });

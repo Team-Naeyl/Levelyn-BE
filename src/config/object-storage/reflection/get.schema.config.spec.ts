@@ -1,6 +1,6 @@
 import { getSchemaConfig } from './get.schema.config';
 import 'reflect-metadata';
-import { ObjectField } from "./decorator";
+import { ObjectField } from "../decorator";
 
 class TestSchema {
     @ObjectField({ type: "string" })

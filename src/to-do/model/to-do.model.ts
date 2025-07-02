@@ -25,7 +25,7 @@ export class ToDo extends ModelBase {
     @Column({ type: "boolean", default: false })
     completed: boolean;
 
-    @OneToOne(() => ToDoPeriod, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+    @OneToOne(() => ToDoPeriod, { eager: true, onDelete: "CASCADE", cascade: ["insert", "update"] })
     @JoinColumn({ name: "period_id" })
     period: ToDoPeriod | null;
 }
