@@ -1,5 +1,5 @@
 import { RedisHMap, RedisValueType, SchemaConstructor, SchemaKeyType } from "./types";
-import { getSchemaConfig } from "./get.schema.config";
+import { getSchemaConfig } from "./reflection";
 import { entries } from "@fxts/core";
 
 export class ObjectMapper<SchemaT extends Object> {
@@ -8,7 +8,7 @@ export class ObjectMapper<SchemaT extends Object> {
     constructor(
         private readonly _Schema: SchemaConstructor<SchemaT>
     ) {
-        this._config = [...entries(getSchemaConfig(this._Schema))]
+        this._config = [...entries(getSchemaConfig(this._Schema))];
 
     }
 
@@ -37,21 +37,25 @@ export class ObjectMapper<SchemaT extends Object> {
         return instance;
     }
 
-    async instanceToHMapEntries(instance: Partial<SchemaT>): Promise<[SchemaKeyType<SchemaT>, string][]> {
-        return this._config
-            .filter(([k,]) => instance[k] !== undefined)
-            .map(([k, type]) => {
-                switch (type) {
-                    case "boolean":
-                        return [k, Number(instance[k]).toString()];
-                    case "datetime" : {
-                        return instance[k] instanceof Date
-                            ? [k, instance[k].toISOString()]
-                            : [k, new Date(instance[k] as any).toISOString()];
-                    }
-                    default:
-                        return [k, String(instance[k])];
-                }
-        });
+    instanceToHMap(instance: Partial<SchemaT>): RedisHMap<SchemaT> {
+        return Object.fromEntries(
+            this._config
+                .filter(([k,]) => instance[k] !== undefined)
+                .map(([k, type]) =>
+                    [k, __toRedisValue(instance[k], type)]
+                )
+        ) as RedisHMap<SchemaT>;
+    }
+}
+
+function __toRedisValue(x: any, type: RedisValueType): string {
+    switch (type) {
+        case "boolean":
+            return Number(x).toString();
+        case "datetime" : {
+            return (x instanceof Date ? x : new Date(x)).toISOString();
+        }
+        default:
+            return String(x);
     }
 }

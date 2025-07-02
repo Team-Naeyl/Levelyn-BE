@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ToDo } from "../model";
 import { LessThanOrEqual, Repository } from "typeorm";
 import { CreateToDoDTO, GetToDoDTO, GetDailyToDoListDTO, UpdateToDoDTO, ToDoDTO } from "../dto";
-import { filter, isNull, map, omit, pipe, throwIf, toArray } from "@fxts/core";
+import { filter, isNull, pipe, map, throwIf, toArray } from "@fxts/core";
 import { add } from "date-fns";
 import { Transactional } from "typeorm-transactional";
 import { isDayToDo } from "./service.internal";

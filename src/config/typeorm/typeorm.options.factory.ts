@@ -10,6 +10,6 @@ export function typeormOptionsFactory(config: ConfigService): TypeOrmModuleOptio
         password: config.get<string>("DB_PASSWORD")!,
         database: config.get<string>("DB_DATABASE")!,
         entities: [__dirname + '/../../**/*.model{.ts,.js}'],
-        logging: true
+        logging: false
     };
 }

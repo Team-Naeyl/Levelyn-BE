@@ -55,7 +55,7 @@ describe('ObjectMapper', () => {
                 married: false
             };
 
-            await expect(mapper.instanceToHMapEntries(user)).resolves
+            await expect(mapper.instanceToHMap(user)).resolves
                 .toEqual([
                     ["name", "foo"],
                     ["age", "27"],
@@ -67,7 +67,7 @@ describe('ObjectMapper', () => {
         it("When partial instance given, skip missing fields", async () => {
             const user: Partial<User> = { name: "foo", age: 27, married: true };
 
-            await expect(mapper.instanceToHMapEntries(user)).resolves
+            await expect(mapper.instanceToHMap(user)).resolves
                 .toEqual([
                     ["name", "foo"],
                     ["age", "27"],

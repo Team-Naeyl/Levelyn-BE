@@ -9,8 +9,8 @@ export class User extends ModelBase {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: "open_id", type: "varchar", unique: true })
-    openId: string;
+    @Column({ name: "email", type: "varchar", unique: true })
+    email: string;
 
     @Column({ name: "state_id", type: "integer", unique: true })
     stateId: number;

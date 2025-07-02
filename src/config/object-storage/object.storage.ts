@@ -1,12 +1,12 @@
 import { RedisHMap, SchemaConstructor, SchemaInstanceType, SchemaKeyType } from "./types";
 import { Injectable } from "@nestjs/common";
 import Redis from "ioredis";
-import { getSchemaConfig } from "./get.schema.config";
+import { getSchemaConfig } from "./reflection";
 import { keys } from "@fxts/core";
 import { ObjectMapper } from "./object.mapper";
 
 @Injectable()
-export class RedisObjectStorage<SchemaT extends Object> {
+export class ObjectStorage<SchemaT extends Object> {
    protected readonly _mapper: ObjectMapper<SchemaT>;
    protected readonly _fields: SchemaKeyType<SchemaT>[];
 
@@ -21,7 +21,7 @@ export class RedisObjectStorage<SchemaT extends Object> {
     async upsert(key: string, model: Partial<SchemaT>) {
         await this._redis.hmset(
             key,
-            ...(await this._mapper.instanceToHMapEntries(model)).flat()
+            this._mapper.instanceToHMap(model)
         );
     }
 
@@ -49,7 +49,7 @@ export class RedisObjectStorage<SchemaT extends Object> {
 
     static create<
         Sch extends SchemaConstructor<SchemaInstanceType<Sch>>
-    >(redis: Redis, Schema: Sch): RedisObjectStorage<SchemaInstanceType<Sch>> {
-        return new RedisObjectStorage(redis, Schema);
+    >(redis: Redis, Schema: Sch): ObjectStorage<SchemaInstanceType<Sch>> {
+        return new ObjectStorage(redis, Schema);
     }
 }

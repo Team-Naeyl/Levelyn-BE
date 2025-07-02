@@ -1,4 +1,4 @@
 export interface SignInDTO {
-    openId: string;
+    email: string;
     name: string;
 }

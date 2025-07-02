@@ -1,4 +1,4 @@
 export interface UpsertUserDTO {
-    openId: string;
+    email: string;
     name: string;
 }

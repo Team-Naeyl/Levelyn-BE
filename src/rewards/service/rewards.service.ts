@@ -1,6 +1,6 @@
 import { MakeRewardDTO, RewardDTO } from "../dto";
 import { Inject } from "@nestjs/common";
-import { RewardConfig } from "../../game/config";
+import { RewardConfig } from "../../game";
 import { RandomBoxesService } from "./random.boxes.service";
 
 export class RewardsService {

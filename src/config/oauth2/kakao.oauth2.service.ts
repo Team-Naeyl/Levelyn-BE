@@ -27,7 +27,7 @@ export class KakaoOAuth2Service {
         const openId = `kakao-${id}`;
         const { email, profile: { nickname: name } } = kakaoAccount;
 
-        return { openId, name, email };
+        return { name, email };
     }
 
     private async getAccessToken(code: string): Promise<string> {
@@ -66,4 +66,9 @@ export class KakaoOAuth2Service {
             tap(ui => validateOrReject(ui))
         );
     }
+}
+
+function __catchAxiosError(err: any) {
+    if (!err.response) throw err;
+
 }

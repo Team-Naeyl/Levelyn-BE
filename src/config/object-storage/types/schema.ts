@@ -1,7 +1,4 @@
-export type RedisHMap<SchemaT extends Object>
-    = Record<keyof SchemaT, string | null>;
-
-export type RedisValueType = "string" | "number" | "boolean" | "datetime";
+import { RedisValueType } from "./redis";
 
 export type SchemaConstructor<SchemaT extends Object>
     = { new (...args: any[]): SchemaT };
@@ -14,6 +11,3 @@ export type SchemaKeyType<SchemaT extends Object> = Extract<keyof SchemaT, strin
 export type SchemaConfig<SchemaT extends Object> = {
     [k in SchemaKeyType<SchemaT>]: RedisValueType;
 };
-
-
-
