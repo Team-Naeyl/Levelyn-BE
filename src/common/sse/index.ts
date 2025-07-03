@@ -1,1 +1,1 @@
-export * from "./sse.query.schema";
+export * from "./auth.query.schema";

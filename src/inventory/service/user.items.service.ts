@@ -42,8 +42,8 @@ export class UserItemsService {
        return userItems.map(__toDTO);
     }
 
-    async getUserItems(userId: number): Promise<UserItemDTO[]> {
-        const userItems = await this.getUserItemsBy({ userId });
+    async getUserItems(dto: GetUserItemsDTO): Promise<UserItemDTO[]> {
+        const userItems = await this.getUserItemsBy(dto);
         return userItems.map(__toDTO);
     }
 

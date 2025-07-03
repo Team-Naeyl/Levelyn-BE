@@ -16,6 +16,7 @@ import { InventoryModule } from "./inventory";
 import yamlConfig from "./config/yaml";
 import { join } from "node:path";
 import { AppController } from "./app.controller";
+import { CqrsModule } from "@nestjs/cqrs";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AppController } from "./app.controller";
       }),
       HttpModule.register({ global: true }),
       EventEmitterModule.forRoot({ global: true }),
+      CqrsModule.forRoot(),
       YamlConfigModule,
       RedisModule,
       RandomModule,

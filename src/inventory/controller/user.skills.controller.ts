@@ -2,21 +2,18 @@ import { Body, Controller, Get, HttpCode, Inject, Logger, Put, Sse, UseGuards } 
 import { UserSkillsService } from "../service";
 import { SkillsService } from "../../game";
 import { JwtAuthGuard } from "../../auth";
-import { SseQuerySchema, User } from "../../common";
-import { GetUserSkillsResponse, SkillsAddedNotification, UpdateSkillsSlotBody } from "../dto";
+import { User } from "../../common";
+import { GetUserSkillsResponse, UpdateSkillsSlotBody } from "../dto";
 import {
     ApiBearerAuth,
     ApiBody,
     ApiForbiddenResponse,
     ApiOkResponse,
-    ApiOperation, ApiQuery,
+    ApiOperation,
     ApiResetContentResponse,
     ApiTags,
     ApiUnprocessableEntityResponse
 } from "@nestjs/swagger";
-import { EventEmitter2 } from "@nestjs/event-emitter";
-import { from, fromEvent, map, mergeMap, Observable, filter, tap } from "rxjs";
-import { UserSkillsUnlockedEvent } from "../../states/event";
 
 @ApiTags("Inventory", "Skills")
 @Controller("/api/inventory/skills")
@@ -29,8 +26,6 @@ export class UserSkillsController {
        private readonly _skillsService: SkillsService,
        @Inject(UserSkillsService)
        private _userSkillsService: UserSkillsService,
-       @Inject(EventEmitter2)
-       private readonly _eventEmitter: EventEmitter2
     ) {}
 
     @Get("/")
@@ -40,7 +35,7 @@ export class UserSkillsController {
     @ApiForbiddenResponse({ description: "토큰 인증 실패" })
     async getUserSkills(@User("id") userId: number): Promise<GetUserSkillsResponse> {
         const skills = await this._skillsService.getAllSkills();
-        const userSkills = await this._userSkillsService.getUserSkills(userId);
+        const userSkills = await this._userSkillsService.getUserSkills({ userId });
         return { skills, userSkills };
     }
 
@@ -59,21 +54,5 @@ export class UserSkillsController {
         await this._userSkillsService.updateEquipped({ userId, skillIds });
     }
 
-    @Sse("/notification")
-    @ApiOperation({ summary: "스킬 해금 알림" })
-    @ApiQuery({ type: SseQuerySchema, required: true })
-    @ApiOkResponse({ type: SkillsAddedNotification })
-    notifySkillsAdded(@User("id" ) userId: number): Observable<SkillsAddedNotification> {
-        return fromEvent(this._eventEmitter, `user.${userId}.skills.unlocked`)
-            .pipe(
-                tap(msg => this._logger.log(msg)),
-                map(msg => msg as UserSkillsUnlockedEvent),
-                filter(({ skillIds }) => !!skillIds.length),
-                mergeMap(({ skillIds }) =>
-                    from(this._userSkillsService.addUserSkills({ userId, skillIds }))
-                ),
-                map(newSkills => ({ newSkills })),
-                tap(result => this._logger.log(result))
-            );
-    }
+
 }

@@ -29,8 +29,8 @@ export class UserSkillsService {
         return userSkills.map(__toDTO);
     }
 
-    async getUserSkills(userId: number): Promise<UserSkillDTO[]> {
-       const userSkills = await this.getUserSkillsBy({ userId });
+    async getUserSkills(dto: GetUserSkillsDTO): Promise<UserSkillDTO[]> {
+       const userSkills = await this.getUserSkillsBy(dto);
        return userSkills.map(__toDTO);
     }
 

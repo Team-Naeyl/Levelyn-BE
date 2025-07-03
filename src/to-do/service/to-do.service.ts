@@ -10,7 +10,8 @@ import { isDayToDo } from "./service.internal";
 import { GoalsService } from "./goals.service";
 import { excludeTimestamp, excludeTimestampOnly } from "../../common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { UserToDoFulfilledEvent } from "../event";
+import { ToDoFulfilledEvent } from "../event";
+import { EventBus } from "@nestjs/cqrs";
 
 @Injectable()
 export class ToDoService {
@@ -22,7 +23,9 @@ export class ToDoService {
        @Inject(forwardRef(() => GoalsService))
        private readonly _goalsService: GoalsService,
        @Inject(EventEmitter2)
-       private readonly _eventEmitter: EventEmitter2
+       private readonly _eventEmitter: EventEmitter2,
+       @Inject(EventBus)
+       private readonly _eventBus: EventBus,
     ) { }
 
     @Transactional()
@@ -79,7 +82,7 @@ export class ToDoService {
         });
 
         await this._toDoRepos.update(id, { completed: true });
-        this._eventEmitter.emit("to-do.fulfilled", new UserToDoFulfilledEvent(userId));
+        this._eventBus.publish(new ToDoFulfilledEvent(userId));
     }
 
     @Transactional()

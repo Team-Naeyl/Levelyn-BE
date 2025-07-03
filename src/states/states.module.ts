@@ -3,30 +3,24 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { State } from "./model";
 import { YamlConfigModule } from "../config/yaml-config";
 import { GameModule, LevelConfig, Skill, SkillsService } from "../game";
-import { StatesController } from './states.controller';
 import { StatesService, UnlockSkillsService } from "./service";
-import { AuthModule, JwtAuthGuard } from "../auth";
+import { UpdateStateHandler } from "./handler";
 
-const EXTERNAL_PROVIDERS = [
-    SkillsService,
-    JwtAuthGuard
-]
+const EXTERNAL_PROVIDERS = [SkillsService];
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([State, Skill]),
         YamlConfigModule.forFeature([LevelConfig]),
-        GameModule,
-        AuthModule
+        GameModule
     ],
     providers: [
         ...EXTERNAL_PROVIDERS,
         StatesService,
-        UnlockSkillsService
+        UnlockSkillsService,
+        UpdateStateHandler
     ],
-    controllers: [StatesController],
     exports: [
-        ...EXTERNAL_PROVIDERS,
         StatesService,
         UnlockSkillsService
     ],

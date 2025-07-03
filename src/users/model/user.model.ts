@@ -22,7 +22,7 @@ export class User extends ModelBase {
     name: string;
 
     @OneToOne(() => State, { cascade: ["insert"], onDelete: "CASCADE", eager: true })
-    @JoinColumn({ name: "player_id" })
+    @JoinColumn({ name: "state_id" })
     state: State;
 
     @OneToOne(() => Wallet, { cascade: ["insert"], onDelete: "CASCADE", eager: true })

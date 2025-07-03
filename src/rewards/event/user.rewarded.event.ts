@@ -1,16 +1,12 @@
-import { RewardDTO } from "../dto";
+import { RewardUserResult } from "../dto";
 
-interface IRewardedEvent extends RewardDTO {
-    userId: number;
-}
-
-export class UserRewardedEvent implements IRewardedEvent {
+export class UserRewardedEvent implements RewardUserResult {
     userId: number;
     exp: number;
     coin: number;
-    itemIds: number[];
+    itemId: number | null;
 
-    constructor(data: IRewardedEvent) {
+    constructor(data: RewardUserResult) {
         Object.assign(this, data);
     }
 }

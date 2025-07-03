@@ -6,6 +6,7 @@ import * as passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import * as process from "node:process";
+import { LoggingInterceptor } from "./common";
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -13,10 +14,8 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.set("trust_proxy", true);
 
-  app.useGlobalPipes(new ValidationPipe({
-    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-  }));
-
+  app.useGlobalPipes(new ValidationPipe({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }));
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.use(passport.initialize());
 
   SwaggerModule.setup(
