@@ -1,10 +1,10 @@
 import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from "@nestjs/common";
 import { Observable, tap } from "rxjs";
-import { Request, Response } from "express";
+import { Request } from "express";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-    intercept(ctx: ExecutionContext, next: CallHandler<Response>): Observable<any> {
+    intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {
         const now = Date.now();
         const { method, url, headers, query, body  } = ctx.switchToHttp().getRequest<Request>();
 
@@ -14,10 +14,10 @@ export class LoggingInterceptor implements NestInterceptor {
         );
 
         return next.handle().pipe(
-            tap(({ statusCode }) => {
+            tap(() => {
                 const delay = `${Date.now() - now}ms`;
                 Logger.log(
-                    { statusCode, delay },
+                    { delay },
                     `[Response] ${method} ${url}`
                 )
             }),
