@@ -1,15 +1,19 @@
 import { Module } from "@nestjs/common";
-import { RewardConfig } from "../game";
+import { GameModule, RandomBoxesService, RewardConfig } from "../game";
 import { YamlConfigModule } from "../config/yaml-config";
 import { ApplyRewardService, RewardsService } from "./service";
+
+const EXTERNAL_PROVIDERS = [RandomBoxesService];
 
 @Module({
     imports: [
         YamlConfigModule.forFeature([RewardConfig]),
+        GameModule
     ],
     providers:[
-       RewardsService,
-       ApplyRewardService
+        ...EXTERNAL_PROVIDERS,
+        RewardsService,
+        ApplyRewardService
     ]
 })
 export class RewardsModule {}
