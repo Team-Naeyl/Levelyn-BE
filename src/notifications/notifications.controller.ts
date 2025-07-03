@@ -7,7 +7,7 @@ import { UserRewardedEvent } from "../rewards/event";
 import { LevelUpEvent } from "../states/event";
 import { WalletUpdatedEvent } from "../wallets/event";
 import { UserItemsAddedEvent, UserSkillsAddedEvent } from "../inventory/event";
-import { ApiOkResponse, ApiOperation, ApiQuery } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import {
     LevelUpNotification,
     UserItemsAddedNotification,
@@ -15,6 +15,7 @@ import {
     WalletUpdatedNotification
 } from "./api";
 
+@ApiTags("Notifications")
 @Controller('/api/notifications')
 @UseGuards(JwtAuthGuard)
 export class NotificationsController {

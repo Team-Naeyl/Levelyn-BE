@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { typeormOptionsFactory, typeormDataSourceFactory } from "./config/typeorm";
 import { HttpModule } from "@nestjs/axios";
+import { CqrsModule } from "@nestjs/cqrs";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { YamlConfigModule } from "./config/yaml-config";
 import { RedisModule } from "./config/redis";
@@ -16,7 +17,9 @@ import { InventoryModule } from "./inventory";
 import yamlConfig from "./config/yaml";
 import { join } from "node:path";
 import { AppController } from "./app.controller";
-import { CqrsModule } from "@nestjs/cqrs";
+import { TilesModule } from "./tiles";
+import { RewardsModule } from "./rewards";
+import { NotificationsModule } from "./notifications";
 
 @Module({
   imports: [
@@ -42,6 +45,9 @@ import { CqrsModule } from "@nestjs/cqrs";
       AuthModule,
       ToDoModule,
       InventoryModule,
+      TilesModule,
+      RewardsModule,
+      NotificationsModule
   ],
   controllers: [AppController],
 })
