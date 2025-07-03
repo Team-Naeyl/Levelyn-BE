@@ -1,1 +1,1 @@
-export * from "./user.to-do.fulfilled.event";
+export * from "./to-do.fulfilled.event";

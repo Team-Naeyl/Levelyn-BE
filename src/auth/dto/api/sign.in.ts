@@ -13,7 +13,7 @@ export class SignInResponse {
     accessToken: string;
 
     @ApiProperty({ type: StateSchema })
-    player: StateSchema;
+    state: StateSchema;
 
     @ApiProperty({ type: WalletSchema })
     wallet: WalletSchema;

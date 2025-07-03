@@ -1,7 +1,8 @@
 import { StateDTO } from "../../states/dto";
 
-interface IPlayer extends StateDTO{
+interface IPlayer extends StateDTO {
     userId: number;
+
 }
 
 export class Player implements IPlayer {

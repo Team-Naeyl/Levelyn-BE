@@ -57,7 +57,7 @@ describe('PlayerSkillsService', () => {
         ];
         mockRepo.findBy.mockResolvedValue(playerSkills);
 
-        const result = await service.getUserSkills(1);
+        const result = await service.getUserSkills({ userId: 1 });
         expect(mockRepo.findBy).toHaveBeenCalled();
         expect(result[0]).toHaveProperty('equipped');
     });

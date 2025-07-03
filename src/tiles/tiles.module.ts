@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
-import { TilesService } from './tiles.service';
-import { TilesController } from './tiles.controller';
+import { TilesSaga } from "./tiles.saga";
+import { YamlConfigModule } from "../config/yaml-config";
+import { TileConfig } from "../game";
 
 @Module({
-  providers: [TilesService],
-  controllers: [TilesController]
+  imports: [YamlConfigModule.forFeature([TileConfig])],
+  providers: [TilesSaga]
 })
 export class TilesModule {}

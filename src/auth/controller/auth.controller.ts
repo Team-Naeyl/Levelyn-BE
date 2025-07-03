@@ -37,7 +37,7 @@ export class AuthController {
             { httpOnly: true, maxAge: this._refreshExpires, secure: true, sameSite: true }
         );
 
-        return { accessToken, player: state, wallet };
+        return { accessToken, state, wallet };
     }
 
     @Get("/sign-out")

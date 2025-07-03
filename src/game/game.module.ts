@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { YamlConfigModule } from "../config/yaml-config";
 import { RegionConfig, RewardConfig } from "./config";
 import { Region, RegionsModule, RegionsService } from "./regions";
+import { RandomBoxesModule, RandomBoxesService, RandomCoinService, RandomItemService } from "./random-boxes";
 
 @Module({
     imports: [
@@ -14,19 +15,26 @@ import { Region, RegionsModule, RegionsService } from "./regions";
         SkillsModule,
         ItemsModule,
         MonstersModule,
-        RegionsModule
+        RegionsModule,
+        RandomBoxesModule
     ],
     providers: [
         SkillsService,
         ItemsService,
         MonstersService,
-        RegionsService
+        RegionsService,
+        RandomBoxesService,
+        RandomItemService,
+        RandomCoinService
     ],
     exports: [
         SkillsService,
         ItemsService,
         MonstersService,
-        RegionsService
+        RegionsService,
+        RandomBoxesService,
+        RandomItemService,
+        RandomCoinService
     ]
 })
 export class GameModule {}
