@@ -20,6 +20,7 @@ import { AppController } from "./app.controller";
 import { TilesModule } from "./tiles";
 import { RewardsModule } from "./rewards";
 import { NotificationsModule } from "./notifications";
+import { MyPagesModule } from "./my-pages";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { NotificationsModule } from "./notifications";
       AuthModule,
       ToDoModule,
       InventoryModule,
+      MyPagesModule,
       TilesModule,
       RewardsModule,
       NotificationsModule
