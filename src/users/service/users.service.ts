@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../model";
-import { UpsertUserDTO, UserDTO } from "../dto";
+import { UpdateUserDTO, UpsertUserDTO, UserDTO } from "../dto";
 import { excludeTimestamp, excludeTimestampOnly } from "../../common";
-import { pipe, tap } from "@fxts/core";
+import { isNull, pipe, tap, throwIf } from "@fxts/core";
 
 @Injectable()
 export class UsersService {
@@ -21,6 +21,19 @@ export class UsersService {
             tap(user => this._logger.log(user)),
             __toDTO
         );
+    }
+
+    async getUser(id: number): Promise<UserDTO> {
+        return pipe(
+            await this._usersRepos.findOneBy({ id }),
+            throwIf(isNull, () => new ForbiddenException()),
+            __toDTO
+        );
+    }
+
+    async updateUser(dto: UpdateUserDTO): Promise<void> {
+        const { id, ...values } = dto;
+        await this._usersRepos.update(id, values);
     }
 
     private async getOrCreateUser(dto: UpsertUserDTO): Promise<User> {
