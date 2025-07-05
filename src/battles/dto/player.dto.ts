@@ -1,7 +1,9 @@
-import { SkillDTO } from "../../game/skills/dto";
+import { PlayerSkillDTO } from "./player.skill.dto";
 
 export interface PlayerDTO {
+    level: number;
+    exp: number;
     attack: number;
     will: number;
-    skills: SkillDTO[];
+    skills: PlayerSkillDTO[]
 }

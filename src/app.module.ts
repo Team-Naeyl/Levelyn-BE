@@ -21,6 +21,7 @@ import { TilesModule } from "./tiles";
 import { RewardsModule } from "./rewards";
 import { NotificationsModule } from "./notifications";
 import { MyPagesModule } from "./my-pages";
+import { BattlesModule } from "./battles";
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { MyPagesModule } from "./my-pages";
       InventoryModule,
       MyPagesModule,
       TilesModule,
+      BattlesModule,
       RewardsModule,
       NotificationsModule
   ],

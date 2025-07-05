@@ -1,6 +1,4 @@
 
 export abstract class EventBase {
-    constructor(
-        public readonly context: string
-    ) {}
+    constructor(public readonly context: string) {}
 }

@@ -5,8 +5,8 @@ import { JwtModule, JwtService } from "@nestjs/jwt";
 import { UsersModule, UsersService } from "../users";
 import { User } from "../users/model";
 import { AuthController } from './controller';
-import { AuthService, BlacklistService, JwtAuthService, SessionsService } from './service';
-import { JwtAuthGuard } from "./jwt.auth.guard";
+import { AuthService, BlacklistService, JwtAuthService } from './service';
+import { JwtAuthGuard, SseJwtAuthGuard } from "./guard";
 import { JwtAuthStrategy } from "./jwt.auth.strategy";
 import { OptionsProvider } from "../common";
 import { JWT_ACCESS_EXPIRES, JWT_REFRESH_EXPIRES, JWT_SECRET } from "./token";
@@ -32,18 +32,18 @@ const EXTERNAL_PROVIDERS = [
       AuthService,
       JwtAuthService,
       BlacklistService,
-      SessionsService,
       JwtAuthStrategy,
       JwtAuthGuard,
+      SseJwtAuthGuard,
       OptionsProvider<string>(JWT_SECRET),
       OptionsProvider<number>(JWT_ACCESS_EXPIRES),
       OptionsProvider<number>(JWT_REFRESH_EXPIRES)
   ],
   exports: [
       JwtAuthGuard,
+      SseJwtAuthGuard,
       JwtAuthService,
       BlacklistService,
-      SessionsService,
       JWT_SECRET,
       JWT_ACCESS_EXPIRES,
       JWT_REFRESH_EXPIRES,

@@ -1,22 +1,14 @@
 import { ApiExtraModels, ApiProperty, ApiSchema, OmitType } from "@nestjs/swagger";
+import { TypeSchema } from "../../../game/common";
 
-@ApiSchema()
-export class ItemTypeSchema {
-    @ApiProperty({ name: "id", type: "integer" })
-    id: number;
-
-    @ApiProperty({ name: "value", type: "string" })
-    value: string;
-}
-
-@ApiExtraModels(ItemTypeSchema)
+@ApiExtraModels(TypeSchema)
 @ApiSchema()
 export class UserItemSchema {
     @ApiProperty({ type: "integer" })
     id: number;
 
-    @ApiProperty({ type: ItemTypeSchema })
-    type: ItemTypeSchema;
+    @ApiProperty({ type: TypeSchema })
+    type: TypeSchema;
 
     @ApiProperty({ type: "string", description: "아이템명" })
     name: string;

@@ -22,8 +22,8 @@ export class TilesSaga {
     }
 
     @Saga()
-    tileSaga(events$: Observable<any>): Observable<RewardUserCommand | CreateBattleCommand> {
-        return events$.pipe(
+    tileSaga(event$: Observable<any>): Observable<RewardUserCommand | CreateBattleCommand> {
+        return event$.pipe(
             ofType(ToDoFulfilledEvent),
             map(({ userId }: ToDoFulfilledEvent) =>
                 this.isBattleEvent()

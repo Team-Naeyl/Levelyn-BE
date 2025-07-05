@@ -15,6 +15,9 @@ export class ItemEffect extends ModelBase {
     @Column({ type: "float", default: 0 })
     exp: number;
 
+    @Column({ type: "integer", default: 0 })
+    coin: number;
+
     @Column({ name: "p_item", type: "float", default: 0 })
     pItem: number;
 
