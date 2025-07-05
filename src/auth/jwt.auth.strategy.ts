@@ -16,7 +16,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, "jwt") {
             secretOrKey: secret,
             jwtFromRequest: ExtractJwt.fromExtractors([
                 ExtractJwt.fromAuthHeaderAsBearerToken(),
-                ExtractJwt.fromUrlQueryParameter("token")
+                ExtractJwt.fromUrlQueryParameter("token"),
             ])
         });
     }

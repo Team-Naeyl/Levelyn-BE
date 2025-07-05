@@ -12,5 +12,5 @@ export function ObjectSchema(schemaName?: string) {
         );
 
         return Schema;
-    }
+    };
 }

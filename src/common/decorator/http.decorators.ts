@@ -1,7 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from "express";
 
-export function ParamDecorator(prop: string) {
+function ParamDecorator(
+    prop: string,
+) {
     return createParamDecorator((data: string, ctx: ExecutionContext) => {
         const req = ctx.switchToHttp().getRequest<Request>();
         const tg = req[prop];

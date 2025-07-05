@@ -1,5 +1,5 @@
 import { Controller, Inject, Logger, Sse, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from "../auth";
+import { SseJwtAuthGuard } from "../auth";
 import { AuthQuerySchema, User } from "../common";
 import { EventBus, ofType } from "@nestjs/cqrs";
 import { filter, map, Observable, tap } from "rxjs";
@@ -8,16 +8,12 @@ import { LevelUpEvent } from "../states/event";
 import { WalletUpdatedEvent } from "../wallets/event";
 import { UserItemsAddedEvent, UserSkillsAddedEvent } from "../inventory/event";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
-import {
-    LevelUpNotification,
-    UserItemsAddedNotification,
-    UserRewardedNotification, UserSkillsAddedNotification,
-    WalletUpdatedNotification
-} from "./api";
+import { BattleCreatedNotification, LevelUpNotification, UserItemsAddedNotification, UserRewardedNotification, UserSkillsAddedNotification, WalletUpdatedNotification } from "./api";
+import { BattleCreatedEvent } from "../battles/event";
 
 @ApiTags("Notifications")
 @Controller('/api/notifications')
-@UseGuards(JwtAuthGuard)
+@UseGuards(SseJwtAuthGuard)
 export class NotificationsController {
     private readonly _logger: Logger = new Logger(NotificationsController.name);
 
@@ -66,6 +62,13 @@ export class NotificationsController {
         return this.notify(UserSkillsAddedEvent, userId);
     }
 
+    @Sse("/battle-created")
+    @ApiOperation({ summary: "전투 이벤트 알림" })
+    @ApiQuery({ type: AuthQuerySchema, required: true })
+    @ApiOkResponse({ type: BattleCreatedNotification })
+    notifyBattleCreated(@User("id") userId: number): Observable<BattleCreatedNotification> {
+        return this.notify(BattleCreatedEvent, userId);
+    }
 
     private notify<EventT extends { userId: number; }>(
         Event: { new (...args: any[]): EventT },
