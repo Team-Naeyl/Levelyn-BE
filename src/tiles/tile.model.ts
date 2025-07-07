@@ -9,6 +9,6 @@ export class Tile extends ModelBase {
     @Column({ type: "integer", default: 0 })
     position: number;
 
-    @Column({ type: "integer", default: 0 })
+    @Column({ name: "penalty_count", type: "integer", default: 0 })
     penaltyCount: number;
 }
