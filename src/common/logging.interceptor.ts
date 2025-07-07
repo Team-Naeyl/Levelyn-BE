@@ -14,12 +14,12 @@ export class LoggingInterceptor implements NestInterceptor {
         );
 
         return next.handle().pipe(
-            tap(() => {
+            tap((data) => {
                 const { statusCode } = ctx.switchToHttp().getResponse<Response>();
                 const delay = `${Date.now() - now}ms`;
 
                 Logger.log(
-                    { statusCode, delay },
+                    { statusCode, data, delay },
                     `[Response] ${method} ${url}`
                 );
             }),

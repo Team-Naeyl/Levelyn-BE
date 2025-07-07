@@ -1,13 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Random } from "random";
-import { TileConfig } from "../game";
 import { ofType, Saga } from "@nestjs/cqrs";
-import { filter, from, map, mergeMap, Observable, tap } from "rxjs";
+import { filter, from, map, mergeMap, Observable } from "rxjs";
 import { ToDoFulfilledEvent } from "../to-do/event";
 import { RewardUserCommand } from "../rewards/command";
 import { CreateBattleCommand } from "../battles/command";
 import { TilesService } from "./tiles.service";
-import { BattleEndedEvent } from "../battles/event";
 
 @Injectable()
 export class TilesSaga {
