@@ -1,10 +1,9 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import Redis from "ioredis";
 import { CreateBattleService } from "./create-battle";
 import { Battle, Player } from "../schema";
-import { BattleDTO, BattleMessage, PlayerDTO } from "../dto";
+import { BattleDTO, ExecuteBattleResult, CreateBattleDTO, PlayerDTO } from "../dto";
 import { ExecuteBattleService } from "./execute-battle";
-import { GetBattleService } from "./get.battle.service";
+import { pipe, tap } from "@fxts/core";
 
 @Injectable()
 export class BattlesService {
@@ -13,26 +12,20 @@ export class BattlesService {
     constructor(
        @Inject(CreateBattleService)
        private readonly _createBattleService: CreateBattleService,
-       @Inject(GetBattleService)
-       private readonly _getBattleService: GetBattleService,
        @Inject(ExecuteBattleService)
        private readonly _executeBattleService: ExecuteBattleService,
-       @Inject(Redis)
-       private readonly _redis: Redis,
     ) {}
 
-    async createBattle(userId: number): Promise<string> {
-        const battle = await this._createBattleService.createBattle(userId);
-        this._logger.log(JSON.stringify(battle));
-        return battle.id;
+    async createBattle(dto: CreateBattleDTO): Promise<BattleDTO> {
+        return pipe(
+            await this._createBattleService.createBattle(dto),
+            tap(battle => this._logger.log(JSON.stringify(battle))),
+            __toDTO
+        );
     }
 
-    async* executeBattle(id: string): AsyncIterableIterator<BattleMessage> {
-        const battle = await this._getBattleService.getBattle(id);
-
-        yield { type: "START", payload: __toDTO(battle) };
-        yield* this._executeBattleService.executeBattle(battle);
-
+    async* executeBattle(id: string): AsyncIterableIterator<ExecuteBattleResult> {
+        yield* this._executeBattleService.executeBattle(id);
     }
 }
 

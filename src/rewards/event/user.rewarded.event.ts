@@ -1,12 +1,14 @@
 import { RewardUserResult } from "../dto";
+import { UserNotificationEvent } from "../../common";
 
-export class UserRewardedEvent implements RewardUserResult {
-    userId: number;
-    exp: number;
-    coin: number;
-    itemId: number | null;
-
-    constructor(data: RewardUserResult) {
-        Object.assign(this, data);
-    }
+export class UserRewardedEvent
+    extends UserNotificationEvent<"user.rewarded", RewardUserResult>
+{
+   constructor(userId: number, result: RewardUserResult) {
+       super({
+           userId,
+           type: "user.rewarded",
+           payload: result
+       });
+   }
 }

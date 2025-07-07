@@ -25,6 +25,7 @@ export class MyPagesService {
     }
 
     async updateProfile(dto: UpdateProfileDTO): Promise<void> {
-        await this._usersService.updateUser(dto);
+        const { userId: id, ...values } = dto;
+        await this._usersService.updateUser({ id, ...values });
     }
 }

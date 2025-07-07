@@ -5,7 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { InventoryModule, UserItem, UserItemsService, UserSkill, UserSkillsService } from "../inventory";
 import { AuthModule, JwtAuthGuard } from "../auth";
 import { UsersModule, UsersService } from "../users";
-import { User } from "../users/model";
+import { User } from "../users/user.model";
 
 const EXTERNAL_PROVIDERS = [
     JwtAuthGuard,

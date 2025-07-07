@@ -89,6 +89,8 @@ export class ToDoService {
     async onGoalDeleted(userId: number): Promise<void> {
         await this._toDoRepos.update(userId, { isSub: false });
     }
+
+
 }
 
 function __toDTO(toDo: ToDo): ToDoDTO {

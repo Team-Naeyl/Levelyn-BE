@@ -20,13 +20,12 @@ export class RewardsService {
     }
 
     async rewardUser(dto: RewardUserDTO): Promise<RewardUserResult> {
-        const { userId, ...rest } = dto;
+        const { userId, exp, ...rest } = dto;
         const reward = await this.makeReward(rest);
-        await this._applyRewardService.applyReward(userId, reward);
-        return { userId, ...reward };
+        return await this._applyRewardService.applyReward({ userId, reward });
     }
 
-    async makeReward(dto: MakeRewardDTO): Promise<RewardDTO> {
+    private async makeReward(dto: MakeRewardDTO): Promise<RewardDTO> {
         const { exp, coin, buff } = dto;
         const randomBox = await this._randomBoxService.getRandomBox(buff);
 

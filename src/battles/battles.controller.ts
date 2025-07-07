@@ -9,7 +9,7 @@ export class BattlesController {
 
     constructor(
        @Inject(BattlesService)
-       private readonly _battleService: BattlesService
+       private readonly _battleService: BattlesService,
     ) {}
 
     @Sse("/:id")

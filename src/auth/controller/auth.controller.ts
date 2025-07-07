@@ -30,14 +30,14 @@ export class AuthController {
         @User() dto: SignInDTO,
         @Res({ passthrough: true }) res: Response
     ): Promise<SignInResponse> {
-        const { accessToken, refreshToken, state, wallet } = await this._authService.signIn(dto);
+        const { refreshToken, ...rest } = await this._authService.signIn(dto);
 
         res.cookie(
             "REFRESH_TOKEN", refreshToken,
-            { httpOnly: true, maxAge: this._refreshExpires, secure: true, sameSite: true }
+            { httpOnly: true, maxAge: this._refreshExpires, secure: true, sameSite: "lax" }
         );
 
-        return { accessToken, state, wallet };
+        return rest;
     }
 
     @Get("/sign-out")

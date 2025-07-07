@@ -2,36 +2,38 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Random } from "random";
 import { TileConfig } from "../game";
 import { ofType, Saga } from "@nestjs/cqrs";
-import { map, Observable } from "rxjs";
+import { filter, from, map, mergeMap, Observable, tap } from "rxjs";
 import { ToDoFulfilledEvent } from "../to-do/event";
 import { RewardUserCommand } from "../rewards/command";
 import { CreateBattleCommand } from "../battles/command";
+import { TilesService } from "./tiles.service";
+import { BattleEndedEvent } from "../battles/event";
 
 @Injectable()
 export class TilesSaga {
-    private readonly isBattleEvent: () => boolean;
 
     constructor(
-        @Inject(Random)
-        random: Random,
-        @Inject(TileConfig)
-        { pBattleEvent }: TileConfig
-    ) {
-        const dist = random.binomial(1, pBattleEvent);
-        this.isBattleEvent = () => Boolean(dist());
-    }
+       @Inject(TilesService)
+       private readonly _tilesService: TilesService
+    ) {}
 
     @Saga()
     tileSaga(event$: Observable<any>): Observable<RewardUserCommand | CreateBattleCommand> {
         return event$.pipe(
             ofType(ToDoFulfilledEvent),
-            map(({ userId }: ToDoFulfilledEvent) =>
-                this.isBattleEvent()
-                    ? new RewardUserCommand({ userId })
-                    : new CreateBattleCommand(userId)
-            )
+            mergeMap(({ userId }: ToDoFulfilledEvent) =>
+                from(this._tilesService.clearTile(userId))
+            ),
+            filter(({ penalty }) => !penalty),
+            map(({ userId, position, battle }) => {
+                return battle
+                    ? new CreateBattleCommand(userId, position)
+                    : new RewardUserCommand({ userId });
+            })
         );
     }
+
+
 
 
 }

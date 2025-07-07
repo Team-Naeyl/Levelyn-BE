@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Wallet } from "./model";
-import { WalletsService } from "./service/wallets.service";
+import { WalletsService } from "./service";
 import { UpdateWalletHandler } from "./handler";
 
 @Module({

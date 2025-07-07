@@ -1,6 +1,3 @@
-export interface RewardDTO {
-    exp: number;
-    itemId: number | null;
-    coin: number;
-}
+import { RandomBoxDTO } from "../../game/random-boxes/dto";
 
+export type RewardDTO = { exp: number; } & RandomBoxDTO;

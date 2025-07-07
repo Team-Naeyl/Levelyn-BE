@@ -1,1 +1,1 @@
-export * from "./reward.user.command";
+export * from "../reward.user.command";

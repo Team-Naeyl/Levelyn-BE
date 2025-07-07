@@ -2,7 +2,6 @@ import { Global, Module } from "@nestjs/common";
 import Redis from "ioredis";
 import { redisFactory } from "./redis.factory";
 import { ConfigService } from "@nestjs/config";
-import { RedisCircularQueue } from "./redis.circular.queue";
 
 @Global()
 @Module({
@@ -12,8 +11,7 @@ import { RedisCircularQueue } from "./redis.circular.queue";
       useFactory: redisFactory,
       inject: [ConfigService],
     },
-    RedisCircularQueue
   ],
-  exports: [Redis, RedisCircularQueue],
+  exports: [Redis],
 })
 export class RedisModule {}

@@ -44,6 +44,8 @@ export class MyPagesController {
         @User("id") userId: number,
         @Body() body: UpdateProfileBody
     ): Promise<void> {
-
+        await this._myPagesService.updateProfile({
+            userId, ...body
+        });
     }
 }

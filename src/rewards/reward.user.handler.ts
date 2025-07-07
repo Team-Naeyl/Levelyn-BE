@@ -19,12 +19,10 @@ export class RewardUserHandler implements ICommandHandler<RewardUserCommand> {
         await this._rewardsService.rewardUser(cmd)
             .then(result => {
                 this._logger.log(result);
-                this._eventBus.publish(new UserRewardedEvent(result));
+                this._eventBus.publish(new UserRewardedEvent(cmd.userId, result));
             })
             .catch(err => {
                 this._logger.error(err);
             })
     }
-
-
 }
