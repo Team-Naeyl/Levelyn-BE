@@ -1,6 +1,6 @@
 import { Battle, Mob, PlayerSkill, PlayerStat } from "../../schema";
 import { Logger } from "@nestjs/common";
-import { TurnResult } from "../../dto";
+import { BattleTurnResult } from "../../dto";
 
 export class BattleExecution {
     private readonly _logger: Logger = new Logger(BattleExecution.name);
@@ -17,7 +17,7 @@ export class BattleExecution {
         return new BattleExecution(stat, skills, mob);
     }
 
-    *executeTurn(): Iterable<TurnResult> {
+    *executeTurn(): IterableIterator<BattleTurnResult> {
         while (this._mob.hp) {
             const [attack, will] = this.applySkill();
             this._mob.hp = Math.max(this._mob.hp - attack, 0);
@@ -30,7 +30,7 @@ export class BattleExecution {
         return !this._mob.hp;
     }
 
-    private turnResult(attack: number, will: number): TurnResult {
+    private turnResult(attack: number, will: number): BattleTurnResult {
 
         this._logger.log({
             attack, will,

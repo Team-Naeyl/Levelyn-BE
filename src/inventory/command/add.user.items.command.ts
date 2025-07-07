@@ -1,8 +1,8 @@
-import { UpsertUserItemsDTO } from "../dto";
+import { UpsertUserItemsDTO, UserItemDTO } from "../dto";
 import { Command } from "@nestjs/cqrs";
 
 export class AddUserItemsCommand
-    extends Command<void>
+    extends Command<UserItemDTO[]>
     implements UpsertUserItemsDTO
 {
     readonly userId: number;

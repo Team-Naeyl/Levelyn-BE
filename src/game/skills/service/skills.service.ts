@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Skill, SkillRequirement } from "../model";
 import { Between, FindOperator, FindOptionsWhere, LessThanOrEqual, Repository } from "typeorm";
 import { GetSkillsByRequirementDTO, SkillDTO } from "../dto";
-import { compactObject, entries, fromEntries, isNumber, map, pick, pipe, toArray } from "@fxts/core";
+import { compactObject, entries, fromEntries, isNumber, map, pick, pipe } from "@fxts/core";
 
 @Injectable()
 export class SkillsService {

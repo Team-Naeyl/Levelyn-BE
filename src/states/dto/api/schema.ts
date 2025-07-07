@@ -13,7 +13,4 @@ export class StateSchema {
 
     @ApiProperty({ type: "number", description: "의지력" })
     will: number;
-
-    @ApiProperty({ type: "integer", description: "현재 위치, 완료한 할 일의 수와 동일함" })
-    position: number;
 }

@@ -1,11 +1,13 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Battle } from "../../schema";
 import { BattleConfig } from "../../../game";
 import { BattleExecution } from "./battle.execution";
-import { BattleMessage } from "../../dto";
+import { ExecuteBattleResult } from "../../dto";
 import { EventBus } from "@nestjs/cqrs";
 import { BattleEndedEvent } from "../../event";
-import { pick } from "@fxts/core";
+import { isNil, pipe, tap, throwIf } from "@fxts/core";
+import Redis from "ioredis";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class ExecuteBattleService {
@@ -13,6 +15,8 @@ export class ExecuteBattleService {
     private readonly _expires: number;
 
     constructor(
+       @Inject(Redis)
+       private readonly _redis: Redis,
        @Inject(EventBus)
        private readonly _eventBus: EventBus,
        @Inject(BattleConfig)
@@ -21,14 +25,15 @@ export class ExecuteBattleService {
         this._expires = expires;
     }
 
-    *executeBattle(battle: Battle): Iterable<BattleMessage> {
+    async *executeBattle(id: string): AsyncIterableIterator<ExecuteBattleResult> {
+        const battle = await this.loadBattle(id);
         const execution = BattleExecution.createExecution(battle);
         const startAt = Date.now();
 
         for (const turnResult of execution.executeTurn()) {
             this._logger.log(turnResult);
             if (Date.now() - startAt >= this._expires ) break;
-            yield { type: "RUN", payload: turnResult };
+            yield { status: "RUNNING", payload: turnResult };
         }
 
         const result = {
@@ -37,13 +42,28 @@ export class ExecuteBattleService {
             endAt: new Date(),
         };
 
-        yield { type: "END", payload: result };
+        yield { status: "DONE", payload: result };
 
-        this._eventBus.publish(new BattleEndedEvent({
-            ...pick(["id", "userId", "reward", "penalty"], battle),
-            result
-        }));
+        this._eventBus.publish(
+            new BattleEndedEvent({
+                userId: battle.userId,
+                reward: result.win ? battle.reward : null,
+                penalty: result.win ? null : battle.penalty,
+            })
+        );
     }
+
+    private async loadBattle(id: string): Promise<Battle> {
+        return pipe(
+            await this._redis.call("JSON.GET", `battle:${id}`, "$"),
+            tap(raw => this._logger.log(raw)),
+            throwIf(isNil, () => new NotFoundException()),
+            raw => JSON.parse(raw as string),
+            data => plainToInstance(Battle, data)[0],
+        );
+    }
+
+
 
 }
 

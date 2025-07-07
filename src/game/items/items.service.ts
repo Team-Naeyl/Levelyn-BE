@@ -25,7 +25,12 @@ export class ItemsService  {
 
     static toItemDTO(item: Item): ItemDTO {
         const { id, name, description, weight } = item;
-        const type: TypeDTO = excludeTimestampOnly(item.subType ?? item.type);
+
+        const type: TypeDTO = {
+            id: item.type.id,
+            value: item.subType?.value ?? item.type.value
+        };
+
         return { id, type, name, description, weight };
     }
 

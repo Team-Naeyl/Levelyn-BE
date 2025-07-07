@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { State } from "./model";
 import { YamlConfigModule } from "../config/yaml-config";
 import { GameModule, LevelConfig, Skill, SkillsService } from "../game";
-import { StatesService, UnlockSkillsService } from "./service";
-import { UpdateStateHandler } from "./handler";
+import { State } from "./state.model";
+import { UpdateStateHandler } from "./update.state.handler";
+import { StatesService } from "./states.service";
 
 const EXTERNAL_PROVIDERS = [SkillsService];
 
@@ -17,12 +17,8 @@ const EXTERNAL_PROVIDERS = [SkillsService];
     providers: [
         ...EXTERNAL_PROVIDERS,
         StatesService,
-        UnlockSkillsService,
         UpdateStateHandler
     ],
-    exports: [
-        StatesService,
-        UnlockSkillsService
-    ],
+    exports: [StatesService],
 })
 export class StatesModule {}

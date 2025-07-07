@@ -2,19 +2,15 @@ import { BattleResult } from "../dto";
 import { BattlePenalty, BattleReward } from "../schema";
 
 interface IBattleEndedEvent {
-    id: string;
     userId: number;
-    result: BattleResult;
-    reward: BattleReward;
-    penalty: BattlePenalty;
+    reward: BattleReward | null;
+    penalty: BattlePenalty | null;
 }
 
 export class BattleEndedEvent {
-    readonly id: string;
     readonly userId: number;
-    readonly result: BattleResult;
-    readonly reward: BattleReward;
-    readonly penalty: BattlePenalty;
+    readonly reward: BattleReward | null;
+    readonly penalty: BattlePenalty | null;
 
     constructor(data: IBattleEndedEvent) {
         Object.assign(this, data);

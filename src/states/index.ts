@@ -1,2 +1,2 @@
 export * from "./states.module";
-export * from "./service/states.service";
+export * from "./states.service";

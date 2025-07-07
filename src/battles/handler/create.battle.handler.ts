@@ -15,10 +15,10 @@ export class CreateBattleHandler implements ICommandHandler<CreateBattleCommand>
        private readonly _eventBus: EventBus
     ) {}
 
-    async execute({ userId }: CreateBattleCommand): Promise<any> {
-        await this._battlesService.createBattle(userId)
+    async execute(cmd: CreateBattleCommand): Promise<any> {
+        await this._battlesService.createBattle(cmd)
             .then(battleId =>
-                this._eventBus.publish(new BattleCreatedEvent(userId, battleId))
+                this._eventBus.publish(new BattleCreatedEvent(cmd.userId, battleId))
             )
             .catch(err => this._logger.error(err));
     }

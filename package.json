@@ -47,6 +47,7 @@
     "jsonwebtoken": "^9.0.2",
     "mersenne-twister": "^1.1.0",
     "mysql2": "^3.14.1",
+    "neverthrow": "^8.2.0",
     "node-cache": "^5.1.2",
     "passport-jwt": "^4.0.1",
     "passport-openidconnect": "^0.1.2",

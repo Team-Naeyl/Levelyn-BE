@@ -1,9 +1,9 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { User } from "../model";
+import { User } from "../user.model";
 import { UpdateUserDTO, UpsertUserDTO, UserDTO } from "../dto";
-import { excludeTimestamp, excludeTimestampOnly } from "../../common";
+import { excludeTimestamp } from "../../common";
 import { isNull, pipe, tap, throwIf } from "@fxts/core";
 
 @Injectable()
@@ -25,7 +25,10 @@ export class UsersService {
 
     async getUser(id: number): Promise<UserDTO> {
         return pipe(
-            await this._usersRepos.findOneBy({ id }),
+            await this._usersRepos.findOne({
+                relations: { state: true, wallet: true },
+                where: { id },
+            }),
             throwIf(isNull, () => new ForbiddenException()),
             __toDTO
         );
@@ -43,11 +46,12 @@ export class UsersService {
 }
 
 function __toDTO(user: User): UserDTO {
-    const { state, wallet, ...rest } = user;
+    const { state, wallet, tile,  ...rest } = user;
 
     return {
-        ...excludeTimestampOnly(rest),
+        ...excludeTimestamp(rest, "stateId", "tileId", "walletId"),
         state: excludeTimestamp(state, "id"),
+        tile: excludeTimestamp(tile, "id"),
         wallet: excludeTimestamp(wallet, "id")
     };
 }

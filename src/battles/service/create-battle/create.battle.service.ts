@@ -5,6 +5,7 @@ import { BattleConfig } from "../../../game";
 import { Battle, BattlePenalty, BattleReward } from "../../schema";
 import { ApplyItemsService } from "./apply.items.service";
 import Redis from "ioredis";
+import { CreateBattleDTO } from "../../dto";
 
 @Injectable()
 export class CreateBattleService {
@@ -25,12 +26,13 @@ export class CreateBattleService {
         this._penaltyDuration = penaltyDuration;
     }
 
-    async createBattle(userId: number): Promise<Battle> {
-        const player = await this._playersService.loadPlayer(userId);
-        const mob = await this._mobsService.loadMob(player.position);
+    async createBattle(dto: CreateBattleDTO): Promise<Battle> {
+        const { userId, position } = dto;
 
         const battle = new Battle({
-            userId, player, mob,
+            userId,
+            player: await this._playersService.loadPlayer(userId),
+            mob: await this._mobsService.loadMob(position),
             reward: new BattleReward(),
             penalty: this.createBattlePenalty()
         });

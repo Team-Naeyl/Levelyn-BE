@@ -1,5 +1,3 @@
-import { RewardDTO } from "./reward.dto";
+import { ApplyRewardResult } from "./apply.reward.result";
 
-export interface RewardUserResult extends RewardDTO {
-    userId: number;
-}
+export type RewardUserResult = ApplyRewardResult;

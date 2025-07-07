@@ -4,7 +4,6 @@ import { PlayerSkill } from "./player.skill";
 interface IPlayer {
     level: number;
     exp: number;
-    position: number;
     stat: PlayerStat;
     skills: PlayerSkill[];
 }
@@ -12,7 +11,6 @@ interface IPlayer {
 export class Player implements IPlayer {
     level: number;
     exp: number;
-    position: number;
     stat: PlayerStat;
     skills: PlayerSkill[];
 
