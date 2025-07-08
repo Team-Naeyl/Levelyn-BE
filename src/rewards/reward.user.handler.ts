@@ -1,4 +1,4 @@
-import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RewardUserCommand } from "./command";
 import { Inject, Logger } from "@nestjs/common";
 import { RewardsService } from "./service";
@@ -12,8 +12,6 @@ export class RewardUserHandler implements ICommandHandler<RewardUserCommand> {
     constructor(
        @Inject(RewardsService)
        private readonly _rewardsService: RewardsService,
-       @Inject(EventBus)
-       private readonly _eventBus: EventBus,
        @Inject(EventEmitter2)
        private readonly _eventEmitter: EventEmitter2
     ) {}
@@ -21,10 +19,8 @@ export class RewardUserHandler implements ICommandHandler<RewardUserCommand> {
     async execute(cmd: RewardUserCommand): Promise<void> {
         await this._rewardsService.rewardUser(cmd)
             .then(result => {
-                this._logger.log(result);
-
                 this._eventEmitter.emit(
-                    `user.${cmd.userId}.event`,
+                    "user.event",
                     new UserRewardedEvent(cmd.userId, result)
                 );
             })

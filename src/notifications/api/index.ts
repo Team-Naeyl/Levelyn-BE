@@ -1,1 +1,1 @@
-export * from "./user.notification.schema";
+export * from "./notification.schema";

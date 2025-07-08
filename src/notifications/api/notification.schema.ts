@@ -1,9 +1,9 @@
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
 @ApiSchema()
-export class UserNotificationSchema {
+export class NotificationSchema {
     @ApiProperty({ type: "string" })
-    type: string;
+    sub: string;
     @ApiProperty({ type: "object", properties: {} })
-    payload: any;
+    data: any;
 }
