@@ -22,9 +22,13 @@ export class UserSkillsService {
         const { userId, skillIds } = dto;
         if (!skillIds.length) return [];
 
-        const userSkills: UserSkill[] = await this._userSkillsRepos.save(
-            skillIds.map(skillId => ({ userId, skillId }))
-        );
+        await this._userSkillsRepos
+            .createQueryBuilder()
+            .insert()
+            .into(UserSkill)
+            .values(skillIds.map(skillId => ({ userId, skillId })))
+            .orIgnore()
+            .execute();
 
         return await this.getUserSkills({ userId, skillIds });
     }
