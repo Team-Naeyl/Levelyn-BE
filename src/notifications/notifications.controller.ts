@@ -1,7 +1,7 @@
 import { Controller, Inject, Logger, Sse, UseGuards } from '@nestjs/common';
 import { SseJwtAuthGuard } from "../auth";
 import { AuthQuerySchema, User, UserNotificationEvent } from "../common";
-import { EventBus, ofType } from "@nestjs/cqrs";
+import { EventBus } from "@nestjs/cqrs";
 import { filter, map, Observable, tap } from "rxjs";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { UserNotificationSchema } from "./api";
@@ -23,7 +23,12 @@ export class NotificationsController {
     @ApiOkResponse({ type: UserNotificationSchema })
     notifyUser(@User("id") userId: number): Observable<UserNotificationSchema> {
         return this._eventBus.pipe(
-            ofType(UserNotificationEvent),
+            filter((msg): msg is UserNotificationEvent =>
+                msg instanceof UserNotificationEvent
+            ),
+            tap((msg) => {
+                this._logger.log(`${userId} : ${msg.userId}`);
+            }),
             filter((msg: UserNotificationEvent) => msg.userId === userId),
             map(({ type, payload }) => ({ type, payload })),
             tap(response => this._logger.log(JSON.stringify(response)))
@@ -31,3 +36,5 @@ export class NotificationsController {
     }
 
 }
+
+
