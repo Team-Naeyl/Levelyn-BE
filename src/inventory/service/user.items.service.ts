@@ -39,7 +39,7 @@ export class UserItemsService {
            itemIds.map(itemId => ({ userId, itemId }))
        );
 
-       return userItems.map(__toDTO);
+       return await this.getUserItems({ userId, itemIds });
     }
 
     async getUserItems(dto: GetUserItemsDTO): Promise<UserItemDTO[]> {
