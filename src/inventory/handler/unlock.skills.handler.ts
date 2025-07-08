@@ -1,12 +1,12 @@
-import { EventBus, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UnlockSkillsCommand } from "../command";
 import { Inject, Logger } from "@nestjs/common";
 import { SkillsService } from "../../game";
 import { UserSkillsService } from "../service";
 import { map, pipe, prop, toArray } from "@fxts/core";
-import { UserSkillsAddedEvent } from "../event";
 import { SkillDTO } from "../../game/skills/dto";
 
+@CommandHandler(UnlockSkillsCommand)
 export class UnlockSkillsHandler implements ICommandHandler<UnlockSkillsCommand> {
     private readonly _logger: Logger = new Logger(UnlockSkillsHandler.name);
 
