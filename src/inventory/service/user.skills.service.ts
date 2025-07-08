@@ -26,7 +26,7 @@ export class UserSkillsService {
             skillIds.map(skillId => ({ userId, skillId }))
         );
 
-        return userSkills.map(__toDTO);
+        return await this.getUserSkills({ userId, skillIds });
     }
 
     async getUserSkills(dto: GetUserSkillsDTO): Promise<UserSkillDTO[]> {
