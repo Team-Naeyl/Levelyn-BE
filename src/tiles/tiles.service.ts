@@ -1,7 +1,6 @@
 import { ForbiddenException, Inject, Injectable } from "@nestjs/common";
 import { Random } from "random";
 import { TileConfig } from "../game";
-import { StatesService } from "../states";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Tile } from "./tile.model";
 import { Repository } from "typeorm";
