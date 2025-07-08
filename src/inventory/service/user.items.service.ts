@@ -35,9 +35,13 @@ export class UserItemsService {
        const { userId, itemIds } = dto;
        if (!itemIds.length) return [];
 
-       const userItems: UserItem[] = await this._userItemsRepos.save(
-           itemIds.map(itemId => ({ userId, itemId }))
-       );
+       await this._userItemsRepos
+           .createQueryBuilder()
+           .insert()
+           .into(UserItem)
+           .values(itemIds.map(itemId => ({ userId, itemId })))
+           .orIgnore()
+           .execute();
 
        return await this.getUserItems({ userId, itemIds });
     }
@@ -90,6 +94,8 @@ export class UserItemsService {
                 )).catch(throwError(identity));
         }
     }
+
+
 
     private getUserItemsBy(dto: GetUserItemsDTO): Promise<UserItem[]> {
         return pipe(
