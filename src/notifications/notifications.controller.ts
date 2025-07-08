@@ -2,7 +2,7 @@ import { Controller, Inject, Logger, Sse, UseGuards } from '@nestjs/common';
 import { SseJwtAuthGuard } from "../auth";
 import { AuthQuerySchema, User, UserNotificationEvent } from "../common";
 import { EventBus } from "@nestjs/cqrs";
-import { filter, fromEvent, map, Observable, tap } from "rxjs";
+import { filter, fromEvent, map, Observable, startWith, tap } from "rxjs";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { UserNotificationSchema } from "./api";
 import { EventEmitter2 } from "@nestjs/event-emitter";
@@ -27,6 +27,11 @@ export class NotificationsController {
     notifyUser(@User("id") userId: number): Observable<UserNotificationSchema> {
         return fromEvent(this._eventEmitter, `user.${userId}.event`)
             .pipe(
+                startWith(new UserNotificationEvent({
+                    userId,
+                    type: "start",
+                    payload: {}
+                })),
                 map(msg => msg as UserNotificationEvent),
                 map(({ type, payload }): UserNotificationSchema =>
                     ({ type, payload })),
