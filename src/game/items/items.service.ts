@@ -4,7 +4,6 @@ import { Item } from "./model";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ItemDTO } from "./dto";
 import { TypeDTO } from "../common";
-import { excludeTimestampOnly } from "../../common";
 import { map, pipe, toArray } from "@fxts/core";
 
 @Injectable()
