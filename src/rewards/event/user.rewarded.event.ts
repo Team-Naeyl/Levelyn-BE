@@ -1,14 +1,8 @@
 import { RewardUserResult } from "../dto";
-import { UserNotificationEvent } from "../../common";
+import { UserEvent } from "../../common";
 
-export class UserRewardedEvent
-    extends UserNotificationEvent<"user.rewarded", RewardUserResult>
-{
+export class UserRewardedEvent extends UserEvent {
    constructor(userId: number, result: RewardUserResult) {
-       super({
-           userId,
-           type: "user.rewarded",
-           payload: result
-       });
+       super(userId, "rewarded", result);
    }
 }

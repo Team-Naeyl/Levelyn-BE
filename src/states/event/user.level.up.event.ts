@@ -1,22 +1,12 @@
-import { UserNotificationEvent } from "../../common";
 import { SkillDTO } from "../../game/skills/dto";
+import { UserEvent } from "../../common";
 
-export class UserLevelUpEvent
-    extends UserNotificationEvent<
-        "user.level.up",
-        { level: number; newSkills: SkillDTO[] }
-    >
-{
-
+export class UserLevelUpEvent extends UserEvent {
     constructor(
         userId: number,
         level: number,
         newSKills: SkillDTO[],
     ) {
-        super({
-            userId,
-            type: "user.level.up",
-            payload: { level, newSkills: newSKills  }
-        })
+        super(userId, "level.up", { level, newSKills });
     }
 }

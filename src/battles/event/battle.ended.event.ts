@@ -1,4 +1,3 @@
-import { BattleResult } from "../dto";
 import { BattlePenalty, BattleReward } from "../schema";
 
 interface IBattleEndedEvent {
