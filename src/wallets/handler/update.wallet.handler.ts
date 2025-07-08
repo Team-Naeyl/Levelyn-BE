@@ -18,13 +18,7 @@ export class UpdateWalletHandler implements ICommandHandler<UpdateWalletCommand>
     async execute(cmd: UpdateWalletCommand): Promise<void> {
         await this._walletsService.updateCoin(cmd)
             .then(coin => {
-                coin >= 0 && this._eventBus.publish(
-                    new WalletUpdatedEvent(
-                        cmd.id,
-                        cmd.deltaCoin,
-                        coin
-                    )
-                );
+
             })
             .catch(err => this._logger.error(err));
     }
