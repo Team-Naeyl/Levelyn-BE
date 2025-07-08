@@ -31,7 +31,7 @@ export class RandomItemService implements OnModuleInit {
     pickItem(): Promise<number> {
         return pipe(
             this._random.float(0, this._upperBound),
-            w => this._redis.zrange(
+            w => this._redis.zrangebyscore(
                 REDIS_KEY,
                 w, this._upperBound,
                 "LIMIT",
