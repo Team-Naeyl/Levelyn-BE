@@ -1,9 +1,8 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
 import { Inject, Logger } from "@nestjs/common";
-import { UserLevelUpEvent } from "./event";
 import { UpdateStateCommand } from "./update.state.command";
 import { StatesService } from "./states.service";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { UserEvent } from "../common";
 
 @CommandHandler(UpdateStateCommand)
 export class UpdateStateHandler implements ICommandHandler<UpdateStateCommand> {
@@ -12,8 +11,8 @@ export class UpdateStateHandler implements ICommandHandler<UpdateStateCommand> {
     constructor(
         @Inject(StatesService)
         private readonly _statesService: StatesService,
-        @Inject(EventEmitter2)
-        private readonly _eventEmitter: EventEmitter2
+        @Inject(EventBus)
+        private readonly _eventBus: EventBus,
     ) {
     }
 
@@ -22,9 +21,12 @@ export class UpdateStateHandler implements ICommandHandler<UpdateStateCommand> {
             .then(result => {
                 const { levelUp, level, newSkills } = result;
 
-                levelUp && this._eventEmitter.emit(
-                    "user.event",
-                    new UserLevelUpEvent(cmd.id, level, newSkills)
+                levelUp && this._eventBus.publish(
+                    new UserEvent(
+                        cmd.id,
+                        "LEVEL_UP",
+                        { level, newSkills }
+                    )
                 );
             })
             .catch(err => {
