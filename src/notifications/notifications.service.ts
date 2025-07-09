@@ -34,8 +34,9 @@ export class NotificationsService {
                 "STREAMS", key, "$"
             );
 
-            streams && this._logger.log(JSON.stringify(streams));
-            const [, stream] = streams![0];
+            if (!streams) continue;
+            this._logger.log(JSON.stringify(streams));
+            const [, stream] = streams[0];
 
             yield* stream.map(([, fields]) =>
                 JSON.parse(fields[1]) as UserNotification
