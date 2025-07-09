@@ -26,17 +26,7 @@ export class NotificationsController {
     @ApiQuery({ type: AuthQuerySchema, required: true })
     @ApiOkResponse({ type: NotificationSchema })
     notifyUser(@User("id") userId: number): Observable<NotificationSchema> {
-        return merge(
-            interval(3000).pipe(
-                map(() => new UserNotification("ping", null))
-            ),
-            fromEvent(this._eventEmitter, `user.${userId}.event`)
-                .pipe(
-                    tap(msg => JSON.stringify(msg)),
-                    map(msg => msg as UserEvent),
-                    map(({ userId, ...rest }) => rest)
-                )
-        );
+        return from(this._notificationsService.getUserNotifications(userId));
     }
 }
 
