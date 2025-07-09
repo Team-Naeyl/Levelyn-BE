@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { UserNotification } from "./notification";
 import Redis from "ioredis";
-import { pipe, map, concat } from "@fxts/core";
+import { pipe, map } from "@fxts/core";
 
 @Injectable()
 export class NotificationsService {
@@ -27,7 +27,6 @@ export class NotificationsService {
             __makeKey(userId),
             key => this.generate(key),
             map(raw => JSON.parse(raw) as UserNotification),
-            concat([new UserNotification("HANDSHAKE", null)])
         );
     }
 
