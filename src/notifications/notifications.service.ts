@@ -35,6 +35,7 @@ export class NotificationsService {
 
     private async* generateRaws(key: string): AsyncIterableIterator<string> {
         while (true) {
+            this._logger.debug(key);
 
             const raw = await this._redis.blpop(key, this._timeout)
                 .then(result => result && result[1])
@@ -50,6 +51,7 @@ export class NotificationsService {
                 JSON.stringify({ at: new Date(), msg: raw })
             );
 
+            this._logger.debug(raw);
             yield raw;
         }
     }
