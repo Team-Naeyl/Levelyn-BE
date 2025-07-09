@@ -50,6 +50,7 @@ lerna-debug.log*
 levelyn-ec2.pem
 levelyn-ec2.sh
 levelyn-proxy-ec2.sh
+sse-test.sh
 
 # temp directory
 .temp
