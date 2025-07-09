@@ -40,12 +40,10 @@ export class UserItemsService {
            .insert()
            .into(UserItem)
            .values(
-               itemIds.map(itemId => {
-                   const ui = this._userItemsRepos.create();
-                   return Object.assign(ui, { userId, itemId });
-               })
+               itemIds.map(itemId => ({ itemId, userId }))
            )
            .orIgnore()
+           .updateEntity(false)
            .execute();
 
        return await this.getUserItems({ userId, itemIds });
