@@ -24,7 +24,7 @@ export class RandomItemService implements OnModuleInit {
     async onModuleInit(): Promise<void> {
         const targets = await this.loadItemTargets();
         await this.storeItemTargets(targets);
-        this._upperBound = targets.at(-1)!.weight;
+        this._upperBound = targets.at(-1)?.weight ?? 0;
         this._logger.log("upper bound", this._upperBound);
     }
 
