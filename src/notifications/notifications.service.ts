@@ -36,12 +36,8 @@ export class NotificationsService {
     private async* generateRaws(key: string): AsyncIterableIterator<string> {
         while (true) {
 
-            const raw = await Promise.race([
-                this._redis.blpop(key, this._timeout),
-                new Promise<null>(resolve =>
-                    setTimeout(resolve, this._timeout)
-                )
-            ]).then(result => result && result[1])
+            const raw = await this._redis.blpop(key, this._timeout)
+                .then(result => result && result[1])
                 .catch(err => {
                     this._logger.error(err);
                     return null;
