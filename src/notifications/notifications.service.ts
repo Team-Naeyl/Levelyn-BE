@@ -29,7 +29,7 @@ export class NotificationsService {
         while (true) {
 
             const streams = await this._redis.xread(
-                "COUNT", 100,
+                "COUNT", 5,
                 "BLOCK", 0,
                 "STREAMS", key, "$"
             );
