@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { UserNotification } from "./notification";
 import Redis from "ioredis";
-import { pipe, map } from "@fxts/core";
 
 @Injectable()
 export class NotificationsService {
@@ -16,28 +15,33 @@ export class NotificationsService {
         userId: number,
         notification: UserNotification
     ): Promise<void> {
-        await this._redis.rpush(
+        await this._redis.xadd(
             __makeKey(userId),
+            "*",
+            "notification",
             JSON.stringify(notification)
         );
     }
 
-    getUserNotifications(userId: number): AsyncIterableIterator<UserNotification> {
-        return pipe(
-            __makeKey(userId),
-            key => this.generate(key),
-            map(raw => JSON.parse(raw) as UserNotification),
-        );
-    }
+    async* getUserNotifications(userId: number): AsyncIterableIterator<UserNotification> {
+        const key = __makeKey(userId);
 
-    private async* generate(key: string): AsyncIterableIterator<string> {
         while (true) {
-            const raw = await this._redis.lpop(key);
-            if (!raw) continue;
-            yield raw;
+
+            const streams = await this._redis.xread(
+                "COUNT", 100,
+                "BLOCK", 0,
+                "STREAMS", key, "$"
+            );
+
+            streams && this._logger.log(JSON.stringify(streams));
+            const [, stream] = streams![0];
+
+            yield* stream.map(([, fields]) =>
+                JSON.parse(fields[1]) as UserNotification
+            );
         }
     }
-
 }
 
 function __makeKey(userId: number): string {

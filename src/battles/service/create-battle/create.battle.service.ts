@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { LoadPlayerService } from "./load.player.service";
 import { LoadMobService } from "./load.mob.service";
-import { BattleConfig } from "../../../game";
 import { Battle, BattlePenalty, BattleReward } from "../../schema";
 import { ApplyItemsService } from "./apply.items.service";
 import Redis from "ioredis";
@@ -20,10 +19,8 @@ export class CreateBattleService {
       private readonly _applyItemsService: ApplyItemsService,
       @Inject(Redis)
       private readonly _redis: Redis,
-      @Inject(BattleConfig)
-      { penaltyDuration }: BattleConfig
     ) {
-        this._penaltyDuration = penaltyDuration;
+        this._penaltyDuration = 3;
     }
 
     async createBattle(dto: CreateBattleDTO): Promise<Battle> {

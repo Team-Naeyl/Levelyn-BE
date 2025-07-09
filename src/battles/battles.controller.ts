@@ -1,10 +1,12 @@
-import { Controller, Inject, Param, Sse } from "@nestjs/common";
+import { Controller, Inject, Param, Sse, UseInterceptors } from "@nestjs/common";
 import { BattlesService } from "./service";
 import { from } from "rxjs";
 import { ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+import { SseInterceptor } from "../common";
 
 @ApiTags("Battles")
 @Controller("/api/battles")
+@UseInterceptors(SseInterceptor)
 export class BattlesController {
 
     constructor(

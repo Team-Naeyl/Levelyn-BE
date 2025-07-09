@@ -1,6 +1,6 @@
-import { Controller, Inject, Sse, UseGuards } from '@nestjs/common';
+import { Controller, Inject, Sse, UseGuards, UseInterceptors } from '@nestjs/common';
 import { SseJwtAuthGuard } from "../auth";
-import { AuthQuerySchema, User } from "../common";
+import { AuthQuerySchema, SseInterceptor, User } from "../common";
 import { from, interval, map, merge, Observable } from "rxjs";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { NotificationSchema } from "./api";
@@ -9,6 +9,7 @@ import { NotificationsService } from "./notifications.service";
 @ApiTags("Notifications")
 @Controller('/api/notifications')
 @UseGuards(SseJwtAuthGuard)
+@UseInterceptors(SseInterceptor)
 export class NotificationsController {
 
     constructor(
