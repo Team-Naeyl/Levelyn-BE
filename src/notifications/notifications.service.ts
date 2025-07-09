@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs";
 @Injectable()
 export class NotificationsService {
     private readonly _logger: Logger = new Logger(NotificationsService.name);
-    private readonly _streams: Map<number, Subject<UserNotification>>;
+    private readonly _streams: Map<number, Subject<UserNotification>> = new Map();
 
     async addUserNotification(
         userId: number,
