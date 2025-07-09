@@ -6,6 +6,7 @@ import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger"
 import { NotificationSchema } from "./api";
 import { NotificationsService } from "./notifications.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { UserNotification } from "./notification";
 
 @ApiTags("Notifications")
 @Controller('/api/notifications')
@@ -25,12 +26,17 @@ export class NotificationsController {
     @ApiQuery({ type: AuthQuerySchema, required: true })
     @ApiOkResponse({ type: NotificationSchema })
     notifyUser(@User("id") userId: number): Observable<NotificationSchema> {
-        return fromEvent(this._eventEmitter, `user.${userId}.event`)
-            .pipe(
-                tap(msg => JSON.stringify(msg)),
-                map(msg => msg as UserEvent),
-                map(({ userId, ...rest }) => rest)
-            );
+        return merge(
+            interval(3000).pipe(
+                map(() => new UserNotification("ping", null))
+            ),
+            fromEvent(this._eventEmitter, `user.${userId}.event`)
+                .pipe(
+                    tap(msg => JSON.stringify(msg)),
+                    map(msg => msg as UserEvent),
+                    map(({ userId, ...rest }) => rest)
+                )
+        );
     }
 }
 
