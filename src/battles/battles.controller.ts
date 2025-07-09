@@ -1,7 +1,7 @@
 import { Controller, Inject, Param, Sse } from "@nestjs/common";
 import { BattlesService } from "./service";
-import { from, Observable } from "rxjs";
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+import { from } from "rxjs";
+import { ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Battles")
 @Controller("/api/battles")

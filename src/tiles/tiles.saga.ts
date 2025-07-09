@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ofType, Saga } from "@nestjs/cqrs";
 import { filter, from, map, mergeMap, Observable } from "rxjs";
 import { ToDoFulfilledEvent } from "../to-do/event";
-import { RewardUserCommand } from "../rewards/command";
+import { RewardUserCommand } from "../rewards/reward.user.command";
 import { CreateBattleCommand } from "../battles/command";
 import { TilesService } from "./tiles.service";
 

@@ -25,7 +25,7 @@ export class StatesService {
     ) {}
 
     async getState(id: number): Promise<StateDTO> {
-       const state = await this.getSkillBy({ id });
+       const state = await this.getStateBy({ id });
        this._logger.log(JSON.stringify(state));
        return excludeTimestamp(state, "id");
     }
@@ -52,7 +52,7 @@ export class StatesService {
        };
     }
 
-    private async getSkillBy(where: FindOptionsWhere<State>): Promise<State> {
+    private async getStateBy(where: FindOptionsWhere<State>): Promise<State> {
         return pipe(
             await this._statesRepos.findOneBy(where),
             throwIf(isNull, () => new ForbiddenException()),
@@ -72,7 +72,7 @@ export class StatesService {
         return [state, false];
     }
 
-    unlockSkills(userId: number, state: StateDTO): Promise<SkillDTO[]> {
+    private unlockSkills(userId: number, state: StateDTO): Promise<SkillDTO[]> {
         return this._commandBus.execute(
             new UnlockSkillsCommand({
                 userId,

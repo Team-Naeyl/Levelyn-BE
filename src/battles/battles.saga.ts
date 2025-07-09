@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ofType, Saga } from "@nestjs/cqrs";
 import { map, Observable, tap } from "rxjs";
-import { RewardUserCommand } from "../rewards/command";
+import { RewardUserCommand } from "../rewards/reward.user.command";
 import { BattleEndedEvent } from "./event";
 import { SetPenaltyCommand } from "../tiles/set.penalty.command";
 

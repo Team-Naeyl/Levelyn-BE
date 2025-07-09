@@ -1,7 +1,9 @@
-export class UserEvent {
+import { IEvent } from "@nestjs/cqrs";
+
+export class UserEvent implements IEvent {
     constructor(
         public readonly userId: number,
-        public readonly sub: string,
-        public readonly data: any
+        public readonly subject: string,
+        public readonly payload: any
     ) {}
 }
