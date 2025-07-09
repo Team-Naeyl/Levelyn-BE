@@ -35,7 +35,6 @@ export class NotificationsService {
 
     private async* generateRaws(key: string): AsyncIterableIterator<string> {
         while (true) {
-            this._logger.debug(key);
             const raw = await this._redis.lpop(key);
 
             if (!raw) {
