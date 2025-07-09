@@ -1,42 +1,32 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { UserNotification } from "./notification";
-import Redis from "ioredis";
-import { isString, pipe, map, takeWhile, concat } from "@fxts/core";
+import { Observable, Subject } from "rxjs";
 
 @Injectable()
 export class NotificationsService {
     private readonly _logger: Logger = new Logger(NotificationsService.name);
-
-    constructor(
-        @Inject(Redis)
-        private readonly _redis: Redis
-    ) {}
+    private readonly _streams: Map<number, Subject<UserNotification>>;
 
     async addUserNotification(
         userId: number,
         notification: UserNotification
     ): Promise<void> {
-        await this._redis.rpush(
-            __makeKey(userId),
-            JSON.stringify(notification)
-        );
+        this.getStream(userId).next(notification);
     }
 
-    getUserNotifications(userId: number): AsyncIterableIterator<UserNotification> {
-        return pipe(
-            __makeKey(userId),
-            key => this.generate(key),
-            takeWhile(isString),
-            map(raw => JSON.parse(raw!) as UserNotification),
-            concat([new UserNotification("START", null)])
-        );
+    getUserNotifications(userId: number): Observable<UserNotification> {
+       return this.getStream(userId).asObservable();
     }
 
-    private async* generate(key: string): AsyncIterableIterator<string | null> {
-        while (true) yield await this._redis.lpop(key);
+    private getStream(userId: number): Subject<UserNotification> {
+
+        if (!this._streams.has(userId)) {
+            const stream = new Subject<UserNotification>();
+            stream.next(new UserNotification("HANDSHAKE", null));
+            this._streams.set(userId, stream);
+        }
+
+        return this._streams.get(userId)!;
     }
 }
 
-function __makeKey(userId: number): string {
-    return `user:${userId}`;
-}
