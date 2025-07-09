@@ -33,6 +33,7 @@ export class ExecuteBattleService {
             this._logger.log(turnResult);
             if (Date.now() - startAt >= this._expires ) break;
             yield { status: "RUNNING", payload: turnResult };
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         const result = {

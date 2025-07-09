@@ -24,8 +24,8 @@ export class BattlesService {
         );
     }
 
-    async* executeBattle(id: string): AsyncIterableIterator<ExecuteBattleResult> {
-        yield* this._executeBattleService.executeBattle(id);
+    executeBattle(id: string): AsyncIterableIterator<ExecuteBattleResult> {
+         return this._executeBattleService.executeBattle(id);
     }
 }
 

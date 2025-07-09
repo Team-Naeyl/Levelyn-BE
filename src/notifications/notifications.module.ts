@@ -3,6 +3,8 @@ import { NotificationsController } from './notifications.controller';
 import { AuthModule, SseJwtAuthGuard } from "../auth";
 import { NotificationsService } from "./notifications.service";
 import { UserEventHandler } from "./user.event.handler";
+import { OptionsProvider } from "../common";
+import { NOTIFICATION_BLOCK_TIMEOUT } from "./token";
 
 const EXTERNAL_PROVIDERS = [SseJwtAuthGuard]
 
@@ -11,7 +13,8 @@ const EXTERNAL_PROVIDERS = [SseJwtAuthGuard]
   providers: [
       ...EXTERNAL_PROVIDERS,
       NotificationsService,
-      UserEventHandler
+      UserEventHandler,
+      OptionsProvider<number>(NOTIFICATION_BLOCK_TIMEOUT)
   ],
   controllers: [NotificationsController]
 })
