@@ -40,7 +40,7 @@ describe('PlayerItemsService', () => {
     });
 
     it('Compute net equipped item effect', async () => {
-        const effect: ItemEffectDTO = { attack: 5, will: 3, exp: 2, pItem: 1, pCoin: 1, penaltyDuration: 0 };
+        const effect: ItemEffectDTO = { attack: 5, will: 3, exp: 2, coin: 1, pItem: 1, pCoin: 1, penaltyDuration: 0 };
         const nItems = 10;
 
         const equippedItems: UserItem[] = Array.from({ length: nItems })

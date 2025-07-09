@@ -30,6 +30,7 @@ export class UserSkillsService {
                 .map(skillId => ({ userId, skillId }))
             )
             .orIgnore()
+            .updateEntity(false)
             .execute();
 
         return await this.getUserSkills({ userId, skillIds });
