@@ -1,7 +1,7 @@
 import { Controller, Inject, Sse, UseGuards } from '@nestjs/common';
 import { SseJwtAuthGuard } from "../auth";
 import { AuthQuerySchema, User } from "../common";
-import { from, Observable } from "rxjs";
+import { from, interval, map, merge, Observable } from "rxjs";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { NotificationSchema } from "./api";
 import { NotificationsService } from "./notifications.service";
@@ -21,7 +21,12 @@ export class NotificationsController {
     @ApiQuery({ type: AuthQuerySchema, required: true })
     @ApiOkResponse({ type: NotificationSchema })
     notifyUser(@User("id") userId: number): Observable<NotificationSchema> {
-        return from(this._notificationsService.getUserNotifications(userId));
+        return merge(
+            interval(15000).pipe(
+                map(() => ({ event: "ping", data: null }))
+            ),
+            this._notificationsService.getUserNotifications(userId)
+        );
     }
 }
 
