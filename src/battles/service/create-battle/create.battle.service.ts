@@ -60,6 +60,7 @@ export class CreateBattleService {
         await this._redis.call(
             "JSON.SET",
             `battle:${battle.id}`,
+            "$",
             JSON.stringify(battle)
         );
     }
