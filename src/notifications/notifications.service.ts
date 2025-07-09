@@ -36,15 +36,15 @@ export class NotificationsService {
     private async* generateRaws(key: string): AsyncIterableIterator<string> {
         while (true) {
             this._logger.debug(key);
+            const raw = await this._redis.lpop(key);
 
-            const raw = await this._redis.blpop(key, this._timeout)
-                .then(result => result && result[1])
-                .catch(err => {
-                    this._logger.error(err);
-                    return null;
-                });
+            if (!raw) {
+                await new Promise(resolve => setTimeout(
+                    resolve, this._timeout
+                ));
 
-            if (!raw) continue;
+                continue;
+            }
 
             await this._redis.rpush(
                 `${key}:done`,
