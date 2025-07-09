@@ -39,7 +39,12 @@ export class UserItemsService {
            .createQueryBuilder()
            .insert()
            .into(UserItem)
-           .values(itemIds.map(itemId => ({ userId, itemId })))
+           .values(
+               itemIds.map(itemId => {
+                   const ui = this._userItemsRepos.create();
+                   return Object.assign(ui, { userId, itemId });
+               })
+           )
            .orIgnore()
            .execute();
 
