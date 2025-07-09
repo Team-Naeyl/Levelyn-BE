@@ -15,10 +15,8 @@ export class NotificationsService {
         userId: number,
         notification: UserNotification
     ): Promise<void> {
-        await this._redis.xadd(
+        await this._redis.rpush(
             __makeKey(userId),
-            "*",
-            "notification",
             JSON.stringify(notification)
         );
     }
@@ -27,22 +25,18 @@ export class NotificationsService {
         const key = __makeKey(userId);
 
         while (true) {
+            const raw = await this._redis.lpop(key);
+            if (!raw) continue;
 
-            const streams = await this._redis.xread(
-                "COUNT", 5,
-                "BLOCK", 0,
-                "STREAMS", key, "$"
-            );
+            this._logger.debug(raw);
+            await this._redis.rpush(`${key}:done`, raw);
+            const msg = JSON.parse(raw) as UserNotification;
 
-            if (!streams) continue;
-            this._logger.log(JSON.stringify(streams));
-            const [, stream] = streams[0];
-
-            yield* stream.map(([, fields]) =>
-                JSON.parse(fields[1]) as UserNotification
-            );
+            yield msg;
         }
     }
+
+
 }
 
 function __makeKey(userId: number): string {
