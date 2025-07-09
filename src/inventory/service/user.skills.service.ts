@@ -26,7 +26,9 @@ export class UserSkillsService {
             .createQueryBuilder()
             .insert()
             .into(UserSkill)
-            .values(skillIds.map(skillId => ({ userId, skillId })))
+            .values(skillIds
+                .map(skillId => ({ userId, skillId }))
+            )
             .orIgnore()
             .execute();
 
