@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { UserNotification } from "./notification";
 import Redis from "ioredis";
+import { map, pipe } from "@fxts/core";
 
 @Injectable()
 export class NotificationsService {
@@ -21,18 +22,20 @@ export class NotificationsService {
         );
     }
 
-    async* getUserNotifications(userId: number): AsyncIterableIterator<UserNotification> {
-        const key = __makeKey(userId);
+    getUserNotifications(userId: number): AsyncIterableIterator<UserNotification> {
+        return pipe(
+            __makeKey(userId),
+            key => this.generateRaws(key),
+            map(raw => JSON.parse(raw) as UserNotification)
+        );
+    }
 
+    private async* generateRaws(key: string): AsyncIterableIterator<string> {
         while (true) {
             const raw = await this._redis.lpop(key);
             if (!raw) continue;
-
             this._logger.debug(raw);
-            await this._redis.rpush(`${key}:done`, raw);
-            const msg = JSON.parse(raw) as UserNotification;
-
-            yield msg;
+            yield raw;
         }
     }
 

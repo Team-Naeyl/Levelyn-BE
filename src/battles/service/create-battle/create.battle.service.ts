@@ -56,8 +56,7 @@ export class CreateBattleService {
     private async saveBattle(battle: Battle) {
         await this._redis.call(
             "JSON.SET",
-            `battle:${battle.id}`,
-            "$",
+            battle.id, "$",
             JSON.stringify(battle)
         );
     }

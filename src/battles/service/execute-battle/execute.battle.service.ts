@@ -7,7 +7,6 @@ import { EventBus } from "@nestjs/cqrs";
 import { BattleEndedEvent } from "../../event";
 import { isNil, pipe, tap, throwIf } from "@fxts/core";
 import Redis from "ioredis";
-import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class ExecuteBattleService {
@@ -51,19 +50,17 @@ export class ExecuteBattleService {
                 penalty: result.win ? null : battle.penalty,
             })
         );
+
+        await this._redis.del(battle.id);
     }
 
     private async loadBattle(id: string): Promise<Battle> {
         return pipe(
-            await this._redis.call("JSON.GET", `battle:${id}`, "$"),
+            await this._redis.call("JSON.GET", id, "$"),
             tap(raw => this._logger.log(raw)),
             throwIf(isNil, () => new NotFoundException()),
-            raw => JSON.parse(raw as string),
-            data => plainToInstance(Battle, data)[0],
+            raw => JSON.parse(raw as string) as Battle,
         );
     }
-
-
-
 }
 
