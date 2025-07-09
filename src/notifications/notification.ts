@@ -1,6 +1,6 @@
 export class UserNotification {
     constructor(
-        public readonly subject: string,
-        public readonly payload: any
+        public readonly event: string,
+        public readonly data: any
     ) {}
 }
