@@ -1,6 +1,5 @@
 import { Controller, Inject, Param, Sse, UseInterceptors } from "@nestjs/common";
 import { BattlesService } from "./service";
-import { from } from "rxjs";
 import { ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { SseInterceptor } from "../common";
 
@@ -21,7 +20,7 @@ export class BattlesController {
     executeBattle(
         @Param("id") id: string
     ) {
-        return from(this._battleService.executeBattle(id));
+        return this._battleService.executeBattle(id);
     }
 
 }

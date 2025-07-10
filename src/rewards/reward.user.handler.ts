@@ -21,10 +21,12 @@ export class RewardUserHandler implements ICommandHandler<RewardUserCommand> {
     async execute(cmd: RewardUserCommand): Promise<void> {
         await this._rewardsService.rewardUser(cmd)
             .then(result => {
-                this._eventEmitter.emit(
-                    `user.${cmd.userId}.event`,
+
+                this._eventBus.publish(
                     new UserEvent(cmd.userId, "REWARD", result)
                 );
+
+                this._logger.log(`event published: ${result}`);
             })
             .catch(err => {
                 this._logger.error(err);
