@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import { UserNotification } from "./notification";
+import { UserNotification } from "../notification";
 import Redis from "ioredis";
-import { NOTIFICATION_BLOCK_TIMEOUT } from "./token";
+import { NOTIFICATION_BLOCK_TIMEOUT } from "../token";
 import { from, map, Observable, tap } from "rxjs";
 
 @Injectable()

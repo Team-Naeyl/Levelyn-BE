@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { NotificationsController } from './notifications.controller';
 import { AuthModule, SseJwtAuthGuard } from "../auth";
-import { NotificationsService } from "./notifications.service";
+import { NotificationsService } from "./service/notifications.service";
 import { UserEventHandler } from "./user.event.handler";
 import { OptionsProvider } from "../common";
 import { NOTIFICATION_BLOCK_TIMEOUT, SSE_HEARTBEAT_PERIOD } from "./token";

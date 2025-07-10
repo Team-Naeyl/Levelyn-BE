@@ -1,12 +1,14 @@
-import { Controller, Inject, Param, Sse, UseInterceptors } from "@nestjs/common";
+import { Controller, Inject, Logger, Param, Sse, UseInterceptors } from "@nestjs/common";
 import { BattlesService } from "./service";
 import { ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import { SseInterceptor } from "../common";
+import { catchError } from "rxjs";
 
 @ApiTags("Battles")
 @Controller("/api/battles")
 @UseInterceptors(SseInterceptor)
 export class BattlesController {
+    private readonly _logger: Logger = new Logger(BattlesController.name);
 
     constructor(
        @Inject(BattlesService)
@@ -20,7 +22,13 @@ export class BattlesController {
     executeBattle(
         @Param("id") id: string
     ) {
-        return this._battleService.executeBattle(id);
+        return this._battleService.executeBattle(id)
+            .pipe(
+                catchError(err => {
+                    this._logger.error(err);
+                    throw err;
+                })
+            );
     }
 
 }
