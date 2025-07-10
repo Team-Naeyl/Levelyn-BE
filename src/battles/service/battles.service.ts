@@ -3,7 +3,7 @@ import { CreateBattleService } from "./create-battle";
 import { Battle, Player } from "../schema";
 import { BattleDTO, ExecuteBattleResult, CreateBattleDTO, PlayerDTO } from "../dto";
 import { ExecuteBattleService } from "./execute-battle";
-import { pipe, tap } from "@fxts/core";
+import { from, Observable, tap } from "rxjs";
 
 @Injectable()
 export class BattlesService {
@@ -17,15 +17,13 @@ export class BattlesService {
     ) {}
 
     async createBattle(dto: CreateBattleDTO): Promise<BattleDTO> {
-        return pipe(
-            await this._createBattleService.createBattle(dto),
-            tap(battle => this._logger.log(JSON.stringify(battle))),
-            __toDTO
-        );
+       const battle = await this._createBattleService.createBattle(dto);
+       return __toDTO(battle);
     }
 
-    executeBattle(id: string): AsyncIterableIterator<ExecuteBattleResult> {
-         return this._executeBattleService.executeBattle(id);
+    executeBattle(id: string): Observable<ExecuteBattleResult> {
+         return from(this._executeBattleService.executeBattle(id))
+             .pipe(tap(msg => this._logger.debug(msg)));
     }
 }
 
