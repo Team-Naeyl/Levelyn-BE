@@ -7,6 +7,7 @@ import { NotificationSchema } from "./api";
 import { NotificationsService } from "./notifications.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { UserNotification } from "./notification";
+import { SSE_HEARTBEAT_PERIOD } from "./token";
 
 @ApiTags("Notifications")
 @Controller('/api/notifications')
@@ -17,8 +18,8 @@ export class NotificationsController {
     constructor(
         @Inject(NotificationsService)
         private readonly _notificationsService: NotificationsService,
-        @Inject(EventEmitter2)
-        private readonly _eventEmitter: EventEmitter2
+        @Inject(SSE_HEARTBEAT_PERIOD)
+        private readonly _heartbeatPeriod: number
     ) {}
 
     @Sse("/")
@@ -27,9 +28,10 @@ export class NotificationsController {
     @ApiOkResponse({ type: NotificationSchema })
     notifyUser(@User("id") userId: number): Observable<NotificationSchema> {
 
-        const heartbeat$ = interval(3000).pipe(
-            map(() => new UserNotification("ping", null))
-        );
+        const heartbeat$ = interval(this._heartbeatPeriod)
+            .pipe(
+                map(() => new UserNotification("ping", null))
+            );
 
         const notification$ = this._notificationsService
             .getUserNotifications(userId);
