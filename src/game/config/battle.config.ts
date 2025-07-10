@@ -4,4 +4,6 @@ import { ConfigField, ConfigSchema } from "../../config/yaml-config";
 export class BattleConfig {
     @ConfigField({ path: "EXPIRES" })
     expires: number;
+    @ConfigField({ path: "TURN_INTERVAL" })
+    turnInterval: number;
 }
