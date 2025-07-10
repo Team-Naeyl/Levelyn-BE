@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { Observable, Subject } from "rxjs";
-import { UserNotification } from "./notification";
+import { UserNotification } from "../notification";
 import { EventBus } from "@nestjs/cqrs";
+import { UserEvent } from "../../common";
 
 @Injectable()
 export class NotificationChannelsService {
@@ -40,4 +41,6 @@ export class NotificationChannelsService {
 
         return this._channels[userId];
     }
+
+
 }

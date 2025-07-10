@@ -4,7 +4,7 @@ import { AuthQuerySchema, SseInterceptor, User } from "../common";
 import { interval, map, merge, Observable } from "rxjs";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { NotificationSchema } from "./api";
-import { NotificationsService } from "./notifications.service";
+import { NotificationsService } from "./service";
 import { UserNotification } from "./notification";
 import { SSE_HEARTBEAT_PERIOD } from "./token";
 import { NotificationsInterceptor } from "./notifications.interceptor";

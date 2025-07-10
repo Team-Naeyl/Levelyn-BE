@@ -1,7 +1,7 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { UserEvent } from "../common";
 import { Inject, Logger } from "@nestjs/common";
-import { NotificationsService } from "./notifications.service";
+import { NotificationsService } from "./service/notifications.service";
 
 @EventsHandler(UserEvent)
 export class UserEventHandler implements IEventHandler<UserEvent> {
