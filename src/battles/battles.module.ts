@@ -10,6 +10,7 @@ import { AuthModule } from "../auth";
 import { BattlesController } from "./battles.controller";
 import { BattlesSaga } from "./battles.saga";
 import { State } from "../states/state.model";
+import { BattlesRepository } from "./battles.repository";
 
 const EXTERNAL_PROVIDERS = [
     StatesService,
@@ -37,7 +38,8 @@ const EXTERNAL_PROVIDERS = [
       ApplyItemsService,
       ExecuteBattleService,
       CreateBattleHandler,
-      BattlesSaga
+      BattlesSaga,
+      BattlesRepository
   ],
   controllers: [BattlesController]
 })

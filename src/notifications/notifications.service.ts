@@ -34,21 +34,18 @@ export class NotificationsService {
     }
 
     private async* generateRaws(key: string): AsyncIterableIterator<string> {
+
         while (true) {
             const raw = await this._redis.lpop(key);
 
             if (!raw) {
+
                 await new Promise(resolve =>
                     setTimeout(resolve, this._timeout)
                 );
 
                 continue;
             }
-
-            await this._redis.rpush(
-                `${key}:done`,
-                JSON.stringify({ at: new Date(), msg: raw })
-            );
 
             this._logger.debug(raw);
             yield raw;

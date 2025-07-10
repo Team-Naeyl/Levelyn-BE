@@ -3,8 +3,8 @@ import { LoadPlayerService } from "./load.player.service";
 import { LoadMobService } from "./load.mob.service";
 import { Battle, BattlePenalty, BattleReward } from "../../schema";
 import { ApplyItemsService } from "./apply.items.service";
-import Redis from "ioredis";
 import { CreateBattleDTO } from "../../dto";
+import { BattlesRepository } from "../../battles.repository";
 
 @Injectable()
 export class CreateBattleService {
@@ -17,8 +17,8 @@ export class CreateBattleService {
       private readonly _mobsService: LoadMobService,
       @Inject(ApplyItemsService)
       private readonly _applyItemsService: ApplyItemsService,
-      @Inject(Redis)
-      private readonly _redis: Redis,
+      @Inject(BattlesRepository)
+      private readonly _battlesRepos: BattlesRepository
     ) {
         this._penaltyDuration = 3;
     }
@@ -26,38 +26,23 @@ export class CreateBattleService {
     async createBattle(dto: CreateBattleDTO): Promise<Battle> {
         const { userId, position } = dto;
 
-        const battle = new Battle({
+        const player = await this._playersService.loadPlayer(userId);
+        const mob = await this._mobsService.loadMob(position);
+        const reward = new BattleReward();
+        const penalty = this.createBattlePenalty();
+
+        await this._applyItemsService.applyEquippedItems(
             userId,
-            player: await this._playersService.loadPlayer(userId),
-            mob: await this._mobsService.loadMob(position),
-            reward: new BattleReward(),
-            penalty: this.createBattlePenalty()
+            player.stat,
+            reward, penalty
+        );
+
+        return await this._battlesRepos.saveBattle({
+            userId, player, mob, reward, penalty
         });
-
-        await this.applyItems(battle);
-        await this.saveBattle(battle);
-
-        return battle;
     }
 
     private createBattlePenalty(): BattlePenalty {
         return new BattlePenalty(this._penaltyDuration);
-    }
-
-    private async applyItems(battle: Battle) {
-        await this._applyItemsService.applyEquippedItems(
-            battle.userId,
-            battle.player.stat,
-            battle.reward,
-            battle.penalty
-        );
-    }
-
-    private async saveBattle(battle: Battle) {
-        await this._redis.call(
-            "JSON.SET",
-            battle.id, "$",
-            JSON.stringify(battle)
-        );
     }
 }
