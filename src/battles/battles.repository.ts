@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import Redis from "ioredis";
 import { Battle } from "./schema";
 import * as crypto from "node:crypto";
-import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class BattlesRepository {
@@ -20,10 +19,7 @@ export class BattlesRepository {
     }
 
     async findBattleById(id: string): Promise<Battle | null> {
-        const raw = await this._redis.hmget("battles", id);
-
-        return raw[0]
-            ? plainToInstance(Battle, JSON.parse(raw[0]))[0]
-            : null;
+        const raws = await this._redis.hmget("battles", id);
+        return raws[0] ? JSON.parse(raws[0]) as Battle : null;
     }
 }
