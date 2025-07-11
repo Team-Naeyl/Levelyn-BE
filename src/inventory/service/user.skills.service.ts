@@ -43,7 +43,10 @@ export class UserSkillsService {
 
     async getEquippedSkills(userId: number): Promise<EquippedSkillDTO[]> {
         return pipe(
-            await this.getUserSkillsBy({ userId, equipped: true }),
+            await this._userSkillsRepos.find({
+                relations: { skill: { effect: true  } },
+                where: { userId, equipped: true }
+            }),
             map(async ({ skill }) => {
                 const effect = await skill.effect;
 
