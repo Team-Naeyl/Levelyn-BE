@@ -26,7 +26,7 @@ export class UsersService {
     async getUser(id: number): Promise<UserDTO> {
         return pipe(
             await this._usersRepos.findOne({
-                relations: { state: true, wallet: true },
+                relations: { state: true, wallet: true, tile: true },
                 where: { id },
             }),
             throwIf(isNull, () => new ForbiddenException()),
@@ -41,7 +41,7 @@ export class UsersService {
 
     private async getOrCreateUser(dto: UpsertUserDTO): Promise<User> {
         const user = await this._usersRepos.findOneBy({ email: dto.email });
-        return user ?? await this._usersRepos.save({ ...dto, state: {}, wallet: {} });
+        return user ?? await this._usersRepos.save({ ...dto, state: {}, wallet: {}, tile: {} });
     }
 }
 
