@@ -29,8 +29,8 @@ export class RandomBoxesService {
     }
 
     async getRandomBox(buff?: ProbabilityBuffDTO): Promise<RandomBoxDTO> {
-        const pItem = this._pItem * (buff?.pItem ?? 1);
-        const pCoin = this._pCoin * (buff?.pCoin ?? 1);
+        const pItem = __applyBuff(this._pItem, buff?.pCoin ?? 1);
+        const pCoin = __applyBuff(this._pCoin, buff?.pCoin ?? 1);
 
         const itemId = this.randomBoolean(pItem)
             ? await this._randomItemService.pickItem()
@@ -47,4 +47,8 @@ export class RandomBoxesService {
         const dist = this.binomial(p);
         return Boolean(dist());
     }
+}
+
+function  __applyBuff(p: number, b: number): number {
+    return Math.min(p * b, 0.999);
 }

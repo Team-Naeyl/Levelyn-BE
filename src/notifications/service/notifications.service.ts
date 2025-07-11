@@ -39,7 +39,6 @@ export class NotificationsService {
             const raw = await this._redis.lpop(key);
 
             if (!raw) {
-
                 await new Promise(resolve =>
                     setTimeout(resolve, this._timeout)
                 );
